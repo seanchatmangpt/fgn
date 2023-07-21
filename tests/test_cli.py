@@ -2,9 +2,11 @@ import pytest
 from click.testing import CliRunner
 from fgn.cli import main
 
+
 @pytest.fixture
 def runner(fs):
     return CliRunner()
+
 
 def test_file_writer_with_output(runner, fs):
     # Use the fs fixture provided by pytest-fs to create a fake file
