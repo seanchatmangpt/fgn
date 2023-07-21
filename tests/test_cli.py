@@ -10,17 +10,17 @@ def runner(fs):
 
 def test_file_writer_with_output(runner, fs):
     # Use the fs fixture provided by pytest-fs to create a fake file
-    fake_file_path = '/path/to/fake_file.txt'
-    fake_file_content = 'Test Message'
-    message = 'Hello World!'
+    fake_file_path = "/path/to/fake_file.txt"
+    fake_file_content = "Test Message"
+    message = "Hello World!"
     fs.create_file(fake_file_path, contents=fake_file_content)
 
     # Use the runner fixture to invoke the CLI command
-    result = runner.invoke(main, ['-o', fake_file_path, message])
+    result = runner.invoke(main, ["-o", fake_file_path, message])
 
     # Print the output and contents of the fake file for debugging
     print("result.output:", result.output)
-    with open(fake_file_path, 'r') as file:
+    with open(fake_file_path, "r") as file:
         print("fake_file_content:", file.read())
 
     # Verify the result
