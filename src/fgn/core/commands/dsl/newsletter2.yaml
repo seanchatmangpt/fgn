@@ -1,0 +1,44 @@
+version: "1.0"
+description: "FGN DSL example: Create, review, and rewrite a linkedin_newsletter article using FGN commands"
+
+tasks:
+  - name: "create_output_directory"
+    description: "Create the output directory"
+    steps:
+      - action: "shell"
+        description: "Create the output directory"
+        run: "mkdir -p output"
+
+  - name: "create_article"
+    description: "Create a linkedin_newsletter article using FGN"
+    steps:
+      - action: "assign_variable"
+        name: "article_subject"
+        value: "Creating a Mastermind Alliance ChatGPT"
+
+      - action: "fgn"
+        description: "Generate linkedin_newsletter article"
+        command: "create_linkedin_newsletter_article about {article_subject}"
+        options:
+          prompt: "Write a linkedin_newsletter post about {article_subject}."
+          output: "output/linkedin_newsletter_article.md"
+
+  - name: "review_article"
+    description: "Review the linkedin_newsletter article using FGN"
+    steps:
+      - action: "fgn"
+        description: "Harsh Critical Review of linkedin_newsletter article"
+        command: "Harsh Critical Review of This {article_subject} Article"
+        options:
+          input: "output/linkedin_newsletter_article.md"
+          output: "output/reviewed_article.md"
+
+  - name: "rewrite_article"
+    description: "Rewrite the linkedin_newsletter article using The Critical Review"
+    steps:
+      - action: "fgn"
+        description: "Rewrite linkedin_newsletter article"
+        command: "Rewrite the Entire {article_subject} Article Based on the Review"
+        options:
+          input: "output/reviewed_article.md"
+          output: "output/rewritten_article.md"

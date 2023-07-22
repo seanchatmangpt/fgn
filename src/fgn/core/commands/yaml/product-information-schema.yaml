@@ -1,0 +1,62 @@
+openapi: "3.0.0"
+info:
+  title: Book Product Information Schema
+  version: "1.0.0"
+  description: |
+    This is the schema for the product information that is used to create the book product description.
+    The book product description is used to create the product page on Amazon store and the metadata for
+    the Amazon store. The descriptions contain best practices for writing the product information.
+
+components:
+  schemas:
+    ProductInformation:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 50
+          minLength: 40
+          description: The title of the book. Should be informative and should use keywords that can help the user to find the book
+        subtitle:
+          type: string
+          maxLength: 100
+          minLength: 80
+          description: The subtitle of the book. Should supplement the title and explain the content of the book while speaking to the audience and highlighting the main benefit of the book
+        hook:
+          type: string
+          maxLength: 230
+          minLength: 200
+          description: A compelling sentence that describes the key benefit of the book to the customer. This is the first thing the customer will read on the product page after title and subtitle, so it needs to be punchy and attention-grabbing
+        key_features:
+          type: array
+          items:
+            type: string
+            maxLength: 100
+            minLength: 75
+          maxItems: 3
+          minItems: 3
+          description: The three main features of the book that differentiate it from the competition
+        short_description:
+          type: string
+          minLength: 350
+          description: A brief overview of the book that focuses on the core idea of the book and explains why the book is exciting and important for customers
+        long_description:
+          type: string
+          minLength: 1350
+          description: A detailed description of the book that explains the approach, content, and learning journey. Should include enough detail to make it interesting without losing sight of what’s important to the reader
+        what_you_will_learn:
+          type: array
+          items:
+            type: string
+            minLength: 84
+          maxItems: 8
+          minItems: 6
+          description: A list of 6-8 bullet points that tie together the content and benefits in an easily digestible format. Should focus on the key areas/tasks that will be covered
+        audience:
+          type: string
+          minLength: 600
+          description: An explanation of who should read the book, how experienced the reader should be, and what they will achieve. Should outline the types of jobs that will find the book interesting and sell the learning journey of the book
+        author_bio:
+          type: string
+          minLength: 750
+          description: Details about the author's experience that outline why they’re a great person for the reader to learn from. Should be kept brief and avoid bullet points, but can include the author's website or Twitter handle if relevant.

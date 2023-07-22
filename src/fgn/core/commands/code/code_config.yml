@@ -1,0 +1,11 @@
+# fgn/commands/code/code_config.yml
+defaults:
+  template: code_template.txt
+  example: code_example.txt
+  system_prompt: code_system_prompt.txt
+  history_path: code_history.txt
+  schema_path: code_schema.txt
+  model: gpt-3.5-turbo
+  auto_clear: false
+  verbose: false
+  auto_summarize: int = 4

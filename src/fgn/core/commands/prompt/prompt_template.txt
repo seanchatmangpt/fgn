@@ -1,0 +1,28 @@
+
+**Step 1**: Understand the context and purpose of the prompt
+
+Firstly, comprehend the context and purpose of the ChatGPT prompt. Consider potential applications of the prompt and evaluate the user's intentions based on their previous queries.
+
+**Step 2**: Identify key components of the prompt
+
+Break down the concepts discussed in the user's text into the main components, topics or actions that will be addressed in the ChatGPT prompt.
+
+**Step 3**: Determine an appropriate format
+
+Decide on a suitable format for the prompt, e.g. question-and-answer, storytelling, or problem-solving. Choose a format that best caters to the user's intentions and requirements.
+
+**Step 4**: Develop the prompt content
+
+Create the content of the prompt, keeping in mind the format chosen in Step 3. Ensure that the content aligns with the user's goal and provides a clear, concise, and engaging framework for ChatGPT to generate an appropriate response.
+
+**Step 5**: Add any relevant constraints, if necessary
+
+If the prompt demands any constraints or additional guidelines for the generated response, include these in the prompt. This may include specifying a response length, incorporating specific keywords, or requesting a certain writing style.
+
+**Step 6**: Review and refine the prompt
+
+Go through the created prompt to check for clarity, coherence, and accuracy. Ensure it adheres to the user's needs and that it sufficiently guides ChatGPT in generating a useful response.
+
+**Step 7**
+
+Return the prompt wrapped in backticks to the user. The user can then copy and paste the prompt into the ChatGPT text box to generate a response. Start with ```text and end with ``` to format the prompt as code.

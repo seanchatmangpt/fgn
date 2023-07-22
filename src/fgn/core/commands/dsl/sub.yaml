@@ -1,0 +1,10 @@
+version: "1.0"
+description: "Subtask to say 'Hello, World!'"
+
+tasks:
+  - name: "hello_world_sub"
+    description: "Subtask to say 'Hello, World!'"
+    steps:
+      - action: "shell"
+        description: "Print the message"
+        run: "echo '{message}' > test.txt"

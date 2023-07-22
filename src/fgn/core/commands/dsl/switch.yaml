@@ -1,0 +1,79 @@
+version: "1.0"
+description: "FGN automation for various writing and task management"
+tasks:
+  - name: General Task Selection
+    description: "Prompt user to select a task from a list"
+    steps:
+      - action: prompt
+        description: "Select a task number"
+        options:
+          prompt: "Select a task number from 1-20:"
+          variable_name: "task_number"
+  - name: Run Selected Task
+    description: "Run the selected task based on user input"
+    steps:
+      - action: switch
+        description: "Switch statement to run selected task"
+        options:
+          test: "{task_number}"
+          cases:
+            "1":
+              action: import_task
+              file_path: tasks/create_expert_blog_article.yaml
+            "2":
+              action: import_task
+              file_path: tasks/create_beginner_blog_article.yaml
+            "3":
+              action: import_task
+              file_path: tasks/generate_code_snippet.yaml
+            "4":
+              action: import_task
+              file_path: tasks/create_to_do_list.yaml
+            "5":
+              action: import_task
+              file_path: tasks/generate_password.yaml
+            "6":
+              action: import_task
+              file_path: tasks/create_meeting_notes.yaml
+            "7":
+              action: import_task
+              file_path: tasks/schedule_social_media_posts.yaml
+            "8":
+              action: import_task
+              file_path: tasks/create_presentation_slides.yaml
+            "9":
+              action: import_task
+              file_path: tasks/generate_keyword_list.yaml
+            "10":
+              action: import_task
+              file_path: tasks/create_budget_report.yaml
+            "11":
+              action: import_task
+              file_path: tasks/generate_questionnaire.yaml
+            "12":
+              action: import_task
+              file_path: tasks/create_survey.yaml
+            "13":
+              action: import_task
+              file_path: tasks/create_newsletter.yaml
+            "14":
+              action: import_task
+              file_path: tasks/generate_press_release.yaml
+            "15":
+              action: import_task
+              file_path: tasks/create_business_proposal.yaml
+            "16":
+              action: import_task
+              file_path: tasks/generate_invoice.yaml
+            "17":
+              action: import_task
+              file_path: tasks/create_resume.yaml
+            "18":
+              action: import_task
+              file_path: tasks/generate_thank_you_note.yaml
+            "19":
+              action: import_task
+              file_path: tasks/create_course_syllabus.yaml
+            "20":
+              action: import_task
+              file_path: tasks/create_employee_handbook.yaml

@@ -1,0 +1,13 @@
+version: "1.0"
+description: "Main task to say 'Hello, World!'"
+
+tasks:
+  - name: "hello_world_main"
+    description: "Main task to say 'Hello, World!'"
+    steps:
+      - action: "assign_variable"
+        name: "message"
+        value: "Hello, Mom!"
+      - action: "import_task"
+        description: "Say 'Hello, World!' from a subfile"
+        file_path: "sub.yaml"

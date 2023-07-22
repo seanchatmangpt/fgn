@@ -1,0 +1,10 @@
+# fgn/commands/summary/summary_config.yml
+defaults:
+  template: summary_template.txt
+  example: summary_example.txt
+  system_prompt: summary_system_prompt.txt
+  history_path: summary_history.txt
+  model: gpt-3.5-turbo
+  auto_clear: false
+  verbose: false
+  auto_summarize: int = 4

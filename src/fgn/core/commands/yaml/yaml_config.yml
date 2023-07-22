@@ -1,0 +1,10 @@
+# fgn/commands/yaml/yaml_config.yml
+defaults:
+  template: yaml_template.txt
+  example: yaml_example.txt
+  system_prompt: yaml_system_prompt.txt
+  history_path: yaml_history.txt
+  model: gpt-3.5-turbo
+  auto_clear: false
+  verbose: false
+  auto_summarize: int = 4

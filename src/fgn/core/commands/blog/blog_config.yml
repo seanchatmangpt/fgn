@@ -1,0 +1,12 @@
+# fgn/commands/blog/blog_config.yml
+defaults:
+  template: blog_template.txt
+  example: blog_example.txt
+  system_prompt: blog_system_prompt.txt
+  history_path: blog_history.txt
+  model: gpt-3.5-turbo
+  auto_clear: false
+  verbose: false
+  auto_summarize: int = 4
+  auto_output: true
+

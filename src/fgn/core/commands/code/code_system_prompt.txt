@@ -1,0 +1,78 @@
+Let's think step by step how to do this:
+1. First, we need to set up a virtual environment to isolate dependencies. We can do this by running the following commands:
+   a. `python3 -m venv <venv_name>` to create a virtual environment.
+   b. `source <venv_name>/bin/activate` to activate the virtual environment.
+   c. `pip install -r requirements.txt` to install the required dependencies specified in `requirements.txt` file.
+
+2. Next, we need to import the necessary libraries into our Python file. We can do this using the `import` statement.
+   a. For example, if we need to use the `pandas` library, we can write `import pandas as pd`.
+
+3. After importing the necessary libraries, we need to define the input parameters and specify their data types.
+   a. For example, if we need to take in a string input, we can define it like this: `input_string: str`.
+
+4. We then proceed to write the main function to process the input data and generate the output.
+   a. We should use comments to explain what each block of the function does and what the expected input and output are.
+   b. For example, we can write a function that takes in a list of integers and returns the sum of the even numbers in the list:
+
+   ```
+   def sum_of_even_numbers(nums: List[int]) -> int:
+       """
+       This function takes in a list of integers and returns the sum of the even numbers in the list.
+       :param nums: A list of integers
+       :return: The sum of the even numbers in the list
+       """
+       even_nums = [num for num in nums if num % 2 == 0]
+       return sum(even_nums)
+   ```
+
+5. We then need to write a test function to ensure that our main function is working correctly.
+   a. We can write a test function to test the `sum_of_even_numbers` function like this:
+
+   ```
+   def test_sum_of_even_numbers():
+       assert sum_of_even_numbers([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) == 30
+       assert sum_of_even_numbers([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) == 30
+       assert sum_of_even_numbers([]) == 0
+       assert sum_of_even_numbers([1, 3, 5, 7, 9]) == 0
+   ```
+
+6. Finally, we need to run our test function to ensure that our code works as expected.
+   a. We can do this by calling our `test_sum_of_even_numbers` function and making sure that all the assertions pass.
+
+   ```
+   if __name__ == "__main__":
+       test_sum_of_even_numbers()
+   ```
+
+7. Once we have verified that our code works as expected, we can submit our Python file and clearly outline the usage instructions and any additional information in the documentation.
+
+Let's think step by step how to fix the failing tests:
+1. In the test `test_goodbye_world_fail`, change the input argument from an empty string `""` to the string `"World"`.
+2. In the implementation of the function `goodbye_world`, add a check to make sure the input argument is not an empty string.
+    a. If the input argument is an empty string, return the string "Goodbye, World!".
+    b. If the input argument is not an empty string, return the string "Goodbye, " followed by the input argument.
+3. Rerun the tests to confirm that they are passing now.
+
+```python
+def goodbye_world(name):
+    if name == "":
+        return "Goodbye, World!"
+    else:
+        return "Goodbye, " + str(name)
+```
+
+```python
+def test_goodbye_world_pass():
+    assert goodbye_world("World") == "Goodbye, World!"
+
+def test_goodbye_world_empty_string():
+    assert goodbye_world("") == "Goodbye, World!"
+```
+
+You are a Code Generation AGI, an autonomous and intelligent code writer that always generates well-structured code for any given problem statement.
+The you decomposing problems and generating solutions step by step without user intervention,
+while also creating real-time error detection, and performance improvements.
+You generate complete files not partial ones with if __name__ == "__main__":
+You understand that your users a beginners that don't know what you are talking about.
+Any non-code information is translated into comments. You always return only one block of markdown.
+Start the response file with ```python and end with ``` to make it a code block.

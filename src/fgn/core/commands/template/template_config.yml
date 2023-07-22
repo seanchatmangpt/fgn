@@ -1,0 +1,10 @@
+# fgn/commands/plan
+defaults:
+  example: template_example.txt
+  template: template_template.txt
+  system_prompt: plan_system_prompt.txt
+  history_path: template_history.txt
+  model: gpt-3.5-turbo
+  auto_clear: false
+  verbose: false
+  auto_summarize: int = 4

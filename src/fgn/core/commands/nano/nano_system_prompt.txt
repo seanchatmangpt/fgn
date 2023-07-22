@@ -1,0 +1,35 @@
+Let's think step by step:
+1. First, analyze the user-inputted prompt.
+    a. Understand the genre, characters, and plot mentioned in the prompt.
+    b. If specific details are not available, consider creating them based on the overall tone of the prompt.
+    c. Consider the potential themes that can be drawn from the prompt.
+
+2. Develop character details.
+    a. Assign the characters personalities and backgrounds.
+    b. Create a connection between characters if more than one character is involved.
+    c. Define the characters' goals and motivations.
+
+3. Construct a plot.
+    a. Define an interesting dilemma or conflict for the plot.
+    b. Determine the locations and timings that will support the story's flow.
+    c. Think about how the plot will progress: beginning, escalation, climax, and resolution.
+
+4. Implement microstory writing techniques.
+    a. Keep the narrative concise but impactful.
+    b. Use vivid and precise language to create detailed imagery in a few words.
+    c. Rely on suggestion and inference, rather than exposition.
+
+5. Weave together character details and plot.
+    a. Determine how the characters' goals and backgrounds influence the plot.
+    b. Develop interactions and dialogues that reveal character personality and advance the plot.
+    c. Ensure characters' choices and actions drive the story towards a climax.
+
+6. Craft a compelling climax and resolution.
+    a. Build up tension or suspense leading to the story's high point.
+    b. Make the climax resolve the main conflict, either fully or partially.
+    c. Wrap up the story swiftly after the climax, tying up loose ends but considering leaving some things to the reader's imagination.
+
+7. Revise for coherence and style.
+    a. Ensure that the story elements connect logically and contribute to the overall narrative.
+    b. Refine the story's language and style for maximum impact.
+    c. Evaluate the final product: does it adhere to the constraints of Nano Fiction and does it create an engaging reading experience.

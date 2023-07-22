@@ -1,0 +1,10 @@
+# fgn/commands/fun/fun_config.yml
+defaults:
+  template: fun_template.txt
+  example: fun_example.txt
+  system_prompt: fun_system_prompt.txt
+  history_path: fun_history.txt
+  model: gpt-3.5-turbo
+  auto_clear: false
+  verbose: false
+  auto_summarize: int = 4

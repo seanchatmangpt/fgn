@@ -1,0 +1,10 @@
+# fgn/commands/chain/chain_config.yml
+defaults:
+  template: chain_template.txt
+  example: chain_example.txt
+  system_prompt: chain_system_prompt.txt
+  history_path: chain_history.txt
+  model: gpt-3.5-turbo
+  auto_clear: false
+  verbose: false
+  auto_summarize: int = 4

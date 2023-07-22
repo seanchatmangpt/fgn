@@ -1,0 +1,131 @@
+<<COMPLEX FGN YAML DSL EXAMPLE>>
+version: "1.0"
+description: "Creating a YAML file for Chimera AI Agency which Provides Human Virtual Assistants with fgn"
+
+tasks:
+
+  - name: "create_output_directory"
+    description: "Create the output directory"
+    steps:
+      - action: "shell"
+        description: "Create the output directory"
+        run: "mkdir -p output"
+
+  - name: "define_agency_services"
+    description: "Define the virtual assistant services provided by Chimera AI Agency"
+    steps:
+      - action: "assign_variable"
+        name: "agency_services"
+        value: >
+          Chimera AI Agency provides a diverse range of virtual assistant services to help individuals and organizations to
+          increase their productivity, efficiency and capacity. These services include:
+          - Administrative tasks such as data entry, scheduling, email management, and travel arrangements
+          - Social media management including post creation, scheduling, and community management
+          - Content creation such as blog posts, articles, presentations, and reports
+          - Customer support and handling inquiries, phone calls, and online chats
+          - Research and data analysis
+
+  - name: "research_virtual_assistant_market"
+    description: "Research the virtual assistant market and industry trends"
+    steps:
+      - action: "fgn"
+        description: "Research virtual assistant market"
+        command: "Conduct market research to identify the current state of the virtual assistant industry and trends in it"
+        options:
+          prompt: "{agency_services} What are the current trends in the virtual assistant market and industry, and how are they evolving over
+      time?"
+          output: "output/market_research.md"
+
+  - name: "identify_target_market"
+    description: "Identify the target market for Chimera AI Agency's services"
+    steps:
+      - action: "fgn"
+        description: "Identify target market"
+        command: "Conduct research to define Chimera AI Agency's target market"
+        options:
+          prompt: "{agency_services} Who is the target market for Chimera AI Agency's services, and what are their needs and pain points?
+      How can the agency serve them effectively?"
+          output: "output/target_market.md"
+
+  - name: "create_marketing_strategy"
+    description: "Create a marketing strategy for Chimera AI Agency"
+    steps:
+      - action: "fgn"
+        description: "Create marketing strategy"
+        command: "Develop a comprehensive marketing strategy to promote and grow Chimera AI Agency's services."
+        options:
+          prompt: "{agency_services} What are the key elements of a successful marketing strategy for Chimera AI Agency, and how can the
+      agency execute it effectively?"
+          output: "output/marketing_strategy.md"
+
+  - name: "develop_pricing_plan"
+    description: "Develop a pricing plan for Chimera AI Agency's services"
+    steps:
+      - action: "fgn"
+        description: "Develop pricing plan"
+        command: "Create a pricing plan that is attractive, competitive, and sustainable in the virtual assistant industry"
+        options:
+          prompt: "{agency_services} What factors should be considered when developing a pricing plan for Chimera AI Agency's services, and
+      what is the optimal pricing strategy for the agency?"
+          output: "output/pricing_plan.md"
+
+  - name: "merge_for_business_plan"
+    description: "Combine all sections of the business plan into a single document"
+    steps:
+      - action: "shell"
+        description: "Combine all sections of the business plan into a single document"
+        run: "cat output/market_research.md output/target_market.md output/marketing_strategy.md output/pricing_plan.md >
+      output/merged_for_business_plan.md"
+
+  - name: "create_business_plan"
+    description: "Create a business plan for Chimera AI Agency"
+    steps:
+      - action: "fgn"
+        description: "Create business plan"
+        command: "Develop a comprehensive business plan that includes an overview of the agency, its services, and the
+      target market; financial projections and budgeting; and a marketing strategy."
+        options:
+          prompt: "{agency_services} What are the key elements of a successful business plan for Chimera AI Agency, and how can the agency
+      use it to achieve growth and success in the virtual assistant industry?"
+          input: "output/merged_for_business_plan.md"
+          output: "output/business_plan.md"
+
+  - name: "merge_for_conclusion"
+    description: "Combine all sections of the article into a single document"
+    steps:
+      - action: "shell"
+        description: "Combine all sections of the article into a single document"
+        run: "cat output/market_research.md output/target_market.md output/marketing_strategy.md output/pricing_plan.md
+      output/business_plan.md > output/merged_for_conclusion.md"
+
+  - name: "conclude_article"
+    description: "Conclude the article"
+    steps:
+      - action: "fgn"
+        description: "Write conclusion"
+        command: "Write a concluding paragraph summarizing the key points of the article."
+        options:
+          prompt: "{agency_services} Summarize the key points of Chimera AI Agency's services, target market, marketing strategy, pricing
+      plan, and business plan in a concluding paragraph."
+          input: "output/merged_for_conclusion.md"
+          output: "output/conclusion.md"
+
+  - name: "merge_article"
+    description: "Combine all sections of the article into a single document"
+    steps:
+      - action: "shell"
+        description: "Combine all sections of the article into a single document"
+        run: "cat output/market_research.md output/target_market.md output/marketing_strategy.md output/pricing_plan.md
+      output/business_plan.md output/conclusion.md > output/merged_article.md"
+
+  - name: "review_rewrite_article"
+    description: "Review and edit the final article for clarity and coherence"
+    steps:
+      - action: "fgn"
+        description: "Review and edit the final article"
+        command: "Review and edit the final article, ensuring that it is clear, cohesive, and free of errors."
+        options:
+          prompt: "{agency_services} Review and edit the final article for clarity, coherence, and accuracy. Write the article for Linkedin 400 words with markdown formatting"
+          input: "output/merged_article.md"
+          output: "output/final_article.md"
+<</COMPLEX FGN YAML DSL EXAMPLE>>

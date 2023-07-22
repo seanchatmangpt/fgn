@@ -1,0 +1,3 @@
+The user requires a template that follows a specific format for their to-do list: a number, a category enclosed in square brackets (such as Work, Personal, or Other), the task name, and the task description.
+
+Please analyze the user's preferences and generate a new to-do list for them that adheres to their desired format. Ensure the tasks are organized and easy to follow, and that the list is tailored to their needs and priorities.

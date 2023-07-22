@@ -1,0 +1,32 @@
+<<FGN YAML DSL EXAMPLE>>
+### Example
+
+```yaml
+version: "1.0"
+description: "FGN Automation for Blog Article Generation and Task Management"
+tasks:
+  - name: Create Expert Blog Article
+    steps:
+      - action: shell
+        description: Create output directory
+        run: mkdir output_directory
+      - action: assign_variable
+        name: prompt
+        value: "Write an expert blog article on a specific topic"
+      - action: fgn
+        description: Generate blog article
+        command: blog
+        options:
+          prompt: "{prompt}"
+          auto_output: true
+          output_extension: md
+      - action: shell
+        description: Move generated article to output directory
+        run: cp output_*.md output_directory/
+  - name: Create Another Task
+    steps:
+      - action: import_task
+        description: Import a task from another YAML file
+        file_path: another_task.yaml
+```
+<</FGN YAML DSL EXAMPLE>>

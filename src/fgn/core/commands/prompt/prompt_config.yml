@@ -1,0 +1,10 @@
+# fgn/commands/prompt
+defaults:
+  example: prompt_example.txt
+  template: prompt_template.txt
+  system_prompt: prompt_system_prompt.txt
+  history_path: prompt_history.txt
+  model: gpt-3.5-turbo
+  auto_clear: false
+  verbose: false
+  auto_summarize: int = 4

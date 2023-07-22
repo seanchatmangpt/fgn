@@ -1,0 +1,58 @@
+
+```bash
+$ fgn "What does the fgn cli help look like?"
+Usage: fgn [OPTIONS] COMMAND [TEXT]
+
+Options:
+  -i, --input TEXT               Path to input file.
+  -o, --output TEXT              Path to output file.
+  -ao, --auto-output             Automatically output to file with automatic
+                                 file name.
+  -p, --paste                    Paste input from the clipboard.
+  --help                         Show this message and exit.
+
+Commands:
+  blog      Create a blog article.
+  code      Create a code snippet.
+  guide     Execute the guide command.
+  howto     Create a how-to article.
+  nano      Create a Nano Fiction story.
+  plan      Create a plan like a Submarine Captain
+  shell     Create a shell script.
+```
+
+```bash
+# CORRECT EXAMPLES
+# fgn help "I want to write a business plan with fgn, what is the best command to use? Show me an full example"
+fgn -o business_plan.txt plan "My Business Plan"
+fgn howto "this didn't work. history command without the numbers. I am on osx."
+fgn shell "history command without the numbers"
+fgn shell "I want a file with all of the history command without the numbers, just the command"
+fgn howto "this didn't work. history command without the numbers. I am on osx."
+fgn nano "How I used ChatGPT and the book Science of Getting Rich to make my first billion dollars"
+fgn blog "Write exmample blog article using cyberpunk nano fiction 300 words"
+fgn blog "Write an example blog article on using Nano Fiction with CLients. Let's think step by step on how to make it most viral then write example article"
+fgn help "fgn windows installer created on osx computer using pyinstaller including other modules"
+fgn help "Let's think step by step to use fgn to create checklists"
+fgn code "JS function to convert a string to a number"
+fgn plan "Create a plan for a new product"
+fgn guide "Detailed guide on how to use the FGN command line tool"
+fgn -i budget.md -o budget2.md plan "Rewrite where the content production cost is $5000, remove the eq, and keep everything else the same"
+fgn -o business-model-article.md blog "Convert to Article about Creating a Business Model for a Company That Writes Tech Books and then Sells Classes based on them. Include every possible expense. Extremely detailed. There can only be one input file. change to merge"
+
+```
+
+First, you'll need to open the Command Prompt. You can do this by searching for "cmd" in the Start menu or by pressing the Windows key + R and typing "cmd" in the Run dialog box.
+
+Once you have the Command Prompt open, you can use fgn by following these simple steps:
+
+1. Navigate to the directory where fgn is installed
+   For example, if fgn is installed in the "C:\fgn" directory, type `cd C:\fgn`
+
+2. Type `fgn` followed by the command and any necessary arguments
+   For example, to create a business plan, you would type `fgn -o business_plan.txt plan "My Business Plan"`
+
+3. Press Enter to execute the command and create the desired output.
+
+You can also view the available options and commands by typing `fgn help` in the Command Prompt.
+

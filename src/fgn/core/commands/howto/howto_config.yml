@@ -1,0 +1,10 @@
+# fgn/commands/howto/howto_config.yml
+defaults:
+  template: howto_template.txt
+  example: howto_example.txt
+  system_prompt: howto_system_prompt.txt
+  history_path: howto_history.txt
+  model: gpt-3.5-turbo
+  auto_clear: false
+  verbose: false
+  auto_summarize: int = 4
