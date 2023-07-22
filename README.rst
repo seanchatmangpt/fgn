@@ -1,7 +1,7 @@
 File Generator CLI (FGN)
 =========================
 
-FGN is an advanced command-line tool integrating the capabilities of Artificial General Intelligence to automate the creation of diverse file types. It's a powerful solution for developers, creatives, managers, or anyone engaged in regular file generation tasks.
+FGN is an advanced command-line tool integrating the capabilities of Artificial Intelligence to automate the creation of diverse file types. It's a powerful solution for developers, creatives, managers, or anyone engaged in regular file generation tasks.
 
 FGN leverages the power of OpenAI's GPT models for generating various types of files. This AI integration allows the creation of blogs, code, guides, how-to articles, nano fiction stories, plans, and shell scripts. By merely providing a prompt, you can have a sophisticated AI create meaningful content, saving you time and resources.
 
@@ -61,29 +61,25 @@ Commands
 
 .. code-block:: bash
 
-    blog       Create a blog article.
-    chain      Create chain of FGN .
-    chapter    Create a chapter.
-    code       Create a code snippet.
-    core       CLI internal usage only.
-    dsl        Create a new FGN DSL (requires GPT 4).
-    example    Create an example.
-    feedback   Create a feedback.
-    flow       Create a flow.
-    framework  Create a framework.
-    fun        Create fun.
-    guide      Execute the guide command.
-    help       Get help with the FGN CLI.
-    howto      Create a how-to article.
-    intent     Create an intent.
-    lts        Let's think step by step how to do this.
-    nano       Create a Nano Fiction story.
-    plan       Create a detailed plan.
-    prompt     Create a new prompt.
-    shell      Create a shell script.
-    summary    Execute the summary command.
-    template   Create a command named by the prompt.
-    yaml       Create yaml.It needs much
+  blog      Create a blog article.
+  chain     Create chain of fgn commands.
+  code      Create a code snippet.
+  core      CLI internal usage only.
+  dsl       Create a new FGN DSL (requires GPT 4).
+  feedback  Create feedback.
+  fun       Create OpenAI function schema.
+  guide     Create a procedural guide.
+  help      Get help with the FGN CLI.
+  howto     Create a how-to article.
+  lts       Let's think step by step how to do this.
+  nano      Create a Nano Fiction story.
+  plan      Create a detailed plan.
+  prompt    Create a new prompt
+  shell     Create a shell script.
+  summary   Create a summary.
+  template  Create a command named by the prompt.
+  yaml      Create yaml.
+
 
 Examples
 --------
@@ -103,17 +99,17 @@ To get a full list of commands and options, run:
 
 Key Features
 ------------
-Auto-Output
+- Auto-Output
 
-The auto-output feature is designed to streamline your file creation process. With FGN, you can automatically generate output files using a prompt. The filename is intelligently generated based on the provided prompt, file extensions, and optional parameters. You can control the filename's length, whether to include the current time in the filename, and more. The tool also prevents filename conflicts by generating unique identifiers.
+    The auto-output feature is designed to streamline your file creation process. With FGN, you can automatically generate output files using a prompt. The filename is intelligently generated based on the provided prompt, file extensions, and optional parameters. You can control the filename's length, whether to include the current time in the filename, and more. The tool also prevents filename conflicts by generating unique identifiers.
 
-Pasting from Clipboard
+- Pasting from Clipboard
 
-FGN supports direct pasting from the clipboard. This feature is particularly useful when you want to generate files based on the data copied to your clipboard. With the '-p' or '--paste' options, you can paste text directly from the clipboard as the command's argument. This feature can significantly speed up your workflow, especially when dealing with large amounts of data.
+    FGN supports direct pasting from the clipboard. This feature is particularly useful when you want to generate files based on the data copied to your clipboard. With the '-p' or '--paste' options, you can paste text directly from the clipboard as the command's argument. This feature can significantly speed up your workflow, especially when dealing with large amounts of data.
 
-Extensibility
+- Extensibility
 
-FGN is designed with extensibility in mind. You can add new commands and functionalities to suit your specific needs. This makes FGN adaptable to a variety of use cases, be it a developer needing to automate code generation or a writer looking to automate blog post creation.
+    FGN is designed with extensibility in mind. You can add new commands and functionalities to suit your specific needs. This makes FGN adaptable to a variety of use cases, be it a developer needing to automate code generation or a writer looking to automate blog post creation.
 FAQ
 ---
 Answers to frequently asked questions can be found in our FAQ section [link to FAQ section]. If you can't find what you're looking for, feel free to submit an issue through our GitHub page.

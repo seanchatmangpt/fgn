@@ -6,11 +6,11 @@ from rich import print
 
 from fgn.core.default_sub_cmd import default_sub_cmd
 
-cmd_name = Path(__file__).stem.split('_')[0]
+cmd_name = Path(__file__).stem.split("_")[0]
 
 
 @click.command()
-@click.argument('text', required=True)
+@click.argument("text", required=True)
 @click.pass_context
 def cli(ctx: click.Context, text) -> None:
     """Create a command named by the prompt."""
@@ -28,7 +28,8 @@ def cli(ctx: click.Context, text) -> None:
 
     # Write to the config file
     with open(new_path / f"{new_cmd_name}_config.yml", "w", encoding="utf-8") as f:
-        f.write(f"""# fgn/commands/{new_cmd_name}/{new_cmd_name}_config.yml
+        f.write(
+            f"""# fgn/commands/{new_cmd_name}/{new_cmd_name}_config.yml
 defaults:
   template: {new_cmd_name}_template.txt
   example: {new_cmd_name}_example.txt
@@ -37,11 +38,13 @@ defaults:
   model: gpt-3.5-turbo
   auto_clear: false
   verbose: false
-  auto_summarize: int = 4""")
+  auto_summarize: int = 4"""
+        )
 
         # Write to the command file
         with open(new_path / f"{new_cmd_name}_cmd.py", "w", encoding="utf-8") as f:
-            f.write(f"""# fgn/core/commands/{new_cmd_name}/{new_cmd_name}_cmd.py
+            f.write(
+                f"""# fgn/core/commands/{new_cmd_name}/{new_cmd_name}_cmd.py
 from pathlib import Path
 import click
 
@@ -57,11 +60,16 @@ def cli(ctx: click.Context, text) -> None:
     \"\"\"Create {new_cmd_name}.\"\"\"
     ctx.obj.text = text
     default_sub_cmd(ctx, cmd_name)
-    """)
+    """
+            )
 
         # touch all the new  files
-        files = [f"{new_cmd_name}_example.txt", f"{new_cmd_name}_system_prompt.txt", f"{new_cmd_name}_history.txt",
-                 f"{new_cmd_name}_template.txt",
-                 "__init__.py"]
+        files = [
+            f"{new_cmd_name}_example.txt",
+            f"{new_cmd_name}_system_prompt.txt",
+            f"{new_cmd_name}_history.txt",
+            f"{new_cmd_name}_template.txt",
+            "__init__.py",
+        ]
         for file in files:
             os.system(f"touch {new_path}/{file}")

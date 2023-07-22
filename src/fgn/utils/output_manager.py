@@ -19,7 +19,9 @@ class OutputManager:
     verbose: bool = False
     extension: str = "md"
 
-    def handle_output(self, response: str, extract_md: bool = False, append: Optional[str] = False) -> None:
+    def handle_output(
+        self, response: str, extract_md: bool = False, append: Optional[str] = False
+    ) -> None:
         if extract_md:
             response = extract_markdown(response)
             if self.verbose:
@@ -41,15 +43,20 @@ class OutputManager:
         md = Markdown(str(response))
         print(md)
 
-    def save_to_file(self, response: str, filename: Optional[str] = None, extension: str = "md",
-                     append: Optional[bool] = False) -> None:
+    def save_to_file(
+        self,
+        response: str,
+        filename: Optional[str] = None,
+        extension: str = "md",
+        append: Optional[bool] = False,
+    ) -> None:
         if not filename:
             filename = generate_output_file(response, extension=extension)
         if append:
-            with open(filename, 'a') as output_file:
-                output_file.write('\n\n' + response)
+            with open(filename, "a") as output_file:
+                output_file.write("\n\n" + response)
         else:
-            with open(filename, 'w') as output_file:
+            with open(filename, "w") as output_file:
                 output_file.write(response)
         if self.verbose:
             print(f"The output has been saved to {filename}.")

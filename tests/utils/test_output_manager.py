@@ -70,7 +70,7 @@ def test_save_to_file_with_filename(mock_open, output_manager):
     filename = "test_output.md"
     output_manager.save_to_file(response, filename)
 
-    mock_open.assert_called_once_with(filename, 'w')
+    mock_open.assert_called_once_with(filename, "w")
     file_handle = mock_open.return_value.__enter__.return_value
     file_handle.write.assert_called_with(response)
 
@@ -80,6 +80,6 @@ def test_save_to_file_append(mock_open, output_manager):
     filename = "test_output.md"
     output_manager.save_to_file(response, filename, append=True)
 
-    mock_open.assert_called_once_with(filename, 'a')
+    mock_open.assert_called_once_with(filename, "a")
     file_handle = mock_open.return_value.__enter__.return_value
-    file_handle.write.assert_called_with('\n\n' + response)
+    file_handle.write.assert_called_with("\n\n" + response)

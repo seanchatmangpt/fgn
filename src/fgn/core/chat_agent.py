@@ -23,7 +23,7 @@ class ChatAgent:
         if not self.messages:
             self.messages = []
         if self.system_prompt:
-            self.messages.append(Message('system', self.system_prompt))
+            self.messages.append(Message("system", self.system_prompt))
         if self.auto_clear:
             self.clear()
         else:
@@ -37,11 +37,11 @@ class ChatAgent:
         # If tokens are provided, replace any {key} with the corresponding value
         # separated by a semicolon
         if self.tokens:
-            for token in self.tokens.split(';'):
-                key, value = token.split('=')
+            for token in self.tokens.split(";"):
+                key, value = token.split("=")
                 content = content.replace("{{" + key + "}}", value)
 
-        self.add_message('user', content)
+        self.add_message("user", content)
 
         response = self.generate_response()
 
@@ -60,16 +60,17 @@ class ChatAgent:
         self.messages.append(Message(role, content))
 
     def save(self):
-        input_data = {
-            "messages": [message.serialize() for message in self.messages]
-        }
+        input_data = {"messages": [message.serialize() for message in self.messages]}
 
     def load(self):
         if os.path.exists(self.history_path):
             try:
-                with open(self.history_path, 'r', encoding='utf-8') as infile:
+                with open(self.history_path, "r", encoding="utf-8") as infile:
                     input_data = json.load(infile)
-                    self.messages = [Message.deserialize(message_data) for message_data in input_data["messages"]]
+                    self.messages = [
+                        Message.deserialize(message_data)
+                        for message_data in input_data["messages"]
+                    ]
             except json.JSONDecodeError:
                 self.clear()
 
@@ -86,7 +87,7 @@ class ChatAgent:
         if "maximum context length" in response:
             return response
 
-        message = Message('assistant', response)
+        message = Message("assistant", response)
         self.add_message(message.role, message.content)
         if self.history_path:
             self.save()
@@ -97,33 +98,41 @@ class ChatAgent:
         return message.content
 
     def get_user_messages(self):
-        return [msg for msg in self.messages if msg.role == 'user']
+        return [msg for msg in self.messages if msg.role == "user"]
 
-    def summarize_conversations(self, num_conversations: int, summary_length: int = 200) -> bool:
+    def summarize_conversations(
+        self, num_conversations: int, summary_length: int = 200
+    ) -> bool:
         if self.verbose:
-            print("ChatAgent.summarize_conversations: ", num_conversations, summary_length)
+            print(
+                "ChatAgent.summarize_conversations: ", num_conversations, summary_length
+            )
 
         if num_conversations <= 0:
             return False
 
         while num_conversations > 0:
             # Collect the first 'num_conversations' user-assistant message pairs but skip the system prompt
-            conversations = self.messages[1:(num_conversations * 2)]
+            conversations = self.messages[1 : (num_conversations * 2)]
 
             # Concatenate the user-assistant message pairs
-            conversation_text = '\n'.join([f"{msg.role}: {msg.content}" for msg in conversations])
+            conversation_text = "\n".join(
+                [f"{msg.role}: {msg.content}" for msg in conversations]
+            )
 
             # Set the summarizer AGI prompt
             summarizer_prompt = "You are a Summarizer AGI, an autonomous and intelligent text summarizer."
 
             # Generate a summary request
-            summary_request = f"Please give a perfect executive summary of the salient points of the conversation in " \
-                              f"about {summary_length} about words.:\n{conversation_text}"
+            summary_request = (
+                f"Please give a perfect executive summary of the salient points of the conversation in "
+                f"about {summary_length} about words.:\n{conversation_text}"
+            )
 
             # Create a message list for the summary prompt
             summary_prompt_messages = [
-                {'role': 'system', 'content': summarizer_prompt},
-                {'role': 'user', 'content': summary_request}
+                {"role": "system", "content": summarizer_prompt},
+                {"role": "user", "content": summary_request},
             ]
 
             # Submit the summary prompt to gpt_chat_completion and get the response
@@ -144,11 +153,19 @@ class ChatAgent:
                 return False
 
             # Remove the first 'num_conversations' user-assistant message pairs from the message list
-            self.messages = [self.messages[0]] + self.messages[(num_conversations * 2) + 1:]
+            self.messages = [self.messages[0]] + self.messages[
+                (num_conversations * 2) + 1 :
+            ]
 
             # Update the messages with the summary request and response
-            self.messages.insert(1, Message('user', f"Please summarize the first {num_conversations} conversations."))
-            self.messages.insert(2, Message('assistant', summary))
+            self.messages.insert(
+                1,
+                Message(
+                    "user",
+                    f"Please summarize the first {num_conversations} conversations.",
+                ),
+            )
+            self.messages.insert(2, Message("assistant", summary))
 
             # Save the updated chat history
             self.save()
@@ -158,7 +175,7 @@ class ChatAgent:
         return False
 
     def __str__(self):
-        return '\n'.join([f"{m.role}: {m.content}" for m in self.messages])
+        return "\n".join([f"{m.role}: {m.content}" for m in self.messages])
 
     def __len__(self):
         return len(self.messages)

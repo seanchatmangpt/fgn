@@ -13,21 +13,33 @@ openai.api_key = os.environ["OPENAI_API_KEY"]
 
 def save_completion(prompt):
     zulu = strftime("%Y-%m-%dT%H:%M:%SZ", gmtime())
-    save_to_project_folder(f"data/completion/completion_{uuid.uuid4()}_{zulu}.txt", prompt)
+    save_to_project_folder(
+        f"data/completion/completion_{uuid.uuid4()}_{zulu}.txt", prompt
+    )
 
 
 def save_embedding(prompt):
     zulu = strftime("%Y-%m-%dT%H:%M:%SZ", gmtime())
-    save_to_project_folder(f"data/embeddings/embedding_{uuid.uuid4()}_{zulu}.txt", prompt)
+    save_to_project_folder(
+        f"data/embeddings/embedding_{uuid.uuid4()}_{zulu}.txt", prompt
+    )
 
 
-def gpt3_completion(prompt, engine='text-davinci-003', temp=1.0, top_p=1.0, tokens=400, freq_pen=0.0, pres_pen=0.0,
-                    stop=None):
+def gpt3_completion(
+    prompt,
+    engine="text-davinci-003",
+    temp=1.0,
+    top_p=1.0,
+    tokens=400,
+    freq_pen=0.0,
+    pres_pen=0.0,
+    stop=None,
+):
     if stop is None:
-        stop = ['<<STOP>>']
+        stop = ["<<STOP>>"]
     max_retry = 3
     retry = 0
-    prompt = prompt.encode(encoding='ASCII', errors='ignore').decode()
+    prompt = prompt.encode(encoding="ASCII", errors="ignore").decode()
     while True:
         try:
             response = openai.Completion.create(
@@ -38,27 +50,29 @@ def gpt3_completion(prompt, engine='text-davinci-003', temp=1.0, top_p=1.0, toke
                 top_p=top_p,
                 frequency_penalty=freq_pen,
                 presence_penalty=pres_pen,
-                stop=stop)
-            text = response['choices'][0]['text'].strip()
+                stop=stop,
+            )
+            text = response["choices"][0]["text"].strip()
             save_completion(text)
             return text
         except Exception as oops:
             retry += 1
             if retry >= max_retry:
                 return "GPT3 error: %s" % oops
-            print('Error communicating with OpenAI:', oops)
+            print("Error communicating with OpenAI:", oops)
             sleep(1)
 
 
 def gpt_embedding(text, model="text-embedding-ada-002"):
     text = text.replace("\n", " ")
-    emb = openai.Embedding.create(input=[text], model=model)['data'][0]['embedding']
+    emb = openai.Embedding.create(input=[text], model=model)["data"][0]["embedding"]
     save_embedding(emb)
     return emb
 
 
-def gpt_chat_completion(messages, model, max_retry=5,
-                        backoff_factor=2, initial_wait=.1):
+def gpt_chat_completion(
+    messages, model, max_retry=5, backoff_factor=2, initial_wait=0.1
+):
     """
     Sends chat inputs to OpenAI API and receives the chatbot response.
 
@@ -79,11 +93,8 @@ def gpt_chat_completion(messages, model, max_retry=5,
     # Run the loop for retry attempts
     while retry <= max_retry:
         try:
-            response = openai.ChatCompletion.create(
-                model="gpt-4",
-                messages=messages
-            )
-            text = response['choices'][0]['message']['content'].strip()
+            response = openai.ChatCompletion.create(model="gpt-4", messages=messages)
+            text = response["choices"][0]["message"]["content"].strip()
             save_completion(text)
             return text
         except Exception as oops:
@@ -101,17 +112,21 @@ def gpt_chat_completion(messages, model, max_retry=5,
             wait_time = initial_wait * (backoff_factor ** (retry - 1))
 
             # Print the error and wait before retrying
-            print(f"Error communicating with OpenAI (attempt {retry}/{max_retry}): {oops}")
+            print(
+                f"Error communicating with OpenAI (attempt {retry}/{max_retry}): {oops}"
+            )
             sleep(wait_time)
 
 
 def gpt4_completion(prompt, model="gpt-4"):
-    completion = gpt_chat_completion([{'role': 'user', 'content': prompt}], model=model)
+    completion = gpt_chat_completion([{"role": "user", "content": prompt}], model=model)
     save_completion(completion)
     return completion
 
 
-def generate_filename(prompt, prefix="", suffix="", extension="md", max_chars=60, time=False):
+def generate_filename(
+    prompt, prefix="", suffix="", extension="md", max_chars=60, time=False
+):
     """
     Generates a filename based on the given prompt.
     :param prompt: the prompt to generate the filename from
@@ -129,10 +144,12 @@ def generate_filename(prompt, prefix="", suffix="", extension="md", max_chars=60
         f"should be in all lowercase letters and consist of at most {max_chars} characters, separated by underscores. "
         f"Exclude any file extensions from the filename. Pay close attention to the content "
         f"and context of the text to avoid hallucinations or mistakes. The text is: '{prompt}'\n\nfile name:",
-        temp=0, tokens=max_chars * 10)
+        temp=0,
+        tokens=max_chars * 10,
+    )
 
     # Remove all non-underscore and non-alphanumeric characters, and truncate to max_chars
-    file_name = re.sub(r'[^a-zA-Z0-9_]', '', file_name)
+    file_name = re.sub(r"[^a-zA-Z0-9_]", "", file_name)
     file_name = file_name[:max_chars]
 
     if prefix:
@@ -153,4 +170,6 @@ def generate_filename(prompt, prefix="", suffix="", extension="md", max_chars=60
 
 
 def generate_output_file(prompt, extension="md", max_chars=60, time=True):
-    return generate_filename(prompt, extension=extension, max_chars=max_chars, time=time)
+    return generate_filename(
+        prompt, extension=extension, max_chars=max_chars, time=time
+    )

@@ -29,22 +29,22 @@ class CommandContext:
 
 
 def create_context(params: dict[str, Any]) -> CommandContext:
-    if str(params.get('model')) == "3":
-        params['model'] = "gpt-3.5-turbo"
+    if str(params.get("model")) == "3":
+        params["model"] = "gpt-3.5-turbo"
 
-    if str(params.get('model')) == "4":
-        params['model'] = "gpt-4"
+    if str(params.get("model")) == "4":
+        params["model"] = "gpt-4"
 
-    in_n_out = params.get('in_n_out')
+    in_n_out = params.get("in_n_out")
     if in_n_out:
-        params['input'] = in_n_out
-        params['output'] = in_n_out
+        params["input"] = in_n_out
+        params["output"] = in_n_out
 
     # Add standard input to text
     # if sys.stdin.read():
     #     params['text'] += sys.stdin.read()
 
-    if params.get('text') is None:
-        params['text'] = ""
+    if params.get("text") is None:
+        params["text"] = ""
 
     return CommandContext(**params)

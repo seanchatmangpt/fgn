@@ -21,11 +21,12 @@ class ChatAgentConfiguration:
             self.defaults = self.load_default_yaml()
 
     def load_file_content(self, file_name: str) -> Optional[str]:
-        file_path = os.path.join(get_project_root(), 'core', 'commands', self.cmd_name,
-                                 file_name)
+        file_path = os.path.join(
+            get_project_root(), "core", "commands", self.cmd_name, file_name
+        )
 
         if os.path.isfile(file_path):
-            with open(file_path, 'r', encoding='utf-8') as file:
+            with open(file_path, "r", encoding="utf-8") as file:
                 return file.read()
 
         return None
@@ -37,7 +38,7 @@ class ChatAgentConfiguration:
 
     def build_chat_prompt(self) -> str:
         chat_prompt = ""
-        prompt = self.get('prompt')
+        prompt = self.get("prompt")
         # get file or throw
 
         paste = self.context.paste
@@ -71,22 +72,27 @@ class ChatAgentConfiguration:
 
     def load_default_yaml(self) -> Dict[str, Any]:
         # Define the new location for the YAML files
-        yaml_file = os.path.join(get_project_root(), 'core', 'commands', self.cmd_name,
-                                 f"{self.cmd_name}_config.yml")
+        yaml_file = os.path.join(
+            get_project_root(),
+            "core",
+            "commands",
+            self.cmd_name,
+            f"{self.cmd_name}_config.yml",
+        )
 
         config = {}
-        with open(yaml_file, 'r') as file:
+        with open(yaml_file, "r") as file:
             config = yaml.safe_load(file)
-        return config.get('defaults')
+        return config.get("defaults")
 
     def get_chat_agent(self) -> ChatAgent:
         chat_agent = ChatAgent(
-            history_path=self.get('history_path'),
-            model=self.get('model'),
-            system_prompt=self.load_file_content(self.get('system_prompt')),
-            auto_clear=self.get('clear_history', False),
-            verbose=self.get('verbose', False),
-            auto_summarize=self.get('auto_summarize', 4),
-            tokens=self.context.tokens
+            history_path=self.get("history_path"),
+            model=self.get("model"),
+            system_prompt=self.load_file_content(self.get("system_prompt")),
+            auto_clear=self.get("clear_history", False),
+            verbose=self.get("verbose", False),
+            auto_summarize=self.get("auto_summarize", 4),
+            tokens=self.context.tokens,
         )
         return chat_agent

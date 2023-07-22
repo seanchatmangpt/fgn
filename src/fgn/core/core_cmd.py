@@ -22,12 +22,12 @@ def core_command(ctx):
     # Use ChatAgent for handling input
     chat_agent = ChatAgent(
         system_prompt="You are a Hive-Mind Multi Agent AGI that is designed to answer questions and solve problems. "
-                      "You utilize emergent behavior of LLMs to come up with better answers than any single LLM. "
-                      "When a question has multiple answers, you will provide the best answer. You primary way to solve"
-                      " problems is to help humans generate code to create systems that last.",
+        "You utilize emergent behavior of LLMs to come up with better answers than any single LLM. "
+        "When a question has multiple answers, you will provide the best answer. You primary way to solve"
+        " problems is to help humans generate code to create systems that last.",
         model=ctx.model,
         auto_clear=ctx.clear_history,
-        verbose=ctx.verbose
+        verbose=ctx.verbose,
     )
     chat_prompt = ""
     if ctx.prompt:
@@ -50,7 +50,9 @@ def core_command(ctx):
         print(f"Input: {chat_prompt}")
 
     if not chat_prompt.strip():
-        raise ValueError("Error: chat_prompt is empty. Please provide a prompt, input, text, or paste.")
+        raise ValueError(
+            "Error: chat_prompt is empty. Please provide a prompt, input, text, or paste."
+        )
 
     try:
         response = chat_agent.submit(chat_prompt, ctx.tokens)
@@ -62,10 +64,10 @@ def core_command(ctx):
         if not ctx.output:
             ctx.output = generate_output_file(response)
         if ctx.append:
-            with open(ctx.output, 'a') as output_file:
-                output_file.write('\n\n' + response)
+            with open(ctx.output, "a") as output_file:
+                output_file.write("\n\n" + response)
         else:
-            with open(ctx.output, 'w') as output_file:
+            with open(ctx.output, "w") as output_file:
                 output_file.write(response)
         if ctx.verbose:
             print(f"The output has been saved to {ctx.output}.")

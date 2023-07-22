@@ -12,15 +12,19 @@ def build_chat_agent_and_prompt(config):
 
 
 def handle_response(config, response, extract_md, append, extension):
-    output_manager = OutputManager(output=config.get("output"),
-                                   no_copy=config.get("no_copy"),
-                                   auto_output=config.get("auto_output"),
-                                   verbose=config.get("verbose"),
-                                   extension=extension)
+    output_manager = OutputManager(
+        output=config.get("output"),
+        no_copy=config.get("no_copy"),
+        auto_output=config.get("auto_output"),
+        verbose=config.get("verbose"),
+        extension=extension,
+    )
     output_manager.handle_output(response, extract_md=extract_md, append=append)
 
 
-def default_sub_cmd(ctx, cmd_name: str, extract_md=False, prompt_prefix="", prompt_suffix=""):
+def default_sub_cmd(
+    ctx, cmd_name: str, extract_md=False, prompt_prefix="", prompt_suffix=""
+):
     """Execute the default sub command."""
 
     fgn_context = ctx.obj
@@ -41,7 +45,9 @@ def default_sub_cmd(ctx, cmd_name: str, extract_md=False, prompt_prefix="", prom
 
     response = chat_agent.submit(chat_prompt)
 
-    handle_response(config, response, extract_md, fgn_context.append, fgn_context.extension)
+    handle_response(
+        config, response, extract_md, fgn_context.append, fgn_context.extension
+    )
 
     if config.get("verbose"):
         print(f"Output: {response}")

@@ -6,11 +6,14 @@
     PyScaffold helps you to put up the scaffold of your new Python project.
     Learn more under: https://pyscaffold.org/
 """
+from datetime import date
 from setuptools import setup
 
 if __name__ == "__main__":
     try:
-        setup(use_scm_version={"version_scheme": "no-guess-dev"})
+        today = date.today()
+        version = today.strftime("%Y.%m.%d")
+        setup(version=version)
     except:  # noqa
         print(
             "\n\nAn error occurred while building the project, "
