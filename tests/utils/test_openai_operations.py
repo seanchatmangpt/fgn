@@ -1,17 +1,17 @@
-import pytest
 import os
-import tempfile
 import shutil
-
+import tempfile
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 from fgn.utils.openai_operations import (
-    save_completion,
-    gpt3_completion,
-    gpt_chat_completion,
-    gpt4_completion,
     generate_filename,
     generate_output_file,
+    gpt3_completion,
+    gpt4_completion,
+    gpt_chat_completion,
+    save_completion,
 )
 
 

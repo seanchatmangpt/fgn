@@ -65,7 +65,7 @@ class ChatAgent:
     def load(self):
         if os.path.exists(self.history_path):
             try:
-                with open(self.history_path, "r", encoding="utf-8") as infile:
+                with open(self.history_path, encoding="utf-8") as infile:
                     input_data = json.load(infile)
                     self.messages = [
                         Message.deserialize(message_data)

@@ -21,7 +21,7 @@ def test_file_writer_with_output(runner, fs):
 
     # Print the output and contents of the fake file for debugging
     print("result.output:", result.output)
-    with open(fake_file_path, "r") as file:
+    with open(fake_file_path) as file:
         print("fake_file_content:", file.read())
 
     # Verify the result

@@ -1,19 +1,18 @@
 # fgn/core/core_cmd.py
-from rich import print
-from rich.markdown import Markdown
-
-from fgn.core.chat_agent import ChatAgent
-from fgn.utils.clipboard import paste_into_fgn, copy_into_clipboard
-from fgn.utils.file_operations import open_file_or_raise
-from fgn.utils.openai_operations import generate_output_file
-
 from time import sleep
 
+from rich import print
 from rich.columns import Columns
-from rich.panel import Panel
 from rich.live import Live
+from rich.markdown import Markdown
+from rich.panel import Panel
+from rich.spinner import SPINNERS, Spinner
 from rich.text import Text
-from rich.spinner import Spinner, SPINNERS
+
+from fgn.core.chat_agent import ChatAgent
+from fgn.utils.clipboard import copy_into_clipboard, paste_into_fgn
+from fgn.utils.file_operations import open_file_or_raise
+from fgn.utils.openai_operations import generate_output_file
 
 
 def core_command(ctx):

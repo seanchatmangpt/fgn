@@ -1,6 +1,7 @@
-import os
 import io
+import os
 from pathlib import Path
+
 import click
 from rich import print
 

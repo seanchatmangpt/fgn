@@ -1,5 +1,6 @@
 # fgn/core/commands/core/core_cmd.py
 from pathlib import Path
+
 import click
 
 from fgn.core.core_cmd import core_command

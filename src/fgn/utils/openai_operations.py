@@ -1,12 +1,12 @@
 import os
-import uuid
 import re
-from time import strftime, gmtime, sleep
-from rich import print
+import uuid
+from time import gmtime, sleep, strftime
 
 import openai
+from rich import print
 
-from fgn.utils.file_operations import save_to_project_folder, open_file
+from fgn.utils.file_operations import open_file, save_to_project_folder
 
 openai.api_key = os.environ["OPENAI_API_KEY"]
 

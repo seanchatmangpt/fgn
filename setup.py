@@ -7,6 +7,7 @@
     Learn more under: https://pyscaffold.org/
 """
 from datetime import date
+
 from setuptools import setup
 
 if __name__ == "__main__":

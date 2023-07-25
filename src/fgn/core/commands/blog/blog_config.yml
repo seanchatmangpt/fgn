@@ -9,4 +9,3 @@ defaults:
   verbose: false
   auto_summarize: int = 4
   auto_output: true
-

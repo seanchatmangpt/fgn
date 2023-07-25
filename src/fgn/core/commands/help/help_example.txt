@@ -55,4 +55,3 @@ Once you have the Command Prompt open, you can use fgn by following these simple
 3. Press Enter to execute the command and create the desired output.
 
 You can also view the available options and commands by typing `fgn help` in the Command Prompt.
-

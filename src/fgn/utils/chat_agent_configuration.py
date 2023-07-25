@@ -1,13 +1,14 @@
 # fgn/utils/chat_agent_configuration.py
+import os
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
-from fgn.core.chat_agent import ChatAgent
-import os
+
 import yaml
 
+from fgn.core.chat_agent import ChatAgent
 from fgn.core.command_context import CommandContext
 from fgn.utils.clipboard import paste_into_fgn
-from fgn.utils.file_operations import open_file_or_raise, get_project_root, open_file
+from fgn.utils.file_operations import get_project_root, open_file, open_file_or_raise
 
 
 @dataclass
@@ -26,7 +27,7 @@ class ChatAgentConfiguration:
         )
 
         if os.path.isfile(file_path):
-            with open(file_path, "r", encoding="utf-8") as file:
+            with open(file_path, encoding="utf-8") as file:
                 return file.read()
 
         return None
@@ -81,7 +82,7 @@ class ChatAgentConfiguration:
         )
 
         config = {}
-        with open(yaml_file, "r") as file:
+        with open(yaml_file) as file:
             config = yaml.safe_load(file)
         return config.get("defaults")
 

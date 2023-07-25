@@ -1,5 +1,7 @@
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
+
 from fgn.utils.output_manager import OutputManager
 
 

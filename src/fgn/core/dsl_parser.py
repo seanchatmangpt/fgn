@@ -1,12 +1,13 @@
-import time
-import yaml
+import logging
 import os
 import subprocess
-import logging
-
+import time
 from typing import Dict
-from fgn.core.core_cmd import core_command
+
+import yaml
+
 from fgn.core.command_context import CommandContext
+from fgn.core.core_cmd import core_command
 from fgn.models.dsl.fgn_dsl_schema import FgnDslSchema
 from fgn.models.dsl.step import Step
 from fgn.models.dsl.task import Task
@@ -15,7 +16,7 @@ logging.basicConfig(level=logging.INFO)
 
 
 def load_schema_from_yaml_file(file_path: str) -> FgnDslSchema:
-    with open(file_path, "r") as yaml_file:
+    with open(file_path) as yaml_file:
         schema_dict = yaml.safe_load(yaml_file)
 
     tasks = []
@@ -42,8 +43,7 @@ def execute_shell_command(
         formatted_command,
         shell=True,
         check=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
+        capture_output=True,
     )
 
 

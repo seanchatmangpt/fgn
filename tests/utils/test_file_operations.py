@@ -1,14 +1,15 @@
 import pytest
 from pyfakefs.fake_filesystem_unittest import Patcher
+
 from fgn.core.command_context import CommandContext
 from fgn.utils.file_operations import (
+    extract_markdown,
+    get_norm_path,
+    get_project_root,
     load_default_or_context,
     open_file,
-    save_relative_to_base,
     open_file_or_raise,
-    extract_markdown,
-    get_project_root,
-    get_norm_path,
+    save_relative_to_base,
 )
 
 
@@ -35,7 +36,7 @@ def test_save_relative_to_base(fs):
     base_path = "/path/to/base"
     fs.create_dir(base_path)
     save_relative_to_base("test.txt", "test content", base_path)
-    with open("/path/to/base/test.txt", "r") as f:
+    with open("/path/to/base/test.txt") as f:
         assert f.read() == "test content"
 
 

@@ -1,5 +1,6 @@
 # fgn/core/commands/yaml/yaml_cmd.py
 from pathlib import Path
+
 import click
 
 from fgn.core.default_sub_cmd import default_sub_cmd

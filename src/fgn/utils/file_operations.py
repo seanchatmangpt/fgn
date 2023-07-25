@@ -1,14 +1,14 @@
 import os
-from pathlib import Path
-import yaml
 import re
+from pathlib import Path
+
+import yaml
 
 from fgn.core.command_context import CommandContext
 
 
 def load_default_or_context(fgn_context: CommandContext, yaml_file):
-    config = {}
-    with open(yaml_file, "r") as file:
+    with open(yaml_file) as file:
         config = yaml.safe_load(file)
 
     defaults = config.get("defaults")
@@ -61,7 +61,7 @@ def load_default_or_context(fgn_context: CommandContext, yaml_file):
 def open_file(filepath):
     filepath = get_norm_path(filepath)
     abs_path = os.path.abspath(filepath)
-    with open(abs_path, "r", encoding="utf-8") as infile:
+    with open(abs_path, encoding="utf-8") as infile:
         return infile.read()
 
 
@@ -82,7 +82,7 @@ def open_file_or_raise(path: str) -> str:
 
     if os.path.isfile(path):
         abs_path = os.path.abspath(path)
-        with open(abs_path, "r") as file:
+        with open(abs_path) as file:
             return file.read()
     else:
         raise FileNotFoundError("File not found")
@@ -112,14 +112,12 @@ def get_norm_path(path: str) -> str:
 
 def save_to_project_folder(file_path, content):
     file = Path.home() / ".fgn" / file_path
-    print(f"Saving to {file}")
 
     # Write the required directories if they don't exist
     if not os.path.exists(os.path.dirname(file)):
         os.makedirs(os.path.dirname(file))
 
     with open(file, "w", encoding="utf-8") as outfile:
-        print(f"Writing to {file}")
         outfile.write(content)
 
 

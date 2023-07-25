@@ -1,14 +1,13 @@
 # fgn/utils/output_manager.py
+from dataclasses import dataclass
 from typing import Optional
-from rich import print
 
 import pyperclip
+from rich import print
 from rich.markdown import Markdown
 
 from fgn.utils.file_operations import extract_markdown
 from fgn.utils.openai_operations import generate_output_file
-
-from dataclasses import dataclass
 
 
 @dataclass
