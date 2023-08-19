@@ -5,7 +5,7 @@ from typing import List
 
 from fgn.models.message import Message
 from fgn.utils.file_operations import save_to_project_folder
-from fgn.utils.openai_operations import gpt_chat_completion
+from fgn.utils.llm_operations import gpt_chat_completion
 
 
 @dataclass

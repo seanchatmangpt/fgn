@@ -7,7 +7,7 @@ from rich import print
 from rich.markdown import Markdown
 
 from fgn.utils.file_operations import extract_markdown
-from fgn.utils.openai_operations import generate_output_file
+from fgn.utils.llm_operations import generate_output_file
 
 
 @dataclass

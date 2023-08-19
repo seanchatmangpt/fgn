@@ -99,17 +99,17 @@ To get a full list of commands and options, run:
 
 Key Features
 ------------
-- Auto-Output
+Auto-Output
 
-    The auto-output feature is designed to streamline your file creation process. With FGN, you can automatically generate output files using a prompt. The filename is intelligently generated based on the provided prompt, file extensions, and optional parameters. You can control the filename's length, whether to include the current time in the filename, and more. The tool also prevents filename conflicts by generating unique identifiers.
+The auto-output feature is designed to streamline your file creation process. With FGN, you can automatically generate output files using a prompt. The filename is intelligently generated based on the provided prompt, file extensions, and optional parameters. You can control the filename's length, whether to include the current time in the filename, and more. The tool also prevents filename conflicts by generating unique identifiers.
 
-- Pasting from Clipboard
+Pasting from Clipboard
 
-    FGN supports direct pasting from the clipboard. This feature is particularly useful when you want to generate files based on the data copied to your clipboard. With the '-p' or '--paste' options, you can paste text directly from the clipboard as the command's argument. This feature can significantly speed up your workflow, especially when dealing with large amounts of data.
+FGN supports direct pasting from the clipboard. This feature is particularly useful when you want to generate files based on the data copied to your clipboard. With the '-p' or '--paste' options, you can paste text directly from the clipboard as the command's argument. This feature can significantly speed up your workflow, especially when dealing with large amounts of data.
 
-- Extensibility
+Extensibility
 
-    FGN is designed with extensibility in mind. You can add new commands and functionalities to suit your specific needs. This makes FGN adaptable to a variety of use cases, be it a developer needing to automate code generation or a writer looking to automate blog post creation.
+FGN is designed with extensibility in mind. You can add new commands and functionalities to suit your specific needs. This makes FGN adaptable to a variety of use cases, be it a developer needing to automate code generation or a writer looking to automate blog post creation.
 FAQ
 ---
 Answers to frequently asked questions can be found in our FAQ section [link to FAQ section]. If you can't find what you're looking for, feel free to submit an issue through our GitHub page.
