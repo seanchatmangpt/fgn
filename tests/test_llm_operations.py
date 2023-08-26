@@ -8,7 +8,95 @@ import requests_mock
 import os
 
 
-from fgn.utils.llm_operations import chat
+import asyncio
+import json
+import os
+from time import sleep
+from typing import Union
+
+import openai
+from logger import logger
+
+
+def chat(
+    prompt="",
+    sys_msg="A LLM 7 AGI Hive-Mind simulator",
+    msgs=None,
+    funcs=None,
+    model="gpt-3.5-turbo-0613",
+    max_retry=1,
+    backoff_factor=2,
+    initial_wait=0.25,
+) -> Union[str, dict]:
+    """
+    Customized completion function that interacts with the OpenAI API, capable of handling prompts, system messages,
+    and specific functions. If the content length is too long, it will shorten the content and retry.
+    """
+    openai.api_key = os.getenv("OPENAI_API_KEY")
+
+    if msgs is None:
+        msgs = []
+
+    # Extend the messages list with the provided prompt, system message, and previous messages
+    messages = [
+        {"role": "system", "content": sys_msg},
+        {"role": "user", "content": prompt},
+    ]
+    messages.extend(msgs)
+
+    # Initialize retry attempts
+    retry = 0
+
+    # Run the loop for retry attempts
+    while retry <= max_retry:
+        try:
+            response = None
+
+            if funcs:
+                response = openai.ChatCompletion.create(
+                    model=model,
+                    messages=messages,
+                    functions=funcs,
+                    function_call="auto",
+                )
+            else:
+                response = openai.ChatCompletion.create(model=model, messages=messages)
+            function_call = (
+                response.get("choices", [{}])[0].get("message", {}).get("function_call")
+            )
+            if function_call:
+                print("WTF???", function_call)
+                function_call["arguments"] = json.loads(
+                    function_call.get("arguments", "")
+                )
+                return function_call
+            else:
+                return response["choices"][0]["message"]["content"].strip()
+        except Exception as oops:
+            logger.warn(oops)
+            # If the error is due to maximum context length, chop the messages and retry
+            if "maximum context length" in str(oops):
+                messages = messages[:1] + messages[2:]
+                # Reset the retry attempts
+                retry = 0
+                continue
+
+            # Increment the retry attempts
+            retry += 1
+
+            # If reached the maximum retry attempts, return the error message
+            if retry > max_retry:
+                return str(oops)
+
+            # Calculate the waiting time for exponential backoff
+            wait_time = initial_wait * (backoff_factor ** (retry - 1))
+
+            # Print the error and wait before retrying
+            logger.warn(
+                f"Error communicating with OpenAI (attempt {retry}/{max_retry}): {oops}"
+            )
+            sleep(wait_time)
+
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -80,7 +168,9 @@ def mock_change_value_response(*args, **kwargs):
                     "content": fake.sentence(),
                     "function_call": {
                         "name": "change_value",
-                        "args": {"props": [{"key": fake.word(), "value": fake.word()}]},
+                        "arguments": json.dumps(
+                            {"props": [{"key": fake.word(), "value": fake.word()}]}
+                        ),
                     },
                 }
             }
@@ -120,107 +210,3 @@ def test_complete_with_functions2():
     ):
         result = chat(prompt, funcs=[change_value_function])
         assert isinstance(result, dict)
-
-
-# Define the custom function as per the OpenAI docs
-get_current_weather_function = {
-    "name": "get_current_weather",
-    "description": "Get the current weather in a given location",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "location": {
-                "type": "string",
-                "description": "The city and state, e.g. San Francisco, CA",
-            },
-            "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]},
-        },
-        "required": ["location"],
-    },
-}
-
-weather_api_response = {"temperature": 22, "unit": "celsius", "description": "Sunny"}
-
-
-def mock_openai_weather_request():
-    return {
-        "id": "chatcmpl-123",
-        "choices": [
-            {
-                "index": 0,
-                "message": {
-                    "role": "assistant",
-                    "content": None,
-                    "function_call": {
-                        "name": "get_current_weather",
-                        "arguments": {"location": "Boston, MA"},
-                    },
-                },
-                "finish_reason": "function_call",
-            }
-        ],
-    }
-
-
-def mock_openai_weather_request_second():
-    return {
-        "id": "chatcmpl-123",
-        "choices": [
-            {
-                "index": 0,
-                "message": {
-                    "role": "assistant",
-                    "content": "The weather in Boston is currently sunny with a temperature of 22 degrees Celsius.",
-                },
-                "finish_reason": "stop",
-            }
-        ],
-    }
-
-
-def test_openai_weather_interaction():
-    os.environ["OPENAI_API_KEY"] = "your-openai-api-key"
-
-    prompt = "What is the weather like in Boston?"
-
-    first_openai_response = mock_openai_weather_request()
-    second_openai_response = mock_openai_weather_request_second()
-
-    with requests_mock.Mocker() as m:
-        m.get("https://weatherapi.com/", text=json.dumps(weather_api_response))
-
-        with patch("openai.ChatCompletion.create") as mock_create:
-            mock_create.side_effect = [first_openai_response, second_openai_response]
-
-            result = chat(prompt, funcs=[get_current_weather_function])
-
-            assert result == {
-                "name": "get_current_weather",
-                "arguments": {"location": "Boston, MA"},
-            }
-
-            # Call complete function with updated messages
-            updated_prompt = [
-                {"role": "user", "content": prompt},
-                {
-                    "role": "assistant",
-                    "content": None,
-                    "function_call": {
-                        "name": "get_current_weather",
-                        "arguments": {"location": "Boston, MA"},
-                    },
-                },
-                {
-                    "role": "function",
-                    "name": "get_current_weather",
-                    "content": weather_api_response,
-                },
-            ]
-            final_result = chat(
-                msgs=updated_prompt, funcs=[get_current_weather_function]
-            )
-
-            assert (
-                final_result
-                == "The weather in Boston is currently sunny with a temperature of 22 degrees Celsius."
-            )

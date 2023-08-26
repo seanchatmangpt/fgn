@@ -14,4 +14,4 @@ cmd_name = Path(__file__).stem.split("_")[0]
 def cli(ctx: click.Context, text) -> None:
     """Create a code snippet."""
     ctx.obj.text = text
-    default_sub_cmd(ctx, cmd_name, extract_md=True, prompt_prefix="Example code to ")
+    default_sub_cmd(ctx, cmd_name, prompt_suffix="```python\n#import PragmaticProgrammerAGIAgent\n\n# Hyper advanced code\n")

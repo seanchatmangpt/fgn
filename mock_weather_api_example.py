@@ -6,38 +6,7 @@ from fgn.completion.chat import chat
 # Import the get_current_weather function from weather.py
 # from weather import get_current_weather
 
-def run_weather_conversation():
-    # Step 1: send the conversation and available functions to GPT
-    messages = [{"role": "user", "content": "What's the weather like in Boston?"}]
-    functions = [
-        {
-            "name": "get_current_weather",
-            "description": "Get the current weather in a given location",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "location": {
-                        "type": "string",
-                        "description": "The city and state, e.g. San Francisco, CA",
-                    },
-                    "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]},
-                },
-                "required": ["location"],
-            },
-        }
-    ]
-    response = chat(
-        prompt="",
-        sys_msg="A LLM 7 AGI Hive-Mind simulator",
-        msgs=messages,
-        funcs=functions,
-        model="gpt-3.5-turbo-0613",
-        max_retry=1,
-        backoff_factor=2,
-        initial_wait=0.25,
-    )
 
-    print(response)
     # response_message = response["choices"][0]["message"]
     #
     # # Step 2: check if GPT wanted to call a function

@@ -1,0 +1,10 @@
+# fgn/commands/ttemp/ttemp_config.yml
+defaults:
+  template: ttemp_template.txt
+  example: ttemp_example.txt
+  system_prompt: ttemp_system_prompt.txt
+  history_path: ttemp_history.txt
+  model: gpt-3.5-turbo
+  auto_clear: false
+  verbose: false
+  auto_summarize: int = 4

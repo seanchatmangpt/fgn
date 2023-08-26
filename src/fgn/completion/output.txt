@@ -1,0 +1,55 @@
+""
+
+To create a Python project with PyScaffold, you can use the following shell command:
+```
+pyscaffold my_project
+```
+This will create a new directory called `my_project` containing the basic structure for a Python project, including a `my_project` directory, a `my_project.py` file, and a `require
+""
+
+To create a Python project with PyScaffold, you can use the following shell command:
+```
+pyscaffold my_project
+```
+This will create a new directory called `my_project` containing the basic structure for a Python project, including a `my_project` directory, a `my_project.py` file, and a `requirements.txt` file. The `my_project.py` file will contain the basic boilerplate code for a Python project, and the `requirements.txt` file will list any dependencies required by the project.
+
+You can customize the project structure and files as needed using the PyScaffold options. For example, you can specify a different project name or directory location using the `--name` or `-n` option, respectively. You can also add or remove files and directories using the `--files` or `-f` option.
+
+Here are some examples of shell commands that use PyScaffold to create a Python project:
+```
+# Create a new Python project with the default name and location
+pyscaffold my_project
+
+# Create a new Python project with a custom name and location
+pyscaffold -n my_awesome_project -d /path/to/my/project
+
+# Add a requirements.txt file to the project
+pyscaffold -f requirements.txt my_project
+
+# Remove the my_project.py file from the project
+pyscaffold -f my_project.py my_project
+```
+""
+
+To create a Python project with PyScaffold, you can use the following shell command:
+```
+pyscaffold my_project
+```
+This will create a new directory called `my_project` containing the basic structure for a Python project, including a `my_project` directory, a `my_project.py` file, and a `requirements.txt` file. The `my_project.py` file will contain the basic boilerplate code for a Python project, and the `requirements.txt` file will list any dependencies required by the project.
+
+You can customize the project structure and files as needed using the PyScaffold options. For example, you can specify a different project name or directory location using the `--name` or `-n` option, respectively. You can also add or remove files and directories using the `--files` or `-f` option.
+
+Here are some examples of shell commands that use PyScaffold to create a Python project:
+```
+# Create a new Python project with the default name and location
+pyscaffold my_project
+
+# Create a new Python project with a custom name and location
+pyscaffold -n my_awesome_project -d /path/to/my/project
+
+# Add a requirements.txt file to the project
+pyscaffold -f requirements.txt my_project
+
+# Remove the my_project.py file from the project
+pyscaffold -f my_project.py my_project
+```

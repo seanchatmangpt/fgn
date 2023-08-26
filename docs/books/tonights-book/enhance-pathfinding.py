@@ -1,0 +1,140 @@
+import random
+import numpy as np
+from scipy.spatial import distance
+
+class Node:
+    """
+    Class to represent a node in the path finding tree.
+    """
+    def __init__(self, coordinates):
+        """
+        Initialize a Node instance.
+
+        :param coordinates: The x and y coordinates of the node
+        """
+        self.coordinates = np.array(coordinates)
+        self.parent = None
+
+class PathFindingTree:
+    """
+    Class to represent the path finding tree for the PKE-RRT algorithm.
+    """
+    def __init__(self, start, goal):
+        """
+        Initialize a PathFindingTree instance.
+
+        :param start: The starting point of the path
+        :param goal: The goal point of the path
+        """
+        self.start = Node(start)
+        self.goal = Node(goal)
+        self.nodes = [self.start]
+
+    def add_node(self, node):
+        """
+        Adds a node to the path finding tree.
+
+        :param node: The node to add
+        """
+        self.nodes.append(node)
+
+class PKERRT:
+    """
+    Class to represent the PKE-RRT algorithm.
+    """
+    def __init__(self, start, goal, obstacle_list, size):
+        """
+        Initialize a PKERRT instance.
+
+        :param start: The starting point of the path
+        :param goal: The goal point of the path
+        :param obstacle_list: A list of obstacles in the path
+        :param size: The size of the environment
+        """
+        self.start = np.array(start)
+        self.goal = np.array(goal)
+        self.size = size
+        self.obstacle_list = obstacle_list
+        self.tree = PathFindingTree(self.start, self.goal)
+
+    def plan(self):
+        """
+        Plans the path from the start to the goal avoiding the obstacles.
+        """
+        while True:
+            # Generate a random node
+            random_node = self.get_random_node()
+
+            # Find the nearest node in the tree to the random node
+            nearest_node = self.get_nearest_node(random_node)
+
+            # Move from the nearest node towards the random node
+            new_node = self.move_towards(nearest_node, random_node)
+
+            # Check if the new node is in collision with any obstacles
+            if self.check_collision(new_node):
+                continue
+
+            # Add the new node to the tree
+            self.tree.add_node(new_node)
+
+            # Check if the new node is close to the goal
+            if distance.euclidean(new_node.coordinates, self.goal) < 1.0:
+                return self.get_path(new_node)
+
+    def get_random_node(self):
+        """
+        Generates a random node.
+        """
+        return Node(np.array([random.uniform(0, self.size), random.uniform(0, self.size)]))
+
+    def get_nearest_node(self, node):
+        """
+        Finds the nearest node in the tree to a given node.
+
+        :param node: The given node
+        """
+        distances = [distance.euclidean(n.coordinates, node.coordinates) for n in self.tree.nodes]
+        nearest_index = np.argmin(distances)
+        return self.tree.nodes[nearest_index]
+
+    def move_towards(self, nearest_node, random_node):
+        """
+        Moves from the nearest node towards the random node.
+
+        :param nearest_node: The nearest node
+        :param random_node: The random node
+        """
+        direction = (random_node.coordinates - nearest_node.coordinates) / np.linalg.norm(random_node.coordinates - nearest_node.coordinates)
+        new_node = Node(nearest_node.coordinates + direction)
+        new_node.parent = nearest_node
+        return new_node
+
+    def check_collision(self, node):
+        """
+        Checks if a node is in collision with any obstacles.
+
+        :param node: The node to check for collision
+        """
+        for ob in self.obstacle_list:
+            if distance.euclidean(node.coordinates, ob) < 1.0:
+                return True
+        return False
+
+    def get_path(self, node):
+        """
+        Gets the path from the start to a given node.
+
+        :param node: The given node
+        """
+        path = []
+        while node is not None:
+            path.append(node.coordinates)
+            node = node.parent
+        return path
+
+# Test the PKERRT algorithm
+obstacle_list = [[2, 2], [3, 3], [4, 4], [5, 5]]
+pkerrt = PKERRT(start=[0, 0], goal=[6, 6], obstacle_list=obstacle_list, size=10)
+path = pkerrt.plan()
+print(path)  # Prints the path from the start to the goal

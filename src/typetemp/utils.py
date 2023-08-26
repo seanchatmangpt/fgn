@@ -1,3 +1,4 @@
+import os
 import inspect
 import json
 import typing
@@ -67,3 +68,19 @@ json_schema = json.dumps(schema, indent=2)
 
 # Print the JSON schema
 print(json_schema)
+
+
+def create_init_files(directory: str = ".", verbose = False):
+    """
+    Creates empty __init__.py files in the given directory and all its subdirectories.
+
+    :param directory: The root directory where the __init__.py files should be created.
+    """
+    for root, _, _ in os.walk(directory):
+        init_file_path = os.path.join(root, '__init__.py')
+        with open(init_file_path, 'a'):
+            if verbose:
+                print(f"Created {init_file_path}")
+
+            pass  # Simply open the file in append mode, which will create it if it doesn't exist
+

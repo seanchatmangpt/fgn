@@ -64,7 +64,7 @@ def load_command(ctx, name, commands_directory):
 @click.option(
     "-m",
     "--model",
-    default="gpt-4",
+    default="gpt-4-0613",
     help="The OpenAI model to be used for AGI response.",
 )
 @click.option("-i", "--input", help="Path to input file.")

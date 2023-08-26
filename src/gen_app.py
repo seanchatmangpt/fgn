@@ -13,15 +13,15 @@ class FlaskAppTemplate(TypedTemplate):
     to: str = "./app.py"
     source = """
 from flask import Flask, render_template
-{{% for entity in entities %}}
+{% for entity in entities %}
 from web.routes.{{ entity }}Routes import app as {{ entity.lower() }}_app
-{{% endfor %}}
+{% endfor %}
 
 app = Flask(__name__)
 
-{{% for entity in entities %}}
+{% for entity in entities %}
 app.register_blueprint({{ entity.lower() }}_app, url_prefix='/{{ entity.lower() }}')
-{{% endfor %}}
+{% endfor %}
 
 @app.route('/')
 def index():

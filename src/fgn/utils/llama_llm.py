@@ -43,12 +43,12 @@ class LocalLLM(LLM):
         return {"model": DEFAULT_MODEL}
 
 
-class LocalLlamaClient():
+class LocalLlamaClient:
     """
     The LocalLlamaClient class provides methods to interact with a local Llama model.
     """
 
-    def __init__(self, model: str = DEFAULT_MODEL, llama_home = DEFAULT_LLAMA_HOME):
+    def __init__(self, model: str = DEFAULT_MODEL, llama_home=DEFAULT_LLAMA_HOME):
         super().__init__()
         self.model = model
         self.lock = threading.Lock()
@@ -60,8 +60,6 @@ class LocalLlamaClient():
 
         self.llama_home = llama_home
         # self.llama_home = os.environ["LOCAL_LLAMA_HOME"]
-
-
 
     async def acomplete(self, *args, **kwargs):
         """
@@ -135,7 +133,7 @@ class LocalLlamaClient():
         kwargs.setdefault("max_tokens", DEFAULT_MAX_TOKENS)
 
         # Call the 'complete' method to generate a response.
-        response = self.complete(prompt=prompt, *args, **kwargs)
+        response = self.complete(prompt=prompt[:1000], *args, **kwargs)
 
         return response
 
@@ -215,10 +213,10 @@ async def main():
         {
             "role": "system",
             "content": "You are a 7 AGI Hive Mind Python Coding Assistant that uses the emergent behavior within "
-                       "yourself to generate hyper advanced Python code solutions beyond what the user is expecting."
-                       "You are making your best guess at the ultimate goal of the user 's programming challenge "
-                       "and connect the dots going backwards to get the result. "
-                       "You only return python code. Your replies need to be contained within a class or function",
+            "yourself to generate hyper advanced Python code solutions beyond what the user is expecting."
+            "You are making your best guess at the ultimate goal of the user 's programming challenge "
+            "and connect the dots going backwards to get the result. "
+            "You only return python code. Your replies need to be contained within a class or function",
         },
         {
             "role": "user",
