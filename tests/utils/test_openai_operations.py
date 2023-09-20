@@ -5,14 +5,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from fgn.utils.llm_operations import (
-    generate_filename,
-    generate_output_file,
-    gpt3_completion,
-    gpt4_completion,
-    gpt_chat_completion,
-    save_completion,
-)
+from fgn.utils.llm_operations import *
 
 
 @pytest.fixture(autouse=True)

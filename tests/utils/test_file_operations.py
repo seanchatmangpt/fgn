@@ -1,7 +1,7 @@
 import pytest
 from pyfakefs.fake_filesystem_unittest import Patcher
 
-from fgn.core.command_context import CommandContext
+from fgn.core.task_context import TaskContext
 from fgn.utils.file_operations import (
     extract_markdown,
     get_norm_path,

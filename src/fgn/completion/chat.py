@@ -6,7 +6,7 @@ from time import sleep
 from typing import Union
 
 import openai
-from logger import logger
+from loguru import logger
 
 from fgn.completion.prompt_schemas import *
 from fgn.utils.llm_operations import generate_filename
@@ -14,7 +14,7 @@ from fgn.utils.llama_llm import LocalLlamaClient
 
 
 DEFAULT_PROMPT = ""
-DEFAULT_SYS_MSG = "A LLM 7 AGI Hive-Mind simulator"
+DEFAULT_SYS_MSG = "AI chatbot that converses like a LLM 7 AGI Hive-Mind simulator"
 DEFAULT_MODEL = "4"
 DEFAULT_MAX_RETRY = 5
 DEFAULT_BACKOFF_FACTOR = 2
@@ -74,13 +74,7 @@ def chat(
                     openai.ChatCompletion.create(**params), raw_msg=raw_msg, funcs=funcs
                 )
 
-            if write_path and os.path.isdir(write_path):
-                name = generate_filename(prompt)
-                logger.info(f"Creating file {name} in {write_path}")
-                write_path = os.path.join(write_path, generate_filename(prompt))
-            if write_path:
-                with open(write_path, mode) as f:
-                    f.write(f"{res}\n")
+            write_response(mode, prompt, res, write_path)
 
             return res
         except Exception as oops:
@@ -138,6 +132,8 @@ async def achat(
         backoff_factor=DEFAULT_BACKOFF_FACTOR,
         initial_wait=DEFAULT_INITIAL_WAIT,
         raw_msg=False,
+        write_path=None,
+        mode="a+"
 ) -> Union[str, dict]:
     """
     Customized completion function that interacts with the OpenAI API, capable of handling prompts, system messages,
@@ -157,15 +153,20 @@ async def achat(
     while retry <= max_retry:
         try:
             params = _create_params(model, messages, funcs)
+            res = None
 
             if funcs:
-                return get_response(
+                res = get_response(
                     await openai.ChatCompletion.acreate(**params), raw_msg=raw_msg, funcs=funcs
                 )
             else:
-                return get_response(
+                res = get_response(
                     await openai.ChatCompletion.acreate(**params), raw_msg=raw_msg, funcs=funcs
                 )
+
+            await write_response(mode, prompt, res, write_path)
+
+            return res
         except Exception as oops:
             logger.warning(oops)
             # If the error is due to maximum context length, chop the messages and retry
@@ -186,6 +187,16 @@ async def achat(
                 f"Error communicating with OpenAI (attempt {retry}/{max_retry}): {oops}"
             )
             await asyncio.sleep(wait_time)
+
+
+async def write_response(mode, prompt, res, write_path):
+    if write_path and os.path.isdir(write_path):
+        name = generate_filename(prompt)
+        logger.info(f"Creating file {name} in {write_path}")
+        write_path = os.path.join(write_path, generate_filename(prompt))
+    if write_path:
+        with open(write_path, mode) as f:
+            f.write(f"{res}\n")
 
 
 def get_response(res, raw_msg, funcs):
@@ -237,7 +248,7 @@ def _create_params(model, messages, funcs=None):
     return parameters
 
 
-def _create_messages(prompt, sys_msg, msgs):
+def _create_messages(sys_msg, prompt, msgs):
     messages = []
 
     if msgs is None:
@@ -281,67 +292,3 @@ def shell_command():
     )
 
     print(response)
-
-
-code = '''
-from dataclasses import dataclass
-from typing import List
-
-from gen_entities import generate_reporting_system_entities
-from gen_web_crud import generate_web_crud
-from typetemp.template.typed_template import TypedTemplate
-from typetemp.utils import create_init_files
-
-
-@dataclass
-class FlaskAppTemplate(TypedTemplate):
-    entities: List[str] = None
-    to: str = "./app.py"
-    source = """
-from flask import Flask, render_template
-{% for entity in entities %}
-from web.routes.{{ entity }}Routes import app as {{ entity.lower() }}_app
-{% endfor %}
-
-app = Flask(__name__)
-
-{% for entity in entities %}
-app.register_blueprint({{ entity.lower() }}_app, url_prefix='/{{ entity.lower() }}')
-{% endfor %}
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-if __name__ == '__main__':
-    app.run(debug=True)
-    """
-
-
-def generate_app():
-    entities = ['Email', 'Employee', 'Feedback', 'Report']
-
-    generate_reporting_system_entities(entities)
-
-    # Generate web CRUD interfaces
-    generate_web_crud(entities)
-
-    # Create Flask App using the defined entities
-    flask_app_template = FlaskAppTemplate(entities=entities)
-    flask_app_template.render()
-
-    create_init_files()
-
-    print("Flask app generated successfully.")
-
-
-# Run the function to generate the Flask app
-generate_app()
-
- '''
-
-if __name__ == "__main__":
-    # shell_command()
-    i = 0
-    while True:
-        chat(model="2", write_path=f"output{i}.py", prompt=code + "\n\n ### The most overengineered example possible\n\n\\\\python```python\nclass")

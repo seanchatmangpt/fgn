@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Union, Optional
+from typing import List, Optional
 
 from typetemp.template.typed_prompt import TypedPrompt
 
@@ -20,9 +20,11 @@ class TypedCriticalPathTable(TypedPrompt):
     sys_msg: str = "You are a critical path table AI assistant."
 
 
-table_instance = TypedCriticalPathTable(
-    user_input="I am working on a CLI for PRAK (Pragmatic Programmer CLI)",
-    columns=["Step", "Task Description", "Dependencies", "Due Date", "Status"],
-    num_rows=10,
-    to="stdout"
-)()
+if __name__ == "__main__":
+    table_instance = TypedCriticalPathTable(
+        user_input="I am working on a chiefofstaffgpt.com and need to get the full stack working"
+                   "with my OpenAI agent",
+        columns=["Step", "Task Description", "Dependencies", "Due Date", "Status"],
+        num_rows=10,
+        to="stdout"
+    )()

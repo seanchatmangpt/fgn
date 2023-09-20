@@ -6,7 +6,7 @@ from time import sleep
 from typing import Union
 
 import openai
-from logger import logger
+from loguru import logger
 
 from fgn.completion.prompt_schemas import *
 from fgn.utils.llm_operations import generate_filename

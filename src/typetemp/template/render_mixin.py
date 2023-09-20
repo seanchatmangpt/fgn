@@ -2,6 +2,8 @@ from typing import Dict, Any
 import os
 import inspect
 
+from typetemp.template.render_funcs import render_str
+
 
 class RenderMixin:
     """
@@ -12,7 +14,7 @@ class RenderMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def _render(self, **kwargs) -> str:
+    def _render(self, **kwargs) -> Any:
         """
         Render the template. Excludes instance variables that
         are not callable (i.e., methods) and don't start with "__".
@@ -51,6 +53,9 @@ class RenderMixin:
         # If the value of a property is a TypedTemplate, render it
         for name, value in properties.items():
             if isinstance(value, RenderMixin):
-                properties[name] = value.render()
+                properties[name] = value._render()
+            elif isinstance(value, str):
+                properties[name] = render_str(value)
+
 
         return properties

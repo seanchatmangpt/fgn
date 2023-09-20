@@ -1,0 +1,204 @@
+TypedBuildCoreComponentsPrompt:
+  chat_inst: {}
+  classes:
+  - TypedPrompt
+  - Chat
+  description: Develop core components of the DSL.
+  error_handling: Exception Handling
+  methods:
+  - execute
+  - validate
+  model: '3'
+  output: null
+  parsers:
+  - YAML Parser
+  - JSON Parser
+  performance_metrics:
+  - Speed
+  - Memory
+  source: Develop parsers {{ parsers }} for the YAML configurations. Implement classes
+    {{ classes }} and methods {{ methods }} for functionalities. Include {{ error_handling
+    }} and consider {{ performance_metrics }}.
+  sys_msg: You are a prompt AI assistant.
+  title: Build Core Components
+  to: null
+  use_native: false
+  user_input: null
+TypedDeploymentPrompt:
+  backup_plan: Daily Backups
+  chat_inst: {}
+  ci_cd_pipelines:
+  - Jenkins
+  - GitLab
+  deployment_strategy: Blue-Green
+  description: Deploy the system.
+  model: '3'
+  monitoring_tools:
+  - Prometheus
+  - Grafana
+  output: null
+  rollback_procedures:
+  - Automated
+  - Manual
+  source: Choose an appropriate deployment strategy {{ deployment_strategy }}. Implement
+    CI/CD pipelines {{ ci_cd_pipelines }}, use monitoring tools {{ monitoring_tools
+    }}, have a backup plan {{ backup_plan }}, and prepare rollback procedures {{ rollback_procedures
+    }}.
+  sys_msg: You are a prompt AI assistant.
+  title: Deployment
+  to: null
+  use_native: false
+  user_input: null
+TypedDesignArchitecturePrompt:
+  chat_inst: {}
+  components:
+  - Parser
+  - Executor
+  description: Design the DSL architecture.
+  interactions:
+  - Data Flow
+  - Control Flow
+  model: '3'
+  modularity: Modular
+  output: null
+  scalability: High
+  source: Plan how the DSL will interact with other system components {{ components
+    }}. Define the DSL's syntax {{ syntax }}, ensure {{ scalability }} and {{ modularity
+    }}, and outline component interactions {{ interactions }}.
+  syntax: YAML-based
+  sys_msg: You are a prompt AI assistant.
+  title: Design Architecture
+  to: null
+  use_native: false
+  user_input: null
+TypedDocumentationPrompt:
+  api_docs:
+  - Endpoints
+  - Examples
+  chat_inst: {}
+  description: Create detailed documentation.
+  documentation_types:
+  - API
+  - User Guide
+  faqs:
+  - General
+  - Technical
+  model: '3'
+  output: null
+  source: Create detailed documentation types {{ documentation_types }} and offer
+    training sessions or materials to end-users including user guides {{ user_guides
+    }}, API documentation {{ api_docs }}, tutorials {{ tutorials }}, and FAQs {{ faqs
+    }}.
+  sys_msg: You are a prompt AI assistant.
+  title: Documentation
+  to: null
+  tutorials:
+  - Video
+  - Text
+  use_native: false
+  user_guides:
+  - Getting Started
+  - Advanced
+  user_input: null
+TypedImplementBusinessLogicPrompt:
+  algorithms:
+  - NLP
+  - ML
+  chat_inst: {}
+  data_models:
+  - User
+  - Environment
+  description: Implement the business logic.
+  goal_setting: S.M.A.R.T
+  model: '3'
+  optimization_criteria:
+  - Efficiency
+  - Accuracy
+  output: null
+  source: Add logic for team composition {{ team_composition }}, goal setting {{ goal_setting
+    }}, use data models {{ data_models }}, apply algorithms {{ algorithms }}, and
+    meet optimization criteria {{ optimization_criteria }}.
+  sys_msg: You are a prompt AI assistant.
+  team_composition: Cross-functional
+  title: Implement Business Logic
+  to: null
+  use_native: false
+  user_input: null
+TypedMaintenancePrompt:
+  chat_inst: {}
+  description: Maintain and update the system.
+  model: '3'
+  monitoring_metrics:
+  - CPU Usage
+  - Error Rate
+  output: null
+  patching_policy: Security First
+  source: Monitor system's usage and performance using metrics {{ monitoring_metrics
+    }}. Apply patches and updates as required following the update schedule {{ update_schedule
+    }} and patching policy {{ patching_policy }}. Provide support through channels
+    {{ support_channels }} and collect feedback via {{ user_feedback_mechanisms }}.
+  support_channels:
+  - Email
+  - Chat
+  sys_msg: You are a prompt AI assistant.
+  title: Maintenance
+  to: null
+  update_schedule: Monthly
+  use_native: false
+  user_feedback_mechanisms:
+  - Survey
+  - Reviews
+  user_input: null
+TypedRequirementAnalysisPrompt:
+  chat_inst: {}
+  constraints:
+  - Time
+  - Budget
+  core_functionalities:
+  - Parsing
+  - Error Handling
+  description: Gather detailed requirements for the DSL.
+  model: '3'
+  output: null
+  source: Gather detailed requirements that the DSL needs to fulfill. Identify core
+    functionalities, consult with {{ stakeholders }}, consider {{ constraints }},
+    choose appropriate {{ technologies }}, within the timeframe of {{ timeframe }}.
+  stakeholders:
+  - Product Manager
+  - Dev Team
+  - QA Team
+  sys_msg: You are a prompt AI assistant.
+  technologies:
+  - Python
+  - YAML
+  timeframe: Q1
+  title: Requirement Analysis
+  to: null
+  use_native: false
+  user_input: null
+TypedTestingPrompt:
+  chat_inst: {}
+  description: Conduct thorough testing.
+  integration_tests:
+  - test_end_to_end
+  model: '3'
+  output: null
+  source: Write unit tests {{ unit_tests }}, validate through integration tests {{
+    integration_tests }}, perform stress tests {{ stress_tests }}, use test data {{
+    test_data }} in various test environments {{ test_environments }}.
+  stress_tests:
+  - test_load
+  sys_msg: You are a prompt AI assistant.
+  test_data:
+  - Sample YAML
+  - Sample JSON
+  test_environments:
+  - Local
+  - Staging
+  title: Testing
+  to: null
+  unit_tests:
+  - test_parser
+  - test_executor
+  use_native: false
+  user_input: null

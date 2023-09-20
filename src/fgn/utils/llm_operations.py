@@ -7,7 +7,7 @@ from time import gmtime, sleep, strftime
 from typing import Union
 
 import openai
-from logger import logger
+from loguru import logger
 from rich import print
 
 from fgn.utils.file_operations import open_file, save_to_project_folder

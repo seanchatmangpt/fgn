@@ -15,7 +15,7 @@ from time import sleep
 from typing import Union
 
 import openai
-from logger import logger
+from loguru import logger
 
 
 def chat(
