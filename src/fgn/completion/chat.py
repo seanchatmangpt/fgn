@@ -164,7 +164,7 @@ async def achat(
                     await openai.ChatCompletion.acreate(**params), raw_msg=raw_msg, funcs=funcs
                 )
 
-            await write_response(mode, prompt, res, write_path)
+            await awrite_response(mode, prompt, res, write_path)
 
             return res
         except Exception as oops:
@@ -189,7 +189,17 @@ async def achat(
             await asyncio.sleep(wait_time)
 
 
-async def write_response(mode, prompt, res, write_path):
+def write_response(mode, prompt, res, write_path):
+    if write_path and os.path.isdir(write_path):
+        name = generate_filename(prompt)
+        logger.info(f"Creating file {name} in {write_path}")
+        write_path = os.path.join(write_path, generate_filename(prompt))
+    if write_path:
+        with open(write_path, mode) as f:
+            f.write(f"{res}\n")
+
+
+async def awrite_response(mode, prompt, res, write_path):
     if write_path and os.path.isdir(write_path):
         name = generate_filename(prompt)
         logger.info(f"Creating file {name} in {write_path}")

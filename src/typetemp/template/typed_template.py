@@ -8,7 +8,6 @@ _env = TypedEnvironment()
 _native_env = TypedNativeEnvironment()
 
 
-@dataclass
 class TypedTemplate(RenderMixin):
     """
     Base class for creating templated classes. Uses the jinja2 templating engine
@@ -18,6 +17,10 @@ class TypedTemplate(RenderMixin):
     use_native: bool = False  # Whether to use NativeEnvironment for rendering
     to: str = None  # The "to" property for rendering destination
     output: str = None  # The rendered output
+
+    def __init__(self, **kwargs):
+        self.__post_init__()
+        self.__dict__.update(kwargs)
 
     def __post_init__(self):
         """

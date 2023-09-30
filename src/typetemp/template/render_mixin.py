@@ -10,10 +10,6 @@ class RenderMixin:
     A mixin class that encapsulates the render and _render_vars functionality.
     This class checks for the required properties 'source', 'env', 'to', and 'output'.
     """
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def _render(self, **kwargs) -> Any:
         """
         Render the template. Excludes instance variables that
@@ -33,7 +29,7 @@ class RenderMixin:
             rendered_to = os.path.join(to_template.render(**render_dict))
 
             # Create the directory if it doesn't exist
-            os.makedirs(os.path.dirname(rendered_to), exist_ok=True)
+            # os.makedirs(os.path.dirname(rendered_to), exist_ok=True)
 
             with open(rendered_to, "w") as file:
                 file.write(self.output)
@@ -44,11 +40,8 @@ class RenderMixin:
         """
         Get the instance variables (not including methods or dunder methods).
         """
-        properties = {
-            name: getattr(self, name)
-            for name, value in inspect.getmembers(self)
-            if not name.startswith("__") and not callable(value)
-        }
+        # copy the self dict
+        properties = self.__dict__.copy()
 
         # If the value of a property is a TypedTemplate, render it
         for name, value in properties.items():
@@ -56,6 +49,5 @@ class RenderMixin:
                 properties[name] = value._render()
             elif isinstance(value, str):
                 properties[name] = render_str(value)
-
 
         return properties

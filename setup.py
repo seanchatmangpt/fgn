@@ -13,8 +13,8 @@ from setuptools import setup
 if __name__ == "__main__":
     try:
         today = date.today()
-        version = today.strftime("%Y.%m.%d")
-        setup(version=version)
+        version = "2023.9.20"
+        setup(version=version, name="fgn")
     except:  # noqa
         print(
             "\n\nAn error occurred while building the project, "
