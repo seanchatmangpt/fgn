@@ -2,10 +2,12 @@ import random
 import numpy as np
 from scipy.spatial import distance
 
+
 class Node:
     """
     Class to represent a node in the path finding tree.
     """
+
     def __init__(self, coordinates):
         """
         Initialize a Node instance.
@@ -15,10 +17,12 @@ class Node:
         self.coordinates = np.array(coordinates)
         self.parent = None
 
+
 class PathFindingTree:
     """
     Class to represent the path finding tree for the PKE-RRT algorithm.
     """
+
     def __init__(self, start, goal):
         """
         Initialize a PathFindingTree instance.
@@ -38,10 +42,12 @@ class PathFindingTree:
         """
         self.nodes.append(node)
 
+
 class PKERRT:
     """
     Class to represent the PKE-RRT algorithm.
     """
+
     def __init__(self, start, goal, obstacle_list, size):
         """
         Initialize a PKERRT instance.
@@ -86,7 +92,9 @@ class PKERRT:
         """
         Generates a random node.
         """
-        return Node(np.array([random.uniform(0, self.size), random.uniform(0, self.size)]))
+        return Node(
+            np.array([random.uniform(0, self.size), random.uniform(0, self.size)])
+        )
 
     def get_nearest_node(self, node):
         """
@@ -94,7 +102,9 @@ class PKERRT:
 
         :param node: The given node
         """
-        distances = [distance.euclidean(n.coordinates, node.coordinates) for n in self.tree.nodes]
+        distances = [
+            distance.euclidean(n.coordinates, node.coordinates) for n in self.tree.nodes
+        ]
         nearest_index = np.argmin(distances)
         return self.tree.nodes[nearest_index]
 
@@ -105,7 +115,9 @@ class PKERRT:
         :param nearest_node: The nearest node
         :param random_node: The random node
         """
-        direction = (random_node.coordinates - nearest_node.coordinates) / np.linalg.norm(random_node.coordinates - nearest_node.coordinates)
+        direction = (
+            random_node.coordinates - nearest_node.coordinates
+        ) / np.linalg.norm(random_node.coordinates - nearest_node.coordinates)
         new_node = Node(nearest_node.coordinates + direction)
         new_node.parent = nearest_node
         return new_node
@@ -132,6 +144,7 @@ class PKERRT:
             path.append(node.coordinates)
             node = node.parent
         return path
+
 
 # Test the PKERRT algorithm
 obstacle_list = [[2, 2], [3, 3], [4, 4], [5, 5]]

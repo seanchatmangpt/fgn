@@ -2,16 +2,22 @@ import yaml
 from typing import Dict, List
 
 
-def get_value_objects_and_entities(yaml_data: str) -> (Dict[str, List[str]], Dict[str, List[str]]):
+def get_value_objects_and_entities(
+    yaml_data: str,
+) -> (Dict[str, List[str]], Dict[str, List[str]]):
     data = yaml.safe_load(yaml_data)
-    value_objects = {item['name']: list(item['properties'].keys()) for item in data['value_objects']}
-    entities = {item['name']: list(item['properties'].keys()) for item in data['entities']}
+    value_objects = {
+        item["name"]: list(item["properties"].keys()) for item in data["value_objects"]
+    }
+    entities = {
+        item["name"]: list(item["properties"].keys()) for item in data["entities"]
+    }
 
     return value_objects, entities
 
 
 # YAML data as a string
-yaml_data = '''
+yaml_data = """
 value_objects:
   - name: RepositoryDetail
     properties:
@@ -191,7 +197,7 @@ entities:
       conferences_attended: List[Conference]
       awards: List[Award]
       academic_partnerships: List[Partnership]
-'''
+"""
 
 value_objects, entities = get_value_objects_and_entities(yaml_data)
 print("Value Objects:", value_objects)
@@ -201,7 +207,9 @@ from collections import defaultdict
 from typing import Dict, List
 
 
-def parse_references(entities: Dict[str, List[str]], value_objects: Dict[str, List[str]]) -> (Dict[str, List[str]], List[str], List[str]):
+def parse_references(
+    entities: Dict[str, List[str]], value_objects: Dict[str, List[str]]
+) -> (Dict[str, List[str]], List[str], List[str]):
     value_objects_references = defaultdict(list)
     missing_value_objects = []
     unreferenced_value_objects = set(value_objects.keys())
@@ -219,14 +227,29 @@ def parse_references(entities: Dict[str, List[str]], value_objects: Dict[str, Li
             if not found:
                 missing_value_objects.append((entity_name, prop))
 
-    return value_objects_references, missing_value_objects, list(unreferenced_value_objects)
+    return (
+        value_objects_references,
+        missing_value_objects,
+        list(unreferenced_value_objects),
+    )
 
-def change_entities_to_reference_value_objects(entities: Dict[str, List[str]], value_objects_references: Dict[str, List[str]]):
+
+def change_entities_to_reference_value_objects(
+    entities: Dict[str, List[str]], value_objects_references: Dict[str, List[str]]
+):
     for value_object_name, referencing_entities in value_objects_references.items():
         for entity_name in referencing_entities:
-            entities[entity_name] = [value_object_name if prop == value_object_name else prop for prop in entities[entity_name]]
+            entities[entity_name] = [
+                value_object_name if prop == value_object_name else prop
+                for prop in entities[entity_name]
+            ]
 
-value_objects_references, missing_value_objects, unreferenced_value_objects = parse_references(entities, value_objects)
+
+(
+    value_objects_references,
+    missing_value_objects,
+    unreferenced_value_objects,
+) = parse_references(entities, value_objects)
 change_entities_to_reference_value_objects(entities, value_objects_references)
 
 print("Entities referencing value objects:", value_objects_references)

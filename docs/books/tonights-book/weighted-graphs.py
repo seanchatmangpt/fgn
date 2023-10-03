@@ -1,5 +1,6 @@
 import networkx as nx
 
+
 class CodeComponent:
     """
     Class to represent a component in a codebase or software application.
@@ -14,6 +15,7 @@ class CodeComponent:
         """
         self.name = name
         self.weight = weight
+
 
 class CodebaseGraph:
     """
@@ -53,14 +55,15 @@ class CodebaseGraph:
 
         if component.name in self.graph:
             dependencies = self.graph[component.name]
-            return sum(self.graph.nodes[dep]['weight'] for dep in dependencies)
+            return sum(self.graph.nodes[dep]["weight"] for dep in dependencies)
         else:
             return 0
 
+
 # Test data
-c1 = CodeComponent('c1', 10)
-c2 = CodeComponent('c2', 20)
-c3 = CodeComponent('c3', 30)
+c1 = CodeComponent("c1", 10)
+c2 = CodeComponent("c2", 20)
+c3 = CodeComponent("c3", 30)
 
 # Testing
 codebase_graph = CodebaseGraph()

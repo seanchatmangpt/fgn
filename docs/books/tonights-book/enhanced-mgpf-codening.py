@@ -2,6 +2,7 @@ class Node:
     """
     Node class represents a node in the graph with a unique identifier and a set of edges to other nodes.
     """
+
     def __init__(self, name):
         """
         Initializes a new instance of the Node class.
@@ -28,17 +29,18 @@ class Node:
 
         Args:
             node (Node): The node that the edge connects to.
-        
+
         Returns:
             float: The cost of the edge. Returns infinity if no direct edge exists.
         """
-        return self.edges.get(node, float('inf'))
+        return self.edges.get(node, float("inf"))
 
 
 class Graph:
     """
     Graph class represents a graph data structure with nodes and the edges between them.
     """
+
     def __init__(self):
         """
         Initializes a new instance of the Graph class.
@@ -64,7 +66,9 @@ class Graph:
             cost (float): The cost of traversing the edge.
         """
         self.nodes[node_name1].add_edge(self.nodes[node_name2], cost)
-        self.nodes[node_name2].add_edge(self.nodes[node_name1], cost)  # For undirected graph
+        self.nodes[node_name2].add_edge(
+            self.nodes[node_name1], cost
+        )  # For undirected graph
 
     def get_cost(self, node_name1, node_name2):
         """
@@ -73,11 +77,12 @@ class Graph:
         Args:
             node_name1 (str): The unique identifier of the first node.
             node_name2 (str): The unique identifier of the second node.
-        
+
         Returns:
             float: The cost of the edge. Returns infinity if no direct edge exists.
         """
-        return self.nodes[node_name1].get_cost(self.nodes[node_name2])   
+        return self.nodes[node_name1].get_cost(self.nodes[node_name2])
+
 
 # This is a code skeleton for performing multi-goal path finding with dynamic graph heuristics.
 # To fully implement this, you will need an AGI that can understand your project's specifications and constraints.

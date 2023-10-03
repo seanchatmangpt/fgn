@@ -1,5 +1,5 @@
-
 from ddd.entities.Feedback import Feedback
+
 
 class FeedbackRepo:
     def __init__(self):
@@ -16,4 +16,3 @@ class FeedbackRepo:
 
     def delete(self, id: str):
         del self.data[id]
-    

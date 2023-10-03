@@ -10,6 +10,7 @@ class RenderMixin:
     A mixin class that encapsulates the render and _render_vars functionality.
     This class checks for the required properties 'source', 'env', 'to', and 'output'.
     """
+
     def _render(self, **kwargs) -> Any:
         """
         Render the template. Excludes instance variables that

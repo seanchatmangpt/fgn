@@ -18,21 +18,21 @@ DEFAULT_SYS_MSG = "AI chatbot that converses like a LLM 7 AGI Hive-Mind simulato
 DEFAULT_MODEL = "4"
 DEFAULT_MAX_RETRY = 5
 DEFAULT_BACKOFF_FACTOR = 2
-DEFAULT_INITIAL_WAIT = .25
+DEFAULT_INITIAL_WAIT = 0.25
 
 
 def chat(
-        prompt=DEFAULT_PROMPT,
-        sys_msg=DEFAULT_SYS_MSG,
-        msgs=None,
-        funcs=None,
-        model=DEFAULT_MODEL,
-        max_retry=DEFAULT_MAX_RETRY,
-        backoff_factor=DEFAULT_BACKOFF_FACTOR,
-        initial_wait=DEFAULT_INITIAL_WAIT,
-        raw_msg=False,
-        write_path=None,
-        mode="a+"
+    prompt=DEFAULT_PROMPT,
+    sys_msg=DEFAULT_SYS_MSG,
+    msgs=None,
+    funcs=None,
+    model=DEFAULT_MODEL,
+    max_retry=DEFAULT_MAX_RETRY,
+    backoff_factor=DEFAULT_BACKOFF_FACTOR,
+    initial_wait=DEFAULT_INITIAL_WAIT,
+    raw_msg=False,
+    write_path=None,
+    mode="a+",
 ) -> Union[str, dict]:
     """
     Customized completion function that interacts with the OpenAI API, capable of handling prompts, system messages,
@@ -56,6 +56,8 @@ def chat(
     messages = _create_messages(sys_msg, prompt, msgs)
 
     retry = 0
+
+    model = get_model_str(model)
 
     while retry <= max_retry:
         try:
@@ -91,7 +93,9 @@ def chat(
 
             # If reached the maximum retry attempts, return the error message
             if retry > max_retry:
-                raise ValueError(f"Error communicating with OpenAI (attempt {retry}/{max_retry}): {oops}")
+                raise ValueError(
+                    f"Error communicating with OpenAI (attempt {retry}/{max_retry}): {oops}"
+                )
 
             # Calculate the waiting time for exponential backoff
             wait_time = initial_wait * (backoff_factor ** (retry - 1))
@@ -117,23 +121,21 @@ class Chat:
     raw_msg = False
 
     def __call__(self, **kwargs):
-        return chat(
-            **kwargs
-        )
+        return chat(**kwargs)
 
 
 async def achat(
-        prompt=DEFAULT_PROMPT,
-        sys_msg=DEFAULT_SYS_MSG,
-        msgs=None,
-        funcs=None,
-        model=DEFAULT_MODEL,
-        max_retry=DEFAULT_MAX_RETRY,
-        backoff_factor=DEFAULT_BACKOFF_FACTOR,
-        initial_wait=DEFAULT_INITIAL_WAIT,
-        raw_msg=False,
-        write_path=None,
-        mode="a+"
+    prompt=DEFAULT_PROMPT,
+    sys_msg=DEFAULT_SYS_MSG,
+    msgs=None,
+    funcs=None,
+    model=DEFAULT_MODEL,
+    max_retry=DEFAULT_MAX_RETRY,
+    backoff_factor=DEFAULT_BACKOFF_FACTOR,
+    initial_wait=DEFAULT_INITIAL_WAIT,
+    raw_msg=False,
+    write_path=None,
+    mode="a+",
 ) -> Union[str, dict]:
     """
     Customized completion function that interacts with the OpenAI API, capable of handling prompts, system messages,
@@ -157,11 +159,15 @@ async def achat(
 
             if funcs:
                 res = get_response(
-                    await openai.ChatCompletion.acreate(**params), raw_msg=raw_msg, funcs=funcs
+                    await openai.ChatCompletion.acreate(**params),
+                    raw_msg=raw_msg,
+                    funcs=funcs,
                 )
             else:
                 res = get_response(
-                    await openai.ChatCompletion.acreate(**params), raw_msg=raw_msg, funcs=funcs
+                    await openai.ChatCompletion.acreate(**params),
+                    raw_msg=raw_msg,
+                    funcs=funcs,
                 )
 
             await awrite_response(mode, prompt, res, write_path)
@@ -179,7 +185,9 @@ async def achat(
             retry += 1
 
             if retry > max_retry:
-                raise ValueError(f"Error communicating with OpenAI (attempt {retry}/{max_retry}): {oops}")
+                raise ValueError(
+                    f"Error communicating with OpenAI (attempt {retry}/{max_retry}): {oops}"
+                )
 
             wait_time = initial_wait * (backoff_factor ** (retry - 1))
 
@@ -294,7 +302,7 @@ def shell_command():
     response = chat(
         prompt="",
         sys_msg="A LLM 7 AGI Hive-Mind simulator that can only return three lines of text in ```shell``` mode."
-                "You do not provide explanations or any other information, just the three lines of text.",
+        "You do not provide explanations or any other information, just the three lines of text.",
         msgs=messages,
         funcs=functions,
         model="3",

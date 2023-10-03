@@ -1,7 +1,7 @@
 import openai
 
 # Store API Key
-openai.api_key = 'api_key'
+openai.api_key = "api_key"
 
 # Define chat completion model
 model = "gpt-3.5-turbo"
@@ -20,9 +20,9 @@ messages = [
 
 # Use OpenAI's `ChatCompletion` to generate a conversation based on the given messages and model
 response = openai.ChatCompletion.create(
-  model=model,
-  messages=messages,
+    model=model,
+    messages=messages,
 )
 
 # Print the assistant's message
-print(response['choices'][0]['message']['content'])
+print(response["choices"][0]["message"]["content"])

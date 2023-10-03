@@ -1,8 +1,16 @@
 import openai
 
 
-def create(prompt: str, model="3i", temperature=0,
-           max_tokens=10, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None):
+def create(
+    prompt: str,
+    model="3i",
+    temperature=0,
+    max_tokens=10,
+    top_p=1,
+    frequency_penalty=0,
+    presence_penalty=0,
+    stop=None,
+):
     response = openai.Completion.create(
         model=get_model_str(model),
         prompt=prompt,
@@ -17,8 +25,16 @@ def create(prompt: str, model="3i", temperature=0,
     return response.choices[0].text.strip()
 
 
-async def acreate(prompt: str, model="3i", temperature=0,
-                  max_tokens=10, top_p=1, frequency_penalty=0, presence_penalty=0, stop=None):
+async def acreate(
+    prompt: str,
+    model="3i",
+    temperature=0,
+    max_tokens=10,
+    top_p=1,
+    frequency_penalty=0,
+    presence_penalty=0,
+    stop=None,
+):
     response = await openai.Completion.acreate(
         model=get_model_str(model),
         prompt=prompt,

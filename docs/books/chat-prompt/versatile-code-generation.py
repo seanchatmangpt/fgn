@@ -29,11 +29,11 @@ def visualize_weighted_graph(graph: nx.DiGraph):
 
     :param graph: Weighted directed graph to visualize
     """
-    weights = nx.get_edge_attributes(graph, 'weight')
+    weights = nx.get_edge_attributes(graph, "weight")
     pos = nx.spring_layout(graph)
-    nx.draw_networkx_nodes(graph, pos, node_color='skyblue')
+    nx.draw_networkx_nodes(graph, pos, node_color="skyblue")
     nx.draw_networkx_labels(graph, pos)
-    nx.draw_networkx_edges(graph, pos, edge_color='r')
+    nx.draw_networkx_edges(graph, pos, edge_color="r")
     nx.draw_networkx_edge_labels(graph, pos, edge_labels=weights)
     plt.show()
 
@@ -56,19 +56,19 @@ class ComplexMultiLineTemplate:
         code += "    def __init__(self"
         for attr in self.attributes:
             code += f", {attr.name}: {attr.type}"
-        
+
         code += "):\n"
         for attr in self.attributes:
             code += f"        self.{attr.name} = {attr.name}\n"
-        
+
         # Define the methods
         for method in self.methods:
             code += f"\n    def {method.name}(self"
             for param in method.params:
                 code += f", {param.name}: {param.type}"
-            
+
             # Adding a faker sentence to simulate logic in the methods
-            code += f"):\n        return \"{faker.sentence()}\"\n"
+            code += f'):\n        return "{faker.sentence()}"\n'
 
         return code
 
@@ -99,22 +99,25 @@ class ProjectManagerAgent:
         self.project_config = self.load_yaml()
 
     def load_yaml(self) -> Dict:
-        with open(self.yaml_path, 'r') as file:
+        with open(self.yaml_path, "r") as file:
             config = yaml.safe_load(file)
-        return config['pke']
+        return config["pke"]
 
     def extract_components(self, key: str) -> Dict:
         return self.project_config[key]
 
     def prioritize_tasks(self) -> List[str]:
-        task_dependencies = self.extract_components('task_dependencies')
-        promising_regions = self.extract_components('promising_regions')
-        guidelines = self.extract_components('guidelines')
-        heuristics = self.extract_components('heuristics')
+        task_dependencies = self.extract_components("task_dependencies")
+        promising_regions = self.extract_components("promising_regions")
+        guidelines = self.extract_components("guidelines")
+        heuristics = self.extract_components("heuristics")
 
         tasks_queue = deque()
         for task, dependencies in task_dependencies.items():
-            if all(dep in promising_regions for dep in dependencies) and task in guidelines:
+            if (
+                all(dep in promising_regions for dep in dependencies)
+                and task in guidelines
+            ):
                 tasks_queue.append((heuristics.get(task, 0), task))
 
         tasks_queue = sorted(tasks_queue, key=lambda x: x[0], reverse=True)
@@ -125,25 +128,33 @@ class ProjectManagerAgent:
         completed_lines = 0
         for root, _, files in os.walk(source_directory):
             for file in files:
-                if file.endswith('.py'):
+                if file.endswith(".py"):
                     file_path = os.path.join(root, file)
-                    with open(file_path, 'r') as code_file:
+                    with open(file_path, "r") as code_file:
                         lines = code_file.readlines()
                         total_lines += len(lines)
                         completed_lines += sum(1 for line in lines if line.strip())
 
-        completeness_percentage = (completed_lines / total_lines) * 100 if total_lines > 0 else 0
+        completeness_percentage = (
+            (completed_lines / total_lines) * 100 if total_lines > 0 else 0
+        )
         return completeness_percentage
 
 
 # Usage
-project_config_file = 'project_config.yaml'
-project_directory = '/path/to/full_stack_project'
+project_config_file = "project_config.yaml"
+project_directory = "/path/to/full_stack_project"
 
 project_manager = ProjectManagerAgent(project_config_file)
 
-# Define task descriptions 
-task_descriptions = ["Backend API", "Frontend UI", "Database Setup", "User Authentication", "Deployment"]
+# Define task descriptions
+task_descriptions = [
+    "Backend API",
+    "Frontend UI",
+    "Database Setup",
+    "User Authentication",
+    "Deployment",
+]
 prompts = [f"Create code for: {task}" for task in task_descriptions]
 
 # Add code to generate and save code for each task

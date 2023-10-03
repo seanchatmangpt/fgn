@@ -1,5 +1,5 @@
-
 from ddd.entities.Report import Report
+
 
 class ReportRepo:
     def __init__(self):
@@ -16,4 +16,3 @@ class ReportRepo:
 
     def delete(self, id: str):
         del self.data[id]
-    

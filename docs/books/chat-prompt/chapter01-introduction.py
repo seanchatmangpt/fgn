@@ -9,6 +9,7 @@ import openai
 from typing import Optional, List
 import logging
 
+
 # Define the ComplexMultiLineTemplate class
 @dataclass
 class ComplexMultiLineTemplate(TypedTemplate):
@@ -25,19 +26,29 @@ class ComplexMultiLineTemplate(TypedTemplate):
     def {{ method.name }}(self{% for param in method.params %}, {{ param.name }}: {{ param.type }}{% endfor %}):
         return "{{ faker_sentence() }}"  # Simulating logic with Faker sentence{% endfor %}"""
 
+
 # Define the pytest fixture for rendered_complex_multiline_template
 @pytest.fixture
 def rendered_complex_multiline_template():
     faker = Faker()
-    Attribute = namedtuple('Attribute', ['name', 'type'])
-    Method = namedtuple('Method', ['name', 'params'])
-    Param = namedtuple('Param', ['name', 'type'])
+    Attribute = namedtuple("Attribute", ["name", "type"])
+    Method = namedtuple("Method", ["name", "params"])
+    Param = namedtuple("Param", ["name", "type"])
 
     attributes = [Attribute(name=faker.word(), type=faker.word()) for _ in range(3)]
-    methods = [Method(name=faker.word(), params=[Param(name=faker.word(), type=faker.word()) for _ in range(2)]) for _ in range(3)]
+    methods = [
+        Method(
+            name=faker.word(),
+            params=[Param(name=faker.word(), type=faker.word()) for _ in range(2)],
+        )
+        for _ in range(3)
+    ]
 
-    template = ComplexMultiLineTemplate(class_name=faker.word().capitalize(), attributes=attributes, methods=methods)
+    template = ComplexMultiLineTemplate(
+        class_name=faker.word().capitalize(), attributes=attributes, methods=methods
+    )
     return template.render()
+
 
 # Define the bool_prompt function
 def bool_prompt(
@@ -48,7 +59,7 @@ def bool_prompt(
     model: str = "gpt-3.5-turbo-0613",
     max_retry: int = 1,
     backoff_factor: int = 2,
-    initial_wait: float = 0.25
+    initial_wait: float = 0.25,
 ) -> bool:
     """
     Customized completion function that interacts with the chat function, processing the response to return a boolean.
@@ -65,15 +76,25 @@ def bool_prompt(
     )
     return response.lower() in ["yes", "true", "y", "t"]
 
+
 # Define the Chat class
 class Chat:
-    def __init__(self, prompt: str = "Is it a good day today?", model: str = "gpt-3.5-turbo-0613"):
+    def __init__(
+        self, prompt: str = "Is it a good day today?", model: str = "gpt-3.5-turbo-0613"
+    ):
         self.prompt = prompt
         self.model = model
 
     def __call__(self) -> str:
-        response = openai.ChatCompletion.create(model=self.model, messages=[{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": self.prompt}])
-        return response['choices'][0]['message']['content']
+        response = openai.ChatCompletion.create(
+            model=self.model,
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": self.prompt},
+            ],
+        )
+        return response["choices"][0]["message"]["content"]
+
 
 # Define the Agent class
 class Agent:
@@ -109,8 +130,13 @@ def rap_battle(agent1: Agent, agent2: Agent, judge: Agent, prompts: List[str]) -
     for prompt in prompts:
         rap1 = agent1.rap(agent2.name, prompt)
         rap2 = agent2.rap(agent1.name, prompt)
-        winner = judge.judge(rap1, rap2, f"Who won the battle? {judge.name}, make your judgment!")
-        print(f"{agent1.name}: {rap1}\n{agent2.name}: {rap2}\nJudge {judge.name} says {'Agent 1' if winner else 'Agent 2'} wins this round!\n")
+        winner = judge.judge(
+            rap1, rap2, f"Who won the battle? {judge.name}, make your judgment!"
+        )
+        print(
+            f"{agent1.name}: {rap1}\n{agent2.name}: {rap2}\nJudge {judge.name} says {'Agent 1' if winner else 'Agent 2'} wins this round!\n"
+        )
+
 
 # Demo:
 kool_keith = Agent(name="Kool Keith")
@@ -128,6 +154,7 @@ rap_battle(kool_keith, xzibit, eminem, prompts)
 # Set up the logging config
 logging.basicConfig(level=logging.INFO)
 
+
 class Agent:
     def __init__(self, name: str):
         self.name = name
@@ -142,13 +169,18 @@ class Agent:
         return rap_line
 
     def judge(self, rap1: str, rap2: str, prompt: str) -> bool:
-        logging.info(f"{self.name} is preparing to judge the following raps:\nRap 1: {rap1}\nRap 2: {rap2}")
+        logging.info(
+            f"{self.name} is preparing to judge the following raps:\nRap 1: {rap1}\nRap 2: {rap2}"
+        )
         judgment_prompt = f"Judge the rap battle between two rappers:\nRap 1: {rap1}\nRap 2: {rap2}\n{prompt}"
         chat_instance = Chat(prompt=judgment_prompt)
         decision = bool_prompt(chat_instance)
-        logging.info(f"{self.name} has made a decision: {'Rap 1 wins' if decision else 'Rap 2 wins'}")
+        logging.info(
+            f"{self.name} has made a decision: {'Rap 1 wins' if decision else 'Rap 2 wins'}"
+        )
         self.history.append(judgment_prompt)
         return decision
+
 
 # Automated Profiling and Optimization decorator
 def automated_profiling_decorator(func):
@@ -158,4 +190,5 @@ def automated_profiling_decorator(func):
         execution_time = time.time() - start_time
         analyze_performance(execution_time)
         return result
+
     return wrapper

@@ -3,7 +3,9 @@
 from dataclasses import dataclass, field
 from typing import Union, Optional
 
-from typetemp.template.typed_prompt import TypedPrompt  # Importing TypedPrompt for extending functionality
+from typetemp.template.typed_prompt import (
+    TypedPrompt,
+)  # Importing TypedPrompt for extending functionality
 
 
 @dataclass
@@ -25,11 +27,14 @@ class TypedLinkedInProfilePrompt(TypedPrompt):
     -----------------------------------------------------------
     __call__: Inherits the __call__ method from TypedPrompt for processing and output generation.
     """
+
     profile_summary: Optional[str] = None  # Generated LinkedIn profile summary
     name: str = "{{ faker_name() }}"
-    source: str = "I ({{ name }}) need you to create a LinkedIn profile summary for me about {{ user_input }}." \
-                  "The summary needs to be {{ num_paragraphs }} paragraphs long, with {{ num_sentences }} " \
-                  "sentences per paragraph."
+    source: str = (
+        "I ({{ name }}) need you to create a LinkedIn profile summary for me about {{ user_input }}."
+        "The summary needs to be {{ num_paragraphs }} paragraphs long, with {{ num_sentences }} "
+        "sentences per paragraph."
+    )
     num_paragraphs: int = 1  # Number of paragraphs to be generated
     num_sentences: int = 1  # Number of sentences per paragraph
     sys_msg: str = "You are a LinkedIn profile creation AI assistant that creates linkedin profiles from instructions."
@@ -49,21 +54,21 @@ class TypedLinkedInProfilePrompt(TypedPrompt):
         Union[str, Optional[str]]: The generated LinkedIn profile summary.
         """
 
-        self.profile_summary = super().__call__(**kwargs)  # Invoke the TypedPrompt's call method
+        self.profile_summary = super().__call__(
+            **kwargs
+        )  # Invoke the TypedPrompt's call method
 
         if self.to == "stdout":
-            print(self.profile_summary)  # Print the profile summary if stdout is the chosen output medium
+            print(
+                self.profile_summary
+            )  # Print the profile summary if stdout is the chosen output medium
 
         return self.profile_summary  # Return the generated profile summary
 
 
 if __name__ == "__main__":
     # Create an instance of the TypedLinkedInProfilePrompt class
-    linkedin_prompt = TypedLinkedInProfilePrompt(
-        user_input="Underwater Basket Weaving",
-        to="stdout"
-    )
+    linkedin_prompt = TypedLinkedInProfilePrompt()
 
     # Generate and output the LinkedIn profile summary
-    linkedin_prompt()
-
+    linkedin_prompt(user_input="Underwater Basket Weaving", to="stdout")

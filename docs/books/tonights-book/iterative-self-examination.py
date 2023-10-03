@@ -4,6 +4,7 @@ class SelfExamCodeCoT:
     It continuously improves the quality of the development process by adopting a loop pattern of creating,
     evaluating, and refining code.
     """
+
     def __init__(self):
         """
         Initializes a new SelfExamCodeCoT instance.
@@ -83,5 +84,7 @@ class SelfExamCodeCoT:
 code_cot = SelfExamCodeCoT()
 
 # Apply Iterative Self-Examination with a given prompt
-final_code = code_cot.iterative_self_exam("Write a Python function to calculate factorial of a number")
+final_code = code_cot.iterative_self_exam(
+    "Write a Python function to calculate factorial of a number"
+)
 print(final_code)

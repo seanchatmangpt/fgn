@@ -2,16 +2,18 @@ import time
 import openai
 from typing import Optional, List, Dict, Any
 
-class OpenAIChat:
 
+class OpenAIChat:
     MAX_RETRIES = 3  # Maximum number of retries before considering the request failed
 
     def __init__(self, api_key: str) -> None:
         openai.api_key = api_key
 
-    def chat(self, prompt: str, model: str, tokens: int, funcs: Optional[List[dict]] = None) -> Any:
+    def chat(
+        self, prompt: str, model: str, tokens: int, funcs: Optional[List[dict]] = None
+    ) -> Any:
         """
-        Send chat completion request to OpenAI API. 
+        Send chat completion request to OpenAI API.
         If an OpenAI Error occurs, it tries again for a maximum of `MAX_RETRIES` times.
         :param prompt: string, the conversation so far
         :param model: string, OpenAI Model ID
@@ -28,15 +30,15 @@ class OpenAIChat:
                     tokens=tokens,
                     messages=[
                         {"role": "system", "content": "You are a helpful assistant."},
-                        {"role": "user", "content": prompt}
+                        {"role": "user", "content": prompt},
                     ],
                     functions=funcs,
                 )
 
                 # Return the assistant's reply
-                for message in reversed(response['choices'][0]['messages']):
-                    if message['role'] == 'assistant':
-                        return message['content']
+                for message in reversed(response["choices"][0]["messages"]):
+                    if message["role"] == "assistant":
+                        return message["content"]
 
             except openai.OpenAIError as e:
                 print(f"OpenAIError occurred: {e}")
@@ -47,7 +49,7 @@ class OpenAIChat:
         # If the code reaches here, it means all attempts have failed
         raise RuntimeError("All attempts to request OpenAI API failed")
 
-              
+
 if __name__ == "__main__":
     openai_chat = OpenAIChat(api_key="your-api-key-here")
     prompt = "How does the Python 'for' loop work?"

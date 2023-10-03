@@ -1,5 +1,5 @@
-
 from ddd.entities.Employee import Employee
+
 
 class EmployeeRepo:
     def __init__(self):
@@ -16,4 +16,3 @@ class EmployeeRepo:
 
     def delete(self, id: str):
         del self.data[id]
-    

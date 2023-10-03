@@ -14,6 +14,7 @@ class TypedTitleDescriptionPrompt(TypedPrompt):
     """
     Class for the Title Description step.
     """
+
     title: str = ""
     description: str = ""
 
@@ -23,6 +24,7 @@ class TypedRequirementAnalysisPrompt(TypedTitleDescriptionPrompt):
     """
     Class for the Requirement Analysis step.
     """
+
     stakeholders: List[str] = field(default_factory=list)
     core_functionalities: List[str] = field(default_factory=list)
     constraints: List[str] = field(default_factory=list)
@@ -36,6 +38,7 @@ class TypedDesignArchitecturePrompt(TypedTitleDescriptionPrompt):
     """
     Class for the Design Architecture step.
     """
+
     components: List[str] = field(default_factory=list)
     interactions: List[str] = field(default_factory=list)
     syntax: str = ""
@@ -49,6 +52,7 @@ class TypedBuildCoreComponentsPrompt(TypedTitleDescriptionPrompt):
     """
     Class for the Build Core Components step.
     """
+
     parsers: List[str] = field(default_factory=list)
     methods: List[str] = field(default_factory=list)
     classes: List[str] = field(default_factory=list)
@@ -62,6 +66,7 @@ class TypedImplementBusinessLogicPrompt(TypedTitleDescriptionPrompt):
     """
     Class for the Implement Business Logic step.
     """
+
     team_composition: str = ""
     goal_setting: str = ""
     data_models: List[str] = field(default_factory=list)
@@ -75,6 +80,7 @@ class TypedTestingPrompt(TypedTitleDescriptionPrompt):
     """
     Class for the Testing step.
     """
+
     unit_tests: List[str] = field(default_factory=list)
     integration_tests: List[str] = field(default_factory=list)
     stress_tests: List[str] = field(default_factory=list)
@@ -88,6 +94,7 @@ class TypedDeploymentPrompt(TypedTitleDescriptionPrompt):
     """
     Class for the Deployment step.
     """
+
     deployment_strategy: str = ""
     ci_cd_pipelines: List[str] = field(default_factory=list)
     monitoring_tools: List[str] = field(default_factory=list)
@@ -101,6 +108,7 @@ class TypedDocumentationPrompt(TypedTitleDescriptionPrompt):
     """
     Class for the Documentation and User Training step.
     """
+
     documentation_types: List[str] = field(default_factory=list)
     user_guides: List[str] = field(default_factory=list)
     api_docs: List[str] = field(default_factory=list)
@@ -114,6 +122,7 @@ class TypedMaintenancePrompt(TypedTitleDescriptionPrompt):
     """
     Class for the Maintenance and Updates step.
     """
+
     monitoring_metrics: List[str] = field(default_factory=list)
     update_schedule: str = ""
     patching_policy: str = ""
@@ -132,7 +141,7 @@ typed_requirement_analysis_prompt = TypedRequirementAnalysisPrompt(
     core_functionalities=["Parsing", "Error Handling"],
     constraints=["Time", "Budget"],
     technologies=["Python", "YAML"],
-    timeframe="Q1"
+    timeframe="Q1",
 )
 
 typed_design_architecture_prompt = TypedDesignArchitecturePrompt(
@@ -142,7 +151,7 @@ typed_design_architecture_prompt = TypedDesignArchitecturePrompt(
     interactions=["Data Flow", "Control Flow"],
     syntax="YAML-based",
     scalability="High",
-    modularity="Modular"
+    modularity="Modular",
 )
 
 typed_build_core_components_prompt = TypedBuildCoreComponentsPrompt(
@@ -152,7 +161,7 @@ typed_build_core_components_prompt = TypedBuildCoreComponentsPrompt(
     methods=["execute", "validate"],
     classes=["TypedPrompt", "Chat"],
     error_handling="Exception Handling",
-    performance_metrics=["Speed", "Memory"]
+    performance_metrics=["Speed", "Memory"],
 )
 
 typed_implement_business_logic_prompt = TypedImplementBusinessLogicPrompt(
@@ -162,7 +171,7 @@ typed_implement_business_logic_prompt = TypedImplementBusinessLogicPrompt(
     goal_setting="S.M.A.R.T",
     data_models=["User", "Environment"],
     algorithms=["NLP", "ML"],
-    optimization_criteria=["Efficiency", "Accuracy"]
+    optimization_criteria=["Efficiency", "Accuracy"],
 )
 
 typed_testing_prompt = TypedTestingPrompt(
@@ -172,7 +181,7 @@ typed_testing_prompt = TypedTestingPrompt(
     integration_tests=["test_end_to_end"],
     stress_tests=["test_load"],
     test_data=["Sample YAML", "Sample JSON"],
-    test_environments=["Local", "Staging"]
+    test_environments=["Local", "Staging"],
 )
 
 typed_deployment_prompt = TypedDeploymentPrompt(
@@ -182,7 +191,7 @@ typed_deployment_prompt = TypedDeploymentPrompt(
     ci_cd_pipelines=["Jenkins", "GitLab"],
     monitoring_tools=["Prometheus", "Grafana"],
     backup_plan="Daily Backups",
-    rollback_procedures=["Automated", "Manual"]
+    rollback_procedures=["Automated", "Manual"],
 )
 
 typed_documentation_prompt = TypedDocumentationPrompt(
@@ -192,7 +201,7 @@ typed_documentation_prompt = TypedDocumentationPrompt(
     user_guides=["Getting Started", "Advanced"],
     api_docs=["Endpoints", "Examples"],
     tutorials=["Video", "Text"],
-    faqs=["General", "Technical"]
+    faqs=["General", "Technical"],
 )
 
 typed_maintenance_prompt = TypedMaintenancePrompt(
@@ -202,25 +211,25 @@ typed_maintenance_prompt = TypedMaintenancePrompt(
     update_schedule="Monthly",
     patching_policy="Security First",
     support_channels=["Email", "Chat"],
-    user_feedback_mechanisms=["Survey", "Reviews"]
+    user_feedback_mechanisms=["Survey", "Reviews"],
 )
 
 # Convert dataclasses to dictionaries
 data = {
-    'TypedRequirementAnalysisPrompt': asdict(typed_requirement_analysis_prompt),
-    'TypedDesignArchitecturePrompt': asdict(typed_design_architecture_prompt),
-    'TypedBuildCoreComponentsPrompt': asdict(typed_build_core_components_prompt),
-    'TypedImplementBusinessLogicPrompt': asdict(typed_implement_business_logic_prompt),
-    'TypedTestingPrompt': asdict(typed_testing_prompt),
-    'TypedDeploymentPrompt': asdict(typed_deployment_prompt),
-    'TypedDocumentationPrompt': asdict(typed_documentation_prompt),
-    'TypedMaintenancePrompt': asdict(typed_maintenance_prompt)
+    "TypedRequirementAnalysisPrompt": asdict(typed_requirement_analysis_prompt),
+    "TypedDesignArchitecturePrompt": asdict(typed_design_architecture_prompt),
+    "TypedBuildCoreComponentsPrompt": asdict(typed_build_core_components_prompt),
+    "TypedImplementBusinessLogicPrompt": asdict(typed_implement_business_logic_prompt),
+    "TypedTestingPrompt": asdict(typed_testing_prompt),
+    "TypedDeploymentPrompt": asdict(typed_deployment_prompt),
+    "TypedDocumentationPrompt": asdict(typed_documentation_prompt),
+    "TypedMaintenancePrompt": asdict(typed_maintenance_prompt),
 }
 
 # Dump to YAML
 yaml_data = yaml.dump(data, default_flow_style=False)
 
-with open('chain.yaml', 'w') as f:
+with open("chain.yaml", "w") as f:
     f.write(yaml_data)
 
 print(yaml_data)
@@ -229,7 +238,9 @@ print(yaml_data)
 
 import yaml
 from typing import Dict, Any, Union
-from typetemp.template.typed_prompt import TypedPrompt  # Import TypedPrompt for extending functionality
+from typetemp.template.typed_prompt import (
+    TypedPrompt,
+)  # Import TypedPrompt for extending functionality
 
 
 def load_yaml_dsl(file_path: str) -> Dict[str, Any]:
@@ -246,7 +257,7 @@ def load_yaml_dsl(file_path: str) -> Dict[str, Any]:
     Dict[str, Any]
         A dictionary representation of the YAML DSL.
     """
-    with open(file_path, 'r') as f:
+    with open(file_path, "r") as f:
         return yaml.safe_load(f)
 
 

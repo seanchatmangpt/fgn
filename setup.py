@@ -13,7 +13,8 @@ from setuptools import setup
 if __name__ == "__main__":
     try:
         today = date.today()
-        version = "2023.9.20"
+        # version = "2023.9.20"
+        version = today.strftime("%Y.%m.%d")
         setup(version=version, name="fgn")
     except:  # noqa
         print(

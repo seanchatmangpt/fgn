@@ -4,8 +4,12 @@ from dataclasses import field
 from typing import Union
 
 from fgn.completion.chat import chat
-from typetemp.environment.typed_environment import TypedEnvironment  # Typed environment class
-from typetemp.environment.typed_native_environment import TypedNativeEnvironment  # Native typed environment class
+from typetemp.environment.typed_environment import (
+    TypedEnvironment,
+)  # Typed environment class
+from typetemp.environment.typed_native_environment import (
+    TypedNativeEnvironment,
+)  # Native typed environment class
 from typetemp.template.render_mixin import RenderMixin
 
 # Initializing environment instances
@@ -24,12 +28,13 @@ class TypedPrompt(RenderMixin):
     - sys_msg: A system message to indicate the role of this instance.
     - model: The model version to be used in the Chat class. Default is "3".
     """
+
     source: str = None  # The string template to be rendered
     user_input: str = None  # Input from the user
     output: Union[str, dict] = None  # To hold the output from the chat
     sys_msg: str = "You are a prompt AI assistant."  # System message to define the role
-    model: str = "3"  # Model version for the Chat class, default is "3"
-    to: str = "stdout"  # Output medium for the output
+    model: str = "3i"  # Model version for the Chat class, default is "3"
+    to: str = None  # Output medium for the output
     use_native: bool = False  # Whether to use NativeEnvironment for rendering
 
     def __init__(self, **kwargs):
@@ -57,15 +62,18 @@ class TypedPrompt(RenderMixin):
         rendered_prompt = self._render(**kwargs)
 
         # Pass the rendered prompt to the Chat instance for OpenAI interaction
-        self.output = chat(prompt=rendered_prompt, sys_msg=self.sys_msg, model=self.model)
+        self.output = chat(
+            prompt=rendered_prompt, sys_msg=self.sys_msg, model=self.model
+        )
 
         return self.output
 
 
 if __name__ == "__main__":
     # Instantiate TypedPrompt class
-    typed_prompt = TypedPrompt(source="Hello {{ name }}! How are you doing today?",
-                               to="stdout")
+    typed_prompt = TypedPrompt(
+        source="Hello {{ name }}! How are you doing today?", to="stdout"
+    )
 
     # Call the instance to render the prompt and interact with the user
     user_input = typed_prompt(name="John Doe")

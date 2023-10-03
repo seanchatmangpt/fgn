@@ -7,7 +7,7 @@ import requests
 url = "http://api.example.com/resources"
 
 # If authentication is required, specify the relevant details
-auth = ('username', 'password')
+auth = ("username", "password")
 
 # Make a GET request to fetch data
 response = requests.get(url, auth=auth)
@@ -26,9 +26,9 @@ else:
 # Alternatively, for a service that provides a Python SDK, use the relevant service-specific functions:
 from some_service_sdk import SomeService
 
-service = SomeService('api_key')
+service = SomeService("api_key")
 
-response = service.do_something('param1', 'param2')
+response = service.do_something("param1", "param2")
 
 if response.is_successful():
     print(response.get_data())

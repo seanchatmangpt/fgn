@@ -13,8 +13,8 @@ def create_init_files(directory: str = ".", verbose=False):
     :param directory: The root directory where the __init__.py files should be created.
     """
     for root, _, _ in os.walk(directory):
-        init_file_path = os.path.join(root, '__init__.py')
-        with open(init_file_path, 'a'):
+        init_file_path = os.path.join(root, "__init__.py")
+        with open(init_file_path, "a"):
             if verbose:
                 print(f"Created {init_file_path}")
 
@@ -27,6 +27,7 @@ if __name__ == "__main__":
         """
         A point in n dimensions.
         """
+
         def __init__(self, x: int, y: int):
             self.x = x
             self.y = y
@@ -41,7 +42,6 @@ if __name__ == "__main__":
         """
         print(point, n)
 
-
     # def get_linkedin_profile(prompt: TypedLinkedInProfilePrompt):
     #     """
     #     Get a LinkedIn profile based on the given prompt.
@@ -54,10 +54,12 @@ if __name__ == "__main__":
     # schema = generate_json_schema(get_linkedin_profile)
     # schema = generate_json_schema(process_points_in_n_dimensions)
 
-    schema = str_func_schema("fake_full_name_generator",
-                             "Generate a fake full name",
-                             "full_name",
-                             "The first and last name of the person")
+    schema = str_func_schema(
+        "fake_full_name_generator",
+        "Generate a fake full name",
+        "full_name",
+        "The first and last name of the person",
+    )
 
     def fake_full_name_generator(full_name: str):
         """

@@ -3,10 +3,12 @@ from torch import nn, optim
 from torch.utils.data import DataLoader, Dataset
 from sklearn.model_selection import train_test_split
 
+
 class CodeData(Dataset):
     """
     Dataset for storing code and corresponding distances.
     """
+
     def __init__(self, codes, distances):
         """
         Initialize CodeData instance.
@@ -23,19 +25,24 @@ class CodeData(Dataset):
     def __getitem__(self, idx):
         return self.codes[idx], self.distances[idx]
 
+
 class CodeDistanceModel(nn.Module):
     """
     Neural network model for estimating code distances.
     """
+
     def __init__(self):
         super(CodeDistanceModel, self).__init__()
-        self.fc1 = nn.Linear(512, 512)   # Choose the dimension according to your feature set
+        self.fc1 = nn.Linear(
+            512, 512
+        )  # Choose the dimension according to your feature set
         self.fc2 = nn.Linear(512, 1)
 
     def forward(self, x):
         x = torch.relu(self.fc1(x))
         x = self.fc2(x)
         return x
+
 
 def train_model(model, data_loader, criterion, optimizer):
     """
@@ -66,6 +73,7 @@ def train_model(model, data_loader, criterion, optimizer):
     avg_loss = running_loss / len(data_loader)
     return avg_loss
 
+
 def evaluate_model(model, data_loader, criterion):
     """
     Function to evaluate the model.
@@ -90,6 +98,7 @@ def evaluate_model(model, data_loader, criterion):
     avg_loss = running_loss / len(data_loader)
     return avg_loss
 
+
 def run_training_and_evaluation(codes, distances, epochs=5):
     """
     Function to train and evaluate the model.
@@ -99,7 +108,9 @@ def run_training_and_evaluation(codes, distances, epochs=5):
     :param epochs: Number of training epochs
     """
     # Split data into train and test sets
-    codes_train, codes_test, distances_train, distances_test = train_test_split(codes, distances, test_size=0.2)
+    codes_train, codes_test, distances_train, distances_test = train_test_split(
+        codes, distances, test_size=0.2
+    )
 
     # Create datasets
     train_data = CodeData(codes_train, distances_train)
@@ -111,7 +122,7 @@ def run_training_and_evaluation(codes, distances, epochs=5):
 
     # Create model, criterion and optimizer
     model = CodeDistanceModel()
-    criterion = nn.MSELoss() # Mean Squared Error Loss for regression task
+    criterion = nn.MSELoss()  # Mean Squared Error Loss for regression task
     optimizer = optim.Adam(model.parameters())
 
     for epoch in range(epochs):
@@ -119,6 +130,8 @@ def run_training_and_evaluation(codes, distances, epochs=5):
         train_loss = train_model(model, train_loader, criterion, optimizer)
         eval_loss = evaluate_model(model, test_loader, criterion)
 
-        print(f"Epoch {epoch+1}/{epochs}.. "
-              f"Train loss: {train_loss:.3f}.. "
-              f"Validation loss: {eval_loss:.3f}")
+        print(
+            f"Epoch {epoch+1}/{epochs}.. "
+            f"Train loss: {train_loss:.3f}.. "
+            f"Validation loss: {eval_loss:.3f}"
+        )

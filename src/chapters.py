@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 from typetemp.template.typed_template import TypedTemplate
 
+
 class PragmaticStarterKitBook:
     """
     Represents the book "How the PragmaticProgrammerAGIAgent built the Pragmatic Starter Kit with DDD, Docker Compose,
@@ -13,83 +14,83 @@ class PragmaticStarterKitBook:
         self.chapters = [
             {
                 "title": "Introduction to PragmaticProgrammerAGIAgent",
-                "summary": "An introduction to the innovative PragmaticProgrammerAGIAgent and its mission to create high-quality code."
+                "summary": "An introduction to the innovative PragmaticProgrammerAGIAgent and its mission to create high-quality code.",
             },
             {
                 "title": "The Pragmatic Philosophy",
-                "summary": "A look into the Pragmatic Programmer's approach that drives the AGIAgent."
+                "summary": "A look into the Pragmatic Programmer's approach that drives the AGIAgent.",
             },
             {
                 "title": "DDD and Code Generation",
-                "summary": "Exploring Domain-Driven Design principles and how AGIAgent integrates them."
+                "summary": "Exploring Domain-Driven Design principles and how AGIAgent integrates them.",
             },
             {
                 "title": "Automated Testing with Pytest",
-                "summary": "How AGIAgent employs Pytest for robust and automated code testing."
+                "summary": "How AGIAgent employs Pytest for robust and automated code testing.",
             },
             {
                 "title": "Docker Compose for Environment Management",
-                "summary": "Utilizing Docker Compose for controlling and managing development environments."
+                "summary": "Utilizing Docker Compose for controlling and managing development environments.",
             },
             {
                 "title": "Continuous Integration with Git Actions",
-                "summary": "Implementing Continuous Integration workflows using Git Actions."
+                "summary": "Implementing Continuous Integration workflows using Git Actions.",
             },
             {
                 "title": "Refinement and Iteration in Code Generation",
-                "summary": "The iterative process of code generation and refinement used by AGIAgent."
+                "summary": "The iterative process of code generation and refinement used by AGIAgent.",
             },
             {
                 "title": "Version Control Strategies",
-                "summary": "Effective version control practices followed by AGIAgent."
+                "summary": "Effective version control practices followed by AGIAgent.",
             },
             {
                 "title": "Building the Pragmatic Starter Kit",
-                "summary": "A deep dive into building the Pragmatic Starter Kit using various technologies."
+                "summary": "A deep dive into building the Pragmatic Starter Kit using various technologies.",
             },
             {
                 "title": "Regression Testing and Full Automation",
-                "summary": "Implementing regression testing and achieving full automation in development."
+                "summary": "Implementing regression testing and achieving full automation in development.",
             },
             {
                 "title": "Monitoring and Performance Optimization",
-                "summary": "Methods used by AGIAgent to monitor and optimize performance."
+                "summary": "Methods used by AGIAgent to monitor and optimize performance.",
             },
             {
                 "title": "Documentation and Community Engagement",
-                "summary": "Creating comprehensive documentation and fostering community collaboration."
+                "summary": "Creating comprehensive documentation and fostering community collaboration.",
             },
             {
                 "title": "Security and Compliance",
-                "summary": "Ensuring security measures and compliance with legal requirements."
+                "summary": "Ensuring security measures and compliance with legal requirements.",
             },
             {
                 "title": "Deployment and Scalability",
-                "summary": "Strategies for deploying and scaling applications effectively."
+                "summary": "Strategies for deploying and scaling applications effectively.",
             },
             {
                 "title": "Debugging and Troubleshooting",
-                "summary": "Advanced techniques for debugging and troubleshooting code."
+                "summary": "Advanced techniques for debugging and troubleshooting code.",
             },
             {
                 "title": "Customizing the Pragmatic Starter Kit",
-                "summary": "Guidelines for customizing and extending the Pragmatic Starter Kit."
+                "summary": "Guidelines for customizing and extending the Pragmatic Starter Kit.",
             },
             {
                 "title": "Real-world Case Studies",
-                "summary": "A look at how the Pragmatic Starter Kit has been applied in real-world scenarios."
+                "summary": "A look at how the Pragmatic Starter Kit has been applied in real-world scenarios.",
             },
             {
                 "title": "Future Directions and Evolution",
-                "summary": "Exploring potential future enhancements and the evolution of the Pragmatic Starter Kit."
+                "summary": "Exploring potential future enhancements and the evolution of the Pragmatic Starter Kit.",
             },
             {
                 "title": "Contributing to the Project",
-                "summary": "How to contribute to the ongoing development and improvement of the Pragmatic Starter Kit."
+                "summary": "How to contribute to the ongoing development and improvement of the Pragmatic Starter Kit.",
             },
             {
                 "title": "Conclusion: Building a Pragmatic Future",
-                "summary": "Reflecting on the journey and envisioning a pragmatic future with AGIAgent."
+                "summary": "Reflecting on the journey and envisioning a pragmatic future with AGIAgent.",
             },
         ]
 
@@ -102,8 +103,11 @@ class PragmaticStarterKitBook:
         """
         summaries_md = ""
         for idx, chapter in enumerate(self.chapters, start=1):
-            summaries_md += f"### Chapter {idx}: {chapter['title']}\n\n{chapter['summary']}\n\n"
+            summaries_md += (
+                f"### Chapter {idx}: {chapter['title']}\n\n{chapter['summary']}\n\n"
+            )
         return summaries_md
+
 
 # Instantiate the PragmaticStarterKitBook class
 book = PragmaticStarterKitBook()
@@ -136,7 +140,7 @@ def generate_chapters(chapters):
         chapter_template = ChapterTemplate(
             chapter_number=idx + 1,
             chapter_title=chapter["title"],
-            summary=chapter["summary"]
+            summary=chapter["summary"],
         )
         chapter_template.render()
 
@@ -144,4 +148,3 @@ def generate_chapters(chapters):
 
 
 generate_chapters(PragmaticStarterKitBook().chapters)
-

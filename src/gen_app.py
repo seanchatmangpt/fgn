@@ -33,7 +33,15 @@ if __name__ == '__main__':
 
 
 def generate_app():
-    entities = ['Strength', 'Weakness', 'Opportunity', 'Threat', 'Alert', 'User', 'Metrics']
+    entities = [
+        "Strength",
+        "Weakness",
+        "Opportunity",
+        "Threat",
+        "Alert",
+        "User",
+        "Metrics",
+    ]
 
     generate_reporting_system_entities(entities)
 

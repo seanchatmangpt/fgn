@@ -6,6 +6,7 @@ from typetemp.template.typed_template import TypedTemplate
 # Initialize a mock environment
 _mock_env = TypedEnvironment()
 
+
 # To integrate this mixin into your existing TypedTemplate class, you'd do something like this:
 @dataclass
 class NewTypedTemplate(TypedTemplate):

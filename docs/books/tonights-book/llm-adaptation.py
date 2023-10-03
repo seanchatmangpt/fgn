@@ -59,16 +59,13 @@ class AGILargeModelAdaptation:
 
         return adaptation_prompt + new_task_prompt
 
+
 # Instantiate the AGILargeModelAdaptation class
 large_model = None  # Assume this is the large language model that you want to adapt
 agi_adaptation = AGILargeModelAdaptation(large_model)
 
 # Specify few-shot examples
-few_shot_examples = [
-    "Example 1",
-    "Example 2",
-    "Example 3"
-]
+few_shot_examples = ["Example 1", "Example 2", "Example 3"]
 agi_adaptation.few_shot_learning(few_shot_examples)
 
 # Adapt the model to a new task

@@ -48,7 +48,9 @@ def train_transformer_chain_of_thought(thoughts, epochs):
     data_loader = DataLoader(dataset, batch_size=64)
 
     # Initialize the model
-    model = ChainOfThoughtTransformer(d_model=512, nhead=8, num_encoder_layers=6, num_decoder_layers=6)
+    model = ChainOfThoughtTransformer(
+        d_model=512, nhead=8, num_encoder_layers=6, num_decoder_layers=6
+    )
 
     # Define the loss function and the optimizer
     criterion = torch.nn.CrossEntropyLoss()
@@ -86,7 +88,9 @@ def generate_code_with_chain_of_thought(model, thoughts):
     """
     model.eval()
 
-    thoughts_tensor = torch.tensor(thoughts).unsqueeze(0)  # Unsqueezing to add the batch dimension
+    thoughts_tensor = torch.tensor(thoughts).unsqueeze(
+        0
+    )  # Unsqueezing to add the batch dimension
     output = model(thoughts_tensor, thoughts_tensor)
 
     # Apply softmax to the output to get probabilities
@@ -96,6 +100,8 @@ def generate_code_with_chain_of_thought(model, thoughts):
     next_thought = torch.multinomial(output_probs[0, -1], 1)
 
     generated_thoughts = thoughts + next_thought.tolist()
-    generated_code = ''.join(generated_thoughts)  # Join the thoughts into a complete code
+    generated_code = "".join(
+        generated_thoughts
+    )  # Join the thoughts into a complete code
 
     return generated_code

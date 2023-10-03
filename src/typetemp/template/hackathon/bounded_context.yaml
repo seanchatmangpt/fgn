@@ -1,0 +1,60 @@
+classes:
+  UbiquitousLanguage:
+    description: '
+
+      1. Must excel in Scrape and Synthesize: Capability to extract data from the
+      web and generate datasets, summaries, and plans.
+
+      2. Data Mastery: Perform essential data science tasks including imputation,
+      labeling, and sorting.
+
+      3. Coding Excellence: Master the art of coding, capable of building functions,
+      CLI games, password shorteners, web servers, etc.
+
+      4. Open-ended Agent Protocol: Ability to innovate beyond listed challenges while
+      adhering to the agent protocol.
+
+      5. Performance Metrics: Should meet or exceed benchmark performance metrics.
+
+      6. Scalability: Must be scalable and compatible with Weaviate vector database.
+
+      7. Open Source Commitment: Code should be open source and adhere to the MIT
+      License.
+
+      8. Cross-Functional Collaboration: Encourage teamwork and effective communication
+      among participants.
+
+      9. Security: Prioritize secure coding practices to protect against vulnerabilities.
+
+      10. Documentation: Comprehensive documentation for setup, configuration, and
+      usage.
+
+      '
+    slots:
+      glossary:
+      - Data Science Mastery
+      - Web Scraping and Synthesis
+      - ', Coding Excellence, Open-ended Innovation, Performance Metrics'
+      - ', Scalability, Open Source Commitment, Cross'
+      - '-Functional Collaboration, Security, Documentation
+
+
+        Data Extraction'
+      - and Generation
+      nouns:
+      - DataScience
+      - DataSyn
+      - 'thesis
+
+
+        DataEx'
+      - traction
+      - ''
+      - ''
+      verbs:
+      - Synthesize
+      - Create
+      - Innovate
+      - Optimize
+      - Develop
+      - Extract

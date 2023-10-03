@@ -3,10 +3,12 @@ import numpy as np
 from scipy.spatial import distance
 import unittest
 
+
 class Node:
     """
     Class to represent a node in the path finding tree.
     """
+
     def __init__(self, coordinates):
         """
         Initialize a Node instance.
@@ -16,10 +18,12 @@ class Node:
         self.coordinates = np.array(coordinates)
         self.parent = None
 
+
 class PathFindingTree:
     """
     Class to represent the path finding tree for the PKE-RRT algorithm.
     """
+
     def __init__(self, start, goal):
         """
         Initialize a PathFindingTree instance.
@@ -39,10 +43,12 @@ class PathFindingTree:
         """
         self.nodes.append(node)
 
+
 class PKERRT:
     """
     Class to represent the PKE-RRT algorithm.
     """
+
     def __init__(self, start, goal, obstacle_list, size):
         """
         Initialize a PKERRT instance.
@@ -59,9 +65,7 @@ class PKERRT:
         self.tree = PathFindingTree(self.start, self.goal)
 
     def plan(self):
-        """
-
-        """
+        """ """
         while True:
             random_node = self.get_random_node()
             nearest_node = self.get_nearest_node(random_node)
@@ -76,36 +80,37 @@ class PKERRT:
                 return self.get_path(new_node)
 
     def get_random_node(self):
-        """
-        """
-        return Node(np.array([random.uniform(0, self.size), random.uniform(0, self.size)]))
+        """ """
+        return Node(
+            np.array([random.uniform(0, self.size), random.uniform(0, self.size)])
+        )
 
     def get_nearest_node(self, node):
-        """
-        """
-        distances = [distance.euclidean(n.coordinates, node.coordinates) for n in self.tree.nodes]
+        """ """
+        distances = [
+            distance.euclidean(n.coordinates, node.coordinates) for n in self.tree.nodes
+        ]
         nearest_index = np.argmin(distances)
         return self.tree.nodes[nearest_index]
 
     def move_towards(self, nearest_node, random_node):
-        """
-        """
-        direction = (random_node.coordinates - nearest_node.coordinates) / np.linalg.norm(random_node.coordinates - nearest_node.coordinates)
+        """ """
+        direction = (
+            random_node.coordinates - nearest_node.coordinates
+        ) / np.linalg.norm(random_node.coordinates - nearest_node.coordinates)
         new_node = Node(nearest_node.coordinates + direction)
         new_node.parent = nearest_node
         return new_node
 
     def check_collision(self, node):
-        """
-        """
+        """ """
         for ob in self.obstacle_list:
             if distance.euclidean(node.coordinates, ob) < 1.0:
                 return True
         return False
 
     def get_path(self, node):
-        """
-        """
+        """ """
         path = []
         while node is not None:
             path.append(node.coordinates)
@@ -117,9 +122,12 @@ class TestPkerrt(unittest.TestCase):
     """
     Unit tests for the PKERRT class
     """
+
     def setUp(self):
         obstacle_list = [[2, 2], [3, 3], [4, 4], [5, 5]]
-        self.pkerrt = PKERRT(start=[0, 0], goal=[6, 6], obstacle_list=obstacle_list, size=10)
+        self.pkerrt = PKERRT(
+            start=[0, 0], goal=[6, 6], obstacle_list=obstacle_list, size=10
+        )
 
     def test_get_random_node(self):
         """
@@ -128,7 +136,8 @@ class TestPkerrt(unittest.TestCase):
         node = self.pkerrt.get_random_node()
         self.assertEqual(len(node.coordinates), 2)
         self.assertTrue(
-            0 <= node.coordinates[0] <= self.pkerrt.size and 0 <= node.coordinates[1] <= self.pkerrt.size
+            0 <= node.coordinates[0] <= self.pkerrt.size
+            and 0 <= node.coordinates[1] <= self.pkerrt.size
         )
 
     def test_get_nearest_node(self):
@@ -139,7 +148,8 @@ class TestPkerrt(unittest.TestCase):
         nearest_node = self.pkerrt.get_nearest_node(node)
         for n in self.pkerrt.tree.nodes:
             self.assertTrue(
-                distance.euclidean(nearest_node.coordinates, node.coordinates) <= distance.euclidean(n.coordinates, node.coordinates)
+                distance.euclidean(nearest_node.coordinates, node.coordinates)
+                <= distance.euclidean(n.coordinates, node.coordinates)
             )
 
 

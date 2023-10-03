@@ -112,11 +112,15 @@ def generate_reporting_system_entities(entities):
         value_object_template.render()
 
         # Create the entity itself
-        entity_template = EntityTemplate(class_name=entity, value_object=f"{entity}Value")
+        entity_template = EntityTemplate(
+            class_name=entity, value_object=f"{entity}Value"
+        )
         entity_template.render()
 
         # Create the aggregate root for the entity
-        aggregate_root_template = AggregateRootTemplate(class_name=f"{entity}Aggregate", entity_name=entity)
+        aggregate_root_template = AggregateRootTemplate(
+            class_name=f"{entity}Aggregate", entity_name=entity
+        )
         aggregate_root_template.render()
 
         # Create the repository for the entity

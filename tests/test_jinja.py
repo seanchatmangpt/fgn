@@ -34,39 +34,69 @@ if __name__ == '__main__':
 # Commands to generate for the CRUD CLI
 commands_to_generate = [
     {
-        'name': 'create',
-        'args': 'item, value',
-        'options': [
-            {'name': 'item', 'type': 'str', 'required': 'True', 'help': "Name of the item"},
-            {'name': 'value', 'type': 'str', 'required': 'True', 'help': "Value of the item"}
+        "name": "create",
+        "args": "item, value",
+        "options": [
+            {
+                "name": "item",
+                "type": "str",
+                "required": "True",
+                "help": "Name of the item",
+            },
+            {
+                "name": "value",
+                "type": "str",
+                "required": "True",
+                "help": "Value of the item",
+            },
         ],
-        'documentation': 'Create a new item.'
+        "documentation": "Create a new item.",
     },
     {
-        'name': 'read',
-        'args': 'item',
-        'options': [
-            {'name': 'item', 'type': 'str', 'required': 'True', 'help': "Name of the item"}
+        "name": "read",
+        "args": "item",
+        "options": [
+            {
+                "name": "item",
+                "type": "str",
+                "required": "True",
+                "help": "Name of the item",
+            }
         ],
-        'documentation': 'Read an item.'
+        "documentation": "Read an item.",
     },
     {
-        'name': 'update',
-        'args': 'item, new_value',
-        'options': [
-            {'name': 'item', 'type': 'str', 'required': 'True', 'help': "Name of the item"},
-            {'name': 'new_value', 'type': 'str', 'required': 'True', 'help': "New value of the item"}
+        "name": "update",
+        "args": "item, new_value",
+        "options": [
+            {
+                "name": "item",
+                "type": "str",
+                "required": "True",
+                "help": "Name of the item",
+            },
+            {
+                "name": "new_value",
+                "type": "str",
+                "required": "True",
+                "help": "New value of the item",
+            },
         ],
-        'documentation': 'Update an item.'
+        "documentation": "Update an item.",
     },
     {
-        'name': 'delete',
-        'args': 'item',
-        'options': [
-            {'name': 'item', 'type': 'str', 'required': 'True', 'help': "Name of the item"}
+        "name": "delete",
+        "args": "item",
+        "options": [
+            {
+                "name": "item",
+                "type": "str",
+                "required": "True",
+                "help": "Name of the item",
+            }
         ],
-        'documentation': 'Delete an item.'
-    }
+        "documentation": "Delete an item.",
+    },
 ]
 
 # Rendering the Jinja2 template
@@ -74,27 +104,32 @@ template = Template(cli_template)
 rendered_cli_code = template.render(commands=commands_to_generate)
 
 # Writing the generated CLI code to a temporary Python file
-temp_file_name = 'temp_cli.py'
-with open(temp_file_name, 'w') as f:
+temp_file_name = "temp_cli.py"
+with open(temp_file_name, "w") as f:
     f.write(rendered_cli_code)
 
 # Import the generated CLI for testing
-spec = importlib.util.spec_from_file_location('temp_cli', temp_file_name)
+spec = importlib.util.spec_from_file_location("temp_cli", temp_file_name)
 temp_cli = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = temp_cli
 spec.loader.exec_module(temp_cli)
 
-@pytest.mark.parametrize("command,expected_output", [
-    ("create --item test --value value", "Command create executed.\n"),
-    ("read --item test", "Command read executed.\n"),
-    ("update --item test --new_value new_value", "Command update executed.\n"),
-    ("delete --item test", "Command delete executed.\n")
-])
+
+@pytest.mark.parametrize(
+    "command,expected_output",
+    [
+        ("create --item test --value value", "Command create executed.\n"),
+        ("read --item test", "Command read executed.\n"),
+        ("update --item test --new_value new_value", "Command update executed.\n"),
+        ("delete --item test", "Command delete executed.\n"),
+    ],
+)
 def test_crud_commands(command, expected_output):
     runner = CliRunner()
     result = runner.invoke(temp_cli.cli, command.split())
     assert result.exit_code == 0
     assert result.output == expected_output
+
 
 # Cleanup temporary CLI file after tests are complete
 os.remove(temp_file_name)

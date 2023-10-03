@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from PathPlanning.RRT import RRT
 from PKE import PKE
 
+
 def run_pke_rrt_test(n_goals, complex_scenario):
     """
     This function conducts the PKE-RRT algorithm test for complex multi-goal path finding.
@@ -34,6 +35,7 @@ def run_pke_rrt_test(n_goals, complex_scenario):
 
     return test_result
 
+
 # Define the complex scenario
 complex_multi_goal_scenario = Scenario()
 
@@ -44,14 +46,16 @@ n_goals = 10
 test_result = run_pke_rrt_test(n_goals, complex_multi_goal_scenario)
 
 # Print the test result
-print(f"Time Taken: {test_result['time_taken']}s, Path Length: {test_result['path_length']}, Memory Used: {test_result['memory_used']}MB")
+print(
+    f"Time Taken: {test_result['time_taken']}s, Path Length: {test_result['path_length']}, Memory Used: {test_result['memory_used']}MB"
+)
 
 # Plot the results
 plt.figure()
-plt.plot(test_result['time_taken'], test_result['path_length'], label='Path Length')
-plt.plot(test_result['time_taken'], test_result['memory_used'], label='Memory Used')
-plt.xlabel('Time Taken (s)')
-plt.ylabel('Path Length / Memory Used (MB)')
+plt.plot(test_result["time_taken"], test_result["path_length"], label="Path Length")
+plt.plot(test_result["time_taken"], test_result["memory_used"], label="Memory Used")
+plt.xlabel("Time Taken (s)")
+plt.ylabel("Path Length / Memory Used (MB)")
 plt.legend()
-plt.title('PKE-RRT Algorithm Performance in Complex Multi-Goal Path Finding Scenarios')
+plt.title("PKE-RRT Algorithm Performance in Complex Multi-Goal Path Finding Scenarios")
 plt.show()

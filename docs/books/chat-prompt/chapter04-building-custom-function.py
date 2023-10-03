@@ -7,7 +7,7 @@ def hello_world_in_french():
     Custom function to produce the French translation of 'Hello, world!'
     :return: The string 'Bonjour, monde!'
     """
-    return 'Bonjour, monde!'
+    return "Bonjour, monde!"
 
 
 def build_chat_model():
@@ -16,7 +16,7 @@ def build_chat_model():
     This function uses a custom function via the funcs parameter.
     """
     # Store API Key
-    openai.api_key = 'api_key'
+    openai.api_key = "api_key"
 
     # Define the chat completion model
     model = "gpt-3.5-turbo"
@@ -39,7 +39,13 @@ def build_chat_model():
     # JSON Array containing the messages
     messages = [
         {"role": "system", "content": system},
-        {"role": "user", "content": { "function": "translate_to_french", "arguments": {"text": "Hello, world!"} }},
+        {
+            "role": "user",
+            "content": {
+                "function": "translate_to_french",
+                "arguments": {"text": "Hello, world!"},
+            },
+        },
     ]
 
     # Add function to the functions parameter
@@ -58,7 +64,7 @@ def build_chat_model():
     )
 
     # Print the assistant's message
-    print(response['choices'][0]['message']['content'])
+    print(response["choices"][0]["message"]["content"])
 
 
 # Run the function

@@ -8,19 +8,23 @@ import yaml
 
 from typetemp.template.typed_prompt import TypedPrompt
 
+
 @dataclass
 class TypedTitleDescriptionPrompt(TypedPrompt):
     """
     Class for the Title Description step.
     """
+
     title: str = ""
     description: str = ""
+
 
 @dataclass
 class TypedRequirementAnalysisPrompt(TypedTitleDescriptionPrompt):
     """
     Class for the Requirement Analysis step.
     """
+
     stakeholders: List[str] = field(default_factory=list)
     core_functionalities: List[str] = field(default_factory=list)
     constraints: List[str] = field(default_factory=list)
@@ -28,11 +32,13 @@ class TypedRequirementAnalysisPrompt(TypedTitleDescriptionPrompt):
     timeframe: str = ""
     source: str = "Gather detailed requirements that the DSL needs to fulfill. Identify core functionalities, consult with {{ stakeholders }}, consider {{ constraints }}, choose appropriate {{ technologies }}, within the timeframe of {{ timeframe }}."
 
+
 @dataclass
 class TypedDesignArchitecturePrompt(TypedTitleDescriptionPrompt):
     """
     Class for the Design Architecture step.
     """
+
     components: List[str] = field(default_factory=list)
     interactions: List[str] = field(default_factory=list)
     syntax: str = ""
@@ -40,11 +46,13 @@ class TypedDesignArchitecturePrompt(TypedTitleDescriptionPrompt):
     modularity: str = ""
     source: str = "Plan how the DSL will interact with other system components {{ components }}. Define the DSL's syntax {{ syntax }}, ensure {{ scalability }} and {{ modularity }}, and outline component interactions {{ interactions }}."
 
+
 @dataclass
 class TypedBuildCoreComponentsPrompt(TypedTitleDescriptionPrompt):
     """
     Class for the Build Core Components step.
     """
+
     parsers: List[str] = field(default_factory=list)
     methods: List[str] = field(default_factory=list)
     classes: List[str] = field(default_factory=list)
@@ -52,11 +60,13 @@ class TypedBuildCoreComponentsPrompt(TypedTitleDescriptionPrompt):
     performance_metrics: List[str] = field(default_factory=list)
     source: str = "Develop parsers {{ parsers }} for the YAML configurations. Implement classes {{ classes }} and methods {{ methods }} for functionalities. Include {{ error_handling }} and consider {{ performance_metrics }}."
 
+
 @dataclass
 class TypedImplementBusinessLogicPrompt(TypedTitleDescriptionPrompt):
     """
     Class for the Implement Business Logic step.
     """
+
     team_composition: str = ""
     goal_setting: str = ""
     data_models: List[str] = field(default_factory=list)
@@ -64,11 +74,13 @@ class TypedImplementBusinessLogicPrompt(TypedTitleDescriptionPrompt):
     optimization_criteria: List[str] = field(default_factory=list)
     source: str = "Add logic for team composition {{ team_composition }}, goal setting {{ goal_setting }}, use data models {{ data_models }}, apply algorithms {{ algorithms }}, and meet optimization criteria {{ optimization_criteria }}."
 
+
 @dataclass
 class TypedTestingPrompt(TypedTitleDescriptionPrompt):
     """
     Class for the Testing step.
     """
+
     unit_tests: List[str] = field(default_factory=list)
     integration_tests: List[str] = field(default_factory=list)
     stress_tests: List[str] = field(default_factory=list)
@@ -76,11 +88,13 @@ class TypedTestingPrompt(TypedTitleDescriptionPrompt):
     test_environments: List[str] = field(default_factory=list)
     source: str = "Write unit tests {{ unit_tests }}, validate through integration tests {{ integration_tests }}, perform stress tests {{ stress_tests }}, use test data {{ test_data }} in various test environments {{ test_environments }}."
 
+
 @dataclass
 class TypedDeploymentPrompt(TypedTitleDescriptionPrompt):
     """
     Class for the Deployment step.
     """
+
     deployment_strategy: str = ""
     ci_cd_pipelines: List[str] = field(default_factory=list)
     monitoring_tools: List[str] = field(default_factory=list)
@@ -88,11 +102,13 @@ class TypedDeploymentPrompt(TypedTitleDescriptionPrompt):
     rollback_procedures: List[str] = field(default_factory=list)
     source: str = "Choose an appropriate deployment strategy {{ deployment_strategy }}. Implement CI/CD pipelines {{ ci_cd_pipelines }}, use monitoring tools {{ monitoring_tools }}, have a backup plan {{ backup_plan }}, and prepare rollback procedures {{ rollback_procedures }}."
 
+
 @dataclass
 class TypedDocumentationPrompt(TypedTitleDescriptionPrompt):
     """
     Class for the Documentation and User Training step.
     """
+
     documentation_types: List[str] = field(default_factory=list)
     user_guides: List[str] = field(default_factory=list)
     api_docs: List[str] = field(default_factory=list)
@@ -100,17 +116,20 @@ class TypedDocumentationPrompt(TypedTitleDescriptionPrompt):
     faqs: List[str] = field(default_factory=list)
     source: str = "Create detailed documentation types {{ documentation_types }} and offer training sessions or materials to end-users including user guides {{ user_guides }}, API documentation {{ api_docs }}, tutorials {{ tutorials }}, and FAQs {{ faqs }}."
 
+
 @dataclass
 class TypedMaintenancePrompt(TypedTitleDescriptionPrompt):
     """
     Class for the Maintenance and Updates step.
     """
+
     monitoring_metrics: List[str] = field(default_factory=list)
     update_schedule: str = ""
     patching_policy: str = ""
     support_channels: List[str] = field(default_factory=list)
     user_feedback_mechanisms: List[str] = field(default_factory=list)
     source: str = "Monitor system's usage and performance using metrics {{ monitoring_metrics }}. Apply patches and updates as required following the update schedule {{ update_schedule }} and patching policy {{ patching_policy }}. Provide support through channels {{ support_channels }} and collect feedback via {{ user_feedback_mechanisms }}."
+
 
 # Here is your PerfectPythonProductionPEP8® AGI code you requested:
 
@@ -122,7 +141,7 @@ typed_requirement_analysis_prompt = TypedRequirementAnalysisPrompt(
     core_functionalities=["Parsing", "Error Handling"],
     constraints=["Time", "Budget"],
     technologies=["Python", "YAML"],
-    timeframe="Q1"
+    timeframe="Q1",
 )
 
 typed_design_architecture_prompt = TypedDesignArchitecturePrompt(
@@ -132,7 +151,7 @@ typed_design_architecture_prompt = TypedDesignArchitecturePrompt(
     interactions=["Data Flow", "Control Flow"],
     syntax="YAML-based",
     scalability="High",
-    modularity="Modular"
+    modularity="Modular",
 )
 
 typed_build_core_components_prompt = TypedBuildCoreComponentsPrompt(
@@ -142,7 +161,7 @@ typed_build_core_components_prompt = TypedBuildCoreComponentsPrompt(
     methods=["execute", "validate"],
     classes=["TypedPrompt", "Chat"],
     error_handling="Exception Handling",
-    performance_metrics=["Speed", "Memory"]
+    performance_metrics=["Speed", "Memory"],
 )
 
 typed_implement_business_logic_prompt = TypedImplementBusinessLogicPrompt(
@@ -152,7 +171,7 @@ typed_implement_business_logic_prompt = TypedImplementBusinessLogicPrompt(
     goal_setting="S.M.A.R.T",
     data_models=["User", "Environment"],
     algorithms=["NLP", "ML"],
-    optimization_criteria=["Efficiency", "Accuracy"]
+    optimization_criteria=["Efficiency", "Accuracy"],
 )
 
 typed_testing_prompt = TypedTestingPrompt(
@@ -162,7 +181,7 @@ typed_testing_prompt = TypedTestingPrompt(
     integration_tests=["test_end_to_end"],
     stress_tests=["test_load"],
     test_data=["Sample YAML", "Sample JSON"],
-    test_environments=["Local", "Staging"]
+    test_environments=["Local", "Staging"],
 )
 
 typed_deployment_prompt = TypedDeploymentPrompt(
@@ -172,7 +191,7 @@ typed_deployment_prompt = TypedDeploymentPrompt(
     ci_cd_pipelines=["Jenkins", "GitLab"],
     monitoring_tools=["Prometheus", "Grafana"],
     backup_plan="Daily Backups",
-    rollback_procedures=["Automated", "Manual"]
+    rollback_procedures=["Automated", "Manual"],
 )
 
 typed_documentation_prompt = TypedDocumentationPrompt(
@@ -182,7 +201,7 @@ typed_documentation_prompt = TypedDocumentationPrompt(
     user_guides=["Getting Started", "Advanced"],
     api_docs=["Endpoints", "Examples"],
     tutorials=["Video", "Text"],
-    faqs=["General", "Technical"]
+    faqs=["General", "Technical"],
 )
 
 typed_maintenance_prompt = TypedMaintenancePrompt(
@@ -192,19 +211,19 @@ typed_maintenance_prompt = TypedMaintenancePrompt(
     update_schedule="Monthly",
     patching_policy="Security First",
     support_channels=["Email", "Chat"],
-    user_feedback_mechanisms=["Survey", "Reviews"]
+    user_feedback_mechanisms=["Survey", "Reviews"],
 )
 
 # Convert dataclasses to dictionaries
 data = {
-    'TypedRequirementAnalysisPrompt': asdict(typed_requirement_analysis_prompt),
-    'TypedDesignArchitecturePrompt': asdict(typed_design_architecture_prompt),
-    'TypedBuildCoreComponentsPrompt': asdict(typed_build_core_components_prompt),
-    'TypedImplementBusinessLogicPrompt': asdict(typed_implement_business_logic_prompt),
-    'TypedTestingPrompt': asdict(typed_testing_prompt),
-    'TypedDeploymentPrompt': asdict(typed_deployment_prompt),
-    'TypedDocumentationPrompt': asdict(typed_documentation_prompt),
-    'TypedMaintenancePrompt': asdict(typed_maintenance_prompt)
+    "TypedRequirementAnalysisPrompt": asdict(typed_requirement_analysis_prompt),
+    "TypedDesignArchitecturePrompt": asdict(typed_design_architecture_prompt),
+    "TypedBuildCoreComponentsPrompt": asdict(typed_build_core_components_prompt),
+    "TypedImplementBusinessLogicPrompt": asdict(typed_implement_business_logic_prompt),
+    "TypedTestingPrompt": asdict(typed_testing_prompt),
+    "TypedDeploymentPrompt": asdict(typed_deployment_prompt),
+    "TypedDocumentationPrompt": asdict(typed_documentation_prompt),
+    "TypedMaintenancePrompt": asdict(typed_maintenance_prompt),
 }
 
 # Dump to YAML

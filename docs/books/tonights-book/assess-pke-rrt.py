@@ -1,8 +1,9 @@
 class PKERRTAgent:
     """
-    Multi-goal Path Finding Agent using Probabilistic Kinematic Extend Rapidly 
+    Multi-goal Path Finding Agent using Probabilistic Kinematic Extend Rapidly
     Exploring Random Tree (PKE-RRT) Algorithm to assess efficiency.
     """
+
     def __init__(self):
         self.tree = None  # RRT Tree
 
@@ -53,6 +54,7 @@ class PKERRTAgent:
         :return: Simulation run time.
         """
         import time
+
         start_time = time.time()
 
         # Initialize the RRT tree with start point
@@ -82,11 +84,12 @@ class PKERRTAgent:
         duration = end_time - start_time
         return duration
 
+
 # Create an instance of our PKE-RRT Agent
 pkerrt_agent = PKERRTAgent()
 
 # Simulate a multi-goal path finding problem
-start_point = (0, 0)  
+start_point = (0, 0)
 goal_points = [(5, 5), (10, 10), (-5, -5), (-10, -10)]
 
 # assess pke-rrt efficiency

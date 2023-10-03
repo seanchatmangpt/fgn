@@ -1,4 +1,4 @@
-from dataclasses import  dataclass
+from dataclasses import dataclass
 
 from typetemp.environment.typed_environment import TypedEnvironment
 from typetemp.environment.typed_native_environment import TypedNativeEnvironment
@@ -13,6 +13,7 @@ class TypedTemplate(RenderMixin):
     Base class for creating templated classes. Uses the jinja2 templating engine
     to render templates. Allows for usage of macros and filters.
     """
+
     source: str = None  # The string template to be rendered
     use_native: bool = False  # Whether to use NativeEnvironment for rendering
     to: str = None  # The "to" property for rendering destination

@@ -1,5 +1,5 @@
-
 from ddd.entities.Email import Email
+
 
 class EmailRepo:
     def __init__(self):
@@ -16,4 +16,3 @@ class EmailRepo:
 
     def delete(self, id: str):
         del self.data[id]
-    
