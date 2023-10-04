@@ -1,5 +1,5 @@
-import os
 import json
+import os
 
 from fgn.completion.chat import Chat
 from fgn.completion.prompt_schemas import generate_json_schema, str_func_schema

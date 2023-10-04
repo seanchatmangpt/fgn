@@ -1,6 +1,6 @@
 import os
-from pytest_bdd import given, when, then, parsers, scenarios
 
+from pytest_bdd import given, parsers, scenarios, then, when
 
 scenarios("test_matrix_factory.feature")
 

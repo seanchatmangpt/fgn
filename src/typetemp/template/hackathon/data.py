@@ -1,6 +1,6 @@
 """Data test."""
-import os
 import glob
+import os
 import unittest
 
 from linkml_runtime.loaders import yaml_loader

@@ -1,11 +1,11 @@
 # Here is your PerfectPythonProductionPEP8® AGI code you requested:
 
 from dataclasses import dataclass, field
-from typing import Union, Optional
+from typing import Optional, Union
 
-from typetemp.template.typed_prompt import (
+from typetemp.template.typed_prompt import (  # Importing TypedPrompt for extending functionality
     TypedPrompt,
-)  # Importing TypedPrompt for extending functionality
+)
 
 
 @dataclass

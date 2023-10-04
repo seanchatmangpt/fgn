@@ -10,6 +10,7 @@ class TypedCriticalPathTable(TypedPrompt):
     Class that creates a critical path table dynamically.
     It uses Chat capabilities for dynamic table creation.
     """
+
     title: str = None  # Title or description of the project
     columns: List[str] = field(
         default_factory=lambda: ["Step", "Task Description", "Dependencies", "Notes"]
@@ -30,6 +31,8 @@ if __name__ == "__main__":
         num_rows=10,
     )
 
-    table_instance(user_input="I am working on a chiefofstaffgpt.com and need to get the "
-                              "full stack working with my OpenAI agent", to="stdout")
-
+    table_instance(
+        user_input="I am working on a chiefofstaffgpt.com and need to get the "
+        "full stack working with my OpenAI agent",
+        to="stdout",
+    )

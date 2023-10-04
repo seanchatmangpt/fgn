@@ -1,4 +1,4 @@
-from pytest_bdd import given, when, then, parsers, scenarios
+from pytest_bdd import given, parsers, scenarios, then, when
 
 scenarios("Coding_Excellence.feature")
 

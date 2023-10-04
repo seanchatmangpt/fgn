@@ -1,7 +1,7 @@
 from urllib.parse import urljoin
 
 import pytest
-from pytest_bdd import scenario, given, when, then
+from pytest_bdd import given, scenario, then, when
 
 
 class Author:

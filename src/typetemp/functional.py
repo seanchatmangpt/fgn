@@ -1,5 +1,5 @@
 from _ast import stmt
-from ast import parse, dump, AST
+from ast import AST, dump, parse
 from typing import List
 
 from typetemp.environment.typed_environment import TypedEnvironment

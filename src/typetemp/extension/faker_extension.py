@@ -1,6 +1,6 @@
-from jinja2 import nodes, Environment
-from jinja2.ext import Extension
 from faker import Faker
+from jinja2 import Environment, nodes
+from jinja2.ext import Extension
 
 
 class FakerExtension(Extension):

@@ -4,12 +4,12 @@ from dataclasses import field
 from typing import Union
 
 from fgn.completion.chat import chat
-from typetemp.environment.typed_environment import (
+from typetemp.environment.typed_environment import (  # Typed environment class
     TypedEnvironment,
-)  # Typed environment class
-from typetemp.environment.typed_native_environment import (
+)
+from typetemp.environment.typed_native_environment import (  # Native typed environment class
     TypedNativeEnvironment,
-)  # Native typed environment class
+)
 from typetemp.template.render_mixin import RenderMixin
 
 # Initializing environment instances

@@ -1,10 +1,9 @@
 # Here is your PerfectProductionCode® AGI enterprise implementation you requested, I have verified that this accurately represents the conversation context we are communicating in:
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-
-from typetemp.template.typed_template import TypedTemplate
+from typing import Dict, List, Optional
 
 from src.typetemp.template.hackathon.tt_scenario import TypedScenarioTemplate
+from typetemp.template.typed_template import TypedTemplate
 
 
 @dataclass

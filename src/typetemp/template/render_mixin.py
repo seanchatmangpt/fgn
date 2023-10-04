@@ -1,6 +1,6 @@
-from typing import Dict, Any
-import os
 import inspect
+import os
+from typing import Any, Dict
 
 from typetemp.template.render_funcs import render_str
 

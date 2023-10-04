@@ -1,11 +1,11 @@
 # Here is your PerfectPythonProductionPEP8® AGI code you requested:
 import os
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from typing import List, Optional
-from fgn.completion.chat import Chat
 
 import yaml
 
+from fgn.completion.chat import Chat
 from typetemp.template.typed_prompt import TypedPrompt
 
 
@@ -236,11 +236,13 @@ print(yaml_data)
 
 # Here is your PerfectPythonProductionPEP8® AGI code you requested:
 
+from typing import Any, Dict, Union
+
 import yaml
-from typing import Dict, Any, Union
-from typetemp.template.typed_prompt import (
+
+from typetemp.template.typed_prompt import (  # Import TypedPrompt for extending functionality
     TypedPrompt,
-)  # Import TypedPrompt for extending functionality
+)
 
 
 def load_yaml_dsl(file_path: str) -> Dict[str, Any]:

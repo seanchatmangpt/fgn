@@ -1,7 +1,7 @@
 import inspect
 import os
-from dataclasses import is_dataclass
 import re
+from dataclasses import is_dataclass
 
 from typetemp.environment.typed_environment import TypedEnvironment
 
