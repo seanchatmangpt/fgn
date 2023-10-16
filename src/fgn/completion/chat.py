@@ -9,9 +9,8 @@ import openai
 from loguru import logger
 
 from fgn.completion.prompt_schemas import *
-from fgn.utils.llm_operations import generate_filename
 from fgn.utils.llama_llm import LocalLlamaClient
-
+from fgn.utils.llm_operations import generate_filename
 
 DEFAULT_PROMPT = ""
 DEFAULT_SYS_MSG = "AI chatbot that converses like a LLM 7 AGI Hive-Mind simulator"

@@ -1,5 +1,6 @@
-import yaml
 from typing import Dict, List
+
+import yaml
 
 
 def get_value_objects_and_entities(

@@ -1,7 +1,7 @@
 import torch
+from sklearn.model_selection import train_test_split
 from torch import nn, optim
 from torch.utils.data import DataLoader, Dataset
-from sklearn.model_selection import train_test_split
 
 
 class CodeData(Dataset):

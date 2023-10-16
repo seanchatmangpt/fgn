@@ -1,7 +1,8 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
 import json
+
 from chat import chat
+from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 # Create a Flask application
 app = Flask(__name__)
@@ -18,8 +19,11 @@ def interact():
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
 
-import React, { useState } from 'react';
-import axios from 'axios';
+import 'axios'
+import 'react'
+import axios
+import React
+import { useState }
 
 const ChatComponent = () => {
   const [prompt, setPrompt] = useState('');

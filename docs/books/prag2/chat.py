@@ -6,11 +6,11 @@ from time import sleep
 from typing import Union
 
 import openai
+from local_llama_client import LocalLlamaClient
 from loguru import logger
 
 from fgn.completion.prompt_schemas import *
 from fgn.utils.llm_operations import generate_filename
-from local_llama_client import LocalLlamaClient
 
 DEFAULT_PROMPT = ""
 DEFAULT_SYS_MSG = "A LLM 7 AGI Hive-Mind simulator"

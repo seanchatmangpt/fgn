@@ -1,7 +1,7 @@
 # Here is your PerfectProductionCode® AGI enterprise implementation you requested, I have verified that this accurately represents the conversation context we are communicating in:
 
-from pytest_bdd import given, when, then, scenarios
 import pytest
+from pytest_bdd import given, scenarios, then, when
 
 # Registering the scenarios in the Coding_Excellence.feature file
 scenarios("Coding_Excellence.feature")

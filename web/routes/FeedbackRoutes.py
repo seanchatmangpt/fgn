@@ -1,7 +1,8 @@
-from flask import Flask, request, render_template
-from ddd.services.FeedbackService import FeedbackService
-from ddd.repositories.FeedbackRepo import FeedbackRepo
+from flask import Flask, render_template, request
+
 from ddd.entities.Feedback import Feedback
+from ddd.repositories.FeedbackRepo import FeedbackRepo
+from ddd.services.FeedbackService import FeedbackService
 
 app = Flask(__name__)
 repo = FeedbackRepo()

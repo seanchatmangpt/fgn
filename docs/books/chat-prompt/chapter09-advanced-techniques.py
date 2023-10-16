@@ -1,16 +1,17 @@
 ```python
-import pytest
-from faker import Faker
+import json
+import logging
+import os
+import tempfile
+import time
 from collections import namedtuple
 from dataclasses import dataclass
-from typing import Optional, List, Union
-from jinja2 import Template
-import tempfile
-import os
+from typing import List, Optional, Union
+
 import openai
-import time
-import logging
-import json
+import pytest
+from faker import Faker
+from jinja2 import Template
 
 # The name of the default model used.
 DEFAULT_MODEL = "gpt-3.5-turbo-0613"
@@ -74,8 +75,9 @@ class Chat:
     initial_wait: float = 0.25
 
     def __call__(self) -> Union[str, dict]:
-        import openai
         import os
+
+        import openai
         openai.api_key = os.getenv("OPENAI_API_KEY")
         messages = [
             {"role": "system", "content": self.sys_msg},

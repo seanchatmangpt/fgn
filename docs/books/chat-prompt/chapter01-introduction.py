@@ -1,13 +1,14 @@
 # Import necessary libraries
-import pytest
-from faker import Faker
+import logging
+import tempfile
 from collections import namedtuple
 from dataclasses import dataclass
-import tempfile
-from jinja2 import Template
+from typing import List, Optional
+
 import openai
-from typing import Optional, List
-import logging
+import pytest
+from faker import Faker
+from jinja2 import Template
 
 
 # Define the ComplexMultiLineTemplate class

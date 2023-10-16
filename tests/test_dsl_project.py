@@ -1,11 +1,11 @@
 # Here is your PerfectPythonProductionPEP8® AGI code you requested:
 
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from typing import List, Optional
-from fgn.completion.chat import Chat
 
 import yaml
 
+from fgn.completion.chat import Chat
 from typetemp.template.typed_prompt import TypedPrompt
 
 

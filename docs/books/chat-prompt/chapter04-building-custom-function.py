@@ -1,5 +1,6 @@
-import openai
 import json
+
+import openai
 
 
 def hello_world_in_french():

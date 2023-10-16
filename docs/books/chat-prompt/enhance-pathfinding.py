@@ -1,13 +1,13 @@
+import os
+from collections import deque, namedtuple
+from dataclasses import dataclass
+from typing import Dict, List, Union
+
 import matplotlib.pyplot as plt
 import networkx as nx
-from collections import deque
-import os
-import yaml
-from typing import Dict, List, Union
-from faker import Faker
-from collections import namedtuple
-from dataclasses import dataclass
 import pytest
+import yaml
+from faker import Faker
 
 
 def create_weighted_graph(code_components):

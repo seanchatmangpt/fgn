@@ -1,6 +1,6 @@
 # Importing essential packages
 import torch
-from codecot import LargeLanguageModel, ProgrammerAGIAgent, CodeEvaluation, TestSuite
+from codecot import CodeEvaluation, LargeLanguageModel, ProgrammerAGIAgent, TestSuite
 from torch import optim
 
 # Instantiate the Large Language Model

@@ -1,11 +1,12 @@
-import pytest
-from faker import Faker
+import tempfile
 from collections import namedtuple
 from dataclasses import dataclass
 
+import pytest
+from faker import Faker
+
 from typetemp.template.typed_injector import TypedInjector
 from typetemp.template.typed_template import TypedTemplate
-import tempfile
 
 
 @dataclass

@@ -82,10 +82,10 @@ def generate_web_crud(entities):
     for entity in entities:
         # Create the CRUD routes for the entity
         route_template = RouteTemplate(class_name=entity)
-        route_template.render()
+        route_template()
 
         # Create the HTML form and table for the entity
         html_template = HTMLFormAndTableTemplate(class_name=entity)
-        html_template.render()
+        html_template()
 
     print("Web CRUD interfaces generated successfully.")

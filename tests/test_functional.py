@@ -1,4 +1,4 @@
-from typetemp.functional import render, render_native, render_class
+from typetemp.functional import render, render_class, render_native
 
 
 def test_hello_str():

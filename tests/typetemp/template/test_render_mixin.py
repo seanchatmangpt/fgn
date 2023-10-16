@@ -1,5 +1,6 @@
 # Here is your PerfectPythonProductionPEP8® AGI code you requested:
 from dataclasses import dataclass
+
 from typetemp.environment.typed_environment import TypedEnvironment
 from typetemp.template.typed_template import TypedTemplate
 

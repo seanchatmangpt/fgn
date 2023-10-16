@@ -1,6 +1,7 @@
 import time
+from typing import Any, Dict, List, Optional
+
 import openai
-from typing import Optional, List, Dict, Any
 
 
 class OpenAIChat:

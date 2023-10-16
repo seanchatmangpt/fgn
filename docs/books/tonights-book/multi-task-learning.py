@@ -1,12 +1,11 @@
 import time
-import pandas as pd
-import matplotlib.pyplot as plt
+import unittest
 from typing import List, Tuple
 
-import unittest
-
-from pkerrrt import PKE_RRT
+import matplotlib.pyplot as plt
+import pandas as pd
 from environment import Environment
+from pkerrrt import PKE_RRT
 
 
 class PerformanceTesting:

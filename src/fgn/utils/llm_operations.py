@@ -11,6 +11,7 @@ from loguru import logger
 from rich import print
 
 from fgn.utils.file_operations import open_file, save_to_project_folder
+
 from .llama_llm import LocalLlamaClient
 
 openai.api_key = os.environ["OPENAI_API_KEY"]

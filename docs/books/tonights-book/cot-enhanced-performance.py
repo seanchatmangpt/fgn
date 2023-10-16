@@ -1,6 +1,6 @@
 import torch.nn.functional as F
 from torch.nn import Transformer
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import DataLoader, Dataset
 
 
 class ChainOfThoughtDataset(Dataset):

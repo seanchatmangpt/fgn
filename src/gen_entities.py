@@ -103,32 +103,32 @@ class {{ class_name }}Service:
 def generate_reporting_system_entities(entities):
     # Define the common value objects
     uuid_template = UUIDValueObjectTemplate(class_name="UUID")
-    uuid_template.render()
+    uuid_template()
 
     # Define the entities
     for entity in entities:
         # Create the value object for the entity
         value_object_template = ValueObjectTemplate(class_name=f"{entity}Value")
-        value_object_template.render()
+        value_object_template()
 
         # Create the entity itself
         entity_template = EntityTemplate(
             class_name=entity, value_object=f"{entity}Value"
         )
-        entity_template.render()
+        entity_template()
 
         # Create the aggregate root for the entity
         aggregate_root_template = AggregateRootTemplate(
             class_name=f"{entity}Aggregate", entity_name=entity
         )
-        aggregate_root_template.render()
+        aggregate_root_template()
 
         # Create the repository for the entity
         repository_template = RepositoryTemplate(class_name=entity, entity_name=entity)
-        repository_template.render()
+        repository_template()
 
         # Create the service for the entity
         service_template = ServiceTemplate(class_name=entity, repository_name=entity)
-        service_template.render()
+        service_template()
 
     print("Entities generated successfully.")

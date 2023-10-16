@@ -1,7 +1,8 @@
-from flask import Flask, request, render_template
-from ddd.services.EmployeeService import EmployeeService
-from ddd.repositories.EmployeeRepo import EmployeeRepo
+from flask import Flask, render_template, request
+
 from ddd.entities.Employee import Employee
+from ddd.repositories.EmployeeRepo import EmployeeRepo
+from ddd.services.EmployeeService import EmployeeService
 
 app = Flask(__name__)
 repo = EmployeeRepo()

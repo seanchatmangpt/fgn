@@ -1,7 +1,8 @@
-from flask import Flask, request, render_template
-from ddd.services.ReportService import ReportService
-from ddd.repositories.ReportRepo import ReportRepo
+from flask import Flask, render_template, request
+
 from ddd.entities.Report import Report
+from ddd.repositories.ReportRepo import ReportRepo
+from ddd.services.ReportService import ReportService
 
 app = Flask(__name__)
 repo = ReportRepo()

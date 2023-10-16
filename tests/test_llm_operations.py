@@ -1,20 +1,15 @@
-import json
-import logging
-
-import pytest
-from unittest.mock import patch
-from faker import Faker
-import requests_mock
-import os
-
-
 import asyncio
 import json
+import logging
 import os
 from time import sleep
 from typing import Union
+from unittest.mock import patch
 
 import openai
+import pytest
+import requests_mock
+from faker import Faker
 from loguru import logger
 
 

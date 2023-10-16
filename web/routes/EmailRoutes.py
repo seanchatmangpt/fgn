@@ -1,7 +1,8 @@
-from flask import Flask, request, render_template
-from ddd.services.EmailService import EmailService
-from ddd.repositories.EmailRepo import EmailRepo
+from flask import Flask, render_template, request
+
 from ddd.entities.Email import Email
+from ddd.repositories.EmailRepo import EmailRepo
+from ddd.services.EmailService import EmailService
 
 app = Flask(__name__)
 repo = EmailRepo()

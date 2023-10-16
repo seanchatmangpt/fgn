@@ -1,7 +1,8 @@
 import random
+import unittest
+
 import numpy as np
 from scipy.spatial import distance
-import unittest
 
 
 # Node class represents each point on our path

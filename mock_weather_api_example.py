@@ -2,7 +2,6 @@
 # ...
 from fgn.completion.chat import chat
 
-
 # Import the get_current_weather function from weather.py
 # from weather import get_current_weather
 

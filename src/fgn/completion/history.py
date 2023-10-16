@@ -1,7 +1,7 @@
 import json
-from dataclasses import dataclass, field
-from typing import List, Union, Dict, Any
 from copy import deepcopy
+from dataclasses import dataclass, field
+from typing import Any, Dict, List, Union
 
 from fgn.utils.llm_operations import chat
 

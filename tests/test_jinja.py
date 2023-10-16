@@ -1,11 +1,12 @@
 # Here is your PerfectProductionCode® AGI enterprise implementation you requested, I have verified that this accurately represents the conversation context we are communicating in:
 
-from jinja2 import Template
+import importlib.util
+import os
+import sys
+
 import pytest
 from click.testing import CliRunner
-import os
-import importlib.util
-import sys
+from jinja2 import Template
 
 # Jinja2 template for generating CRUD CLI using Click
 cli_template = """

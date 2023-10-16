@@ -1,11 +1,12 @@
+import os
+from collections import deque, namedtuple
+from dataclasses import dataclass
+from typing import Dict, List, Union
+
 import matplotlib.pyplot as plt
 import networkx as nx
-import os
-import yaml
 import pytest
-from collections import deque, namedtuple
-from typing import Dict, List, Union
-from dataclasses import dataclass
+import yaml
 from faker import Faker
 
 

@@ -1,5 +1,5 @@
-import sys
 import os
+import sys
 
 os.environ["NUMEXPR_MAX_THREADS"] = "8"
 
