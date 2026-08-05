@@ -29,6 +29,11 @@ class TypedPrompt(RenderMixin):
     env: Any = field(init=False, repr=False, compare=False)
 
     def __post_init__(self) -> None:
+        declared_source = type(self).__dict__.get("source")
+        if self.source is None and isinstance(declared_source, str):
+            self.source = declared_source
+        if self.source is None:
+            raise ValueError(f"{type(self).__name__} requires a prompt source")
         self.env = _native_env if self.use_native else _env
 
     def __call__(self, **kwargs) -> Union[str, dict]:

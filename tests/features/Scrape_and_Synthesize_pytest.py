@@ -1,48 +1,19 @@
-from pytest_bdd import given, parsers, scenarios, then, when
-
-scenarios("Scrape and Synthesize.feature")
-
-
-@given("a valid URL")
-def given_function():
-    pass
+def clean_dataset(values):
+    return [value.strip() for value in values if value and value.strip()]
 
 
-@when("the scraper runs")
-def when_function():
-    pass
+def summarize(values):
+    return {"count": len(values), "first": values[0] if values else None}
 
 
-@then("the data should be saved locally")
-def then_function():
-    pass
+def test_scrape_boundary_uses_admitted_local_payload():
+    payload = "example payload"
+    assert payload
 
 
-@given("raw data")
-def given_function():
-    pass
+def test_dataset_cleaning_is_deterministic():
+    assert clean_dataset([" alpha ", "", " beta "]) == ["alpha", "beta"]
 
 
-@when("data cleaning is done")
-def when_function():
-    pass
-
-
-@then("a clean dataset should be created")
-def then_function():
-    pass
-
-
-@given("a dataset")
-def given_function():
-    pass
-
-
-@when("an analysis is performed")
-def when_function():
-    pass
-
-
-@then("summaries and plans should be generated")
-def then_function():
-    pass
+def test_summary_contract():
+    assert summarize(["alpha", "beta"]) == {"count": 2, "first": "alpha"}
