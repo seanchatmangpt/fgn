@@ -1,4 +1,6 @@
+import ntpath
 import os
+import posixpath
 import re
 from pathlib import Path
 
@@ -52,7 +54,8 @@ def get_project_root() -> Path:
 
 
 def get_norm_path(path: str) -> str:
-    return os.path.normpath(path)
+    normalizer = ntpath if os.name == "nt" else posixpath
+    return normalizer.normpath(path)
 
 
 def save_to_project_folder(file_path, content) -> Receipt:

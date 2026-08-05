@@ -1,4 +1,5 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import Any
 
 from typetemp.environment.typed_environment import TypedEnvironment
 from typetemp.environment.typed_native_environment import TypedNativeEnvironment
@@ -8,27 +9,21 @@ _env = TypedEnvironment()
 _native_env = TypedNativeEnvironment()
 
 
+@dataclass
 class TypedTemplate(RenderMixin):
-    """
-    Base class for creating templated classes. Uses the jinja2 templating engine
-    to render templates. Allows for usage of macros and filters.
-    """
+    """Base typed template with inherited dataclass configuration."""
 
-    source: str = None  # The string template to be rendered
-    use_native: bool = False  # Whether to use NativeEnvironment for rendering
-    to: str = None  # The "to" property for rendering destination
-    output: str = None  # The rendered output
+    source: str | None = None
+    use_native: bool = False
+    to: str | None = None
+    output: Any = field(init=False, default=None)
+    env: Any = field(init=False, repr=False, compare=False)
 
-    def __init__(self, **kwargs):
-        self.__post_init__()
-        self.__dict__.update(kwargs)
-
-    def __post_init__(self):
-        """
-        After the instance is initialized, set the environment
-        """
-        # Use NativeEnvironment when use_native is True, else use default Environment
+    def __post_init__(self) -> None:
         self.env = _native_env if self.use_native else _env
 
-    def __call__(self, **kwargs) -> str:
+    def render(self, **kwargs) -> Any:
         return self._render(**kwargs)
+
+    def __call__(self, **kwargs) -> Any:
+        return self.render(**kwargs)
