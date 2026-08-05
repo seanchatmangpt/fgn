@@ -9,7 +9,6 @@ import openai
 from loguru import logger
 
 from fgn.completion.prompt_schemas import *
-from fgn.utils.llama_llm import LocalLlamaClient
 from fgn.utils.llm_operations import generate_filename
 
 DEFAULT_PROMPT = ""
@@ -64,6 +63,8 @@ def chat(
             res = None
 
             if str(model) == "2":
+                from fgn.utils.llama_llm import LocalLlamaClient
+
                 llama = LocalLlamaClient()
                 res = llama.complete(prompt=prompt)
             elif funcs:

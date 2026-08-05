@@ -66,7 +66,7 @@ jobs:
           tests/test_dsl_project.py
           tests/test_jinja.py
       - name: Build source distribution
-        run: python setup.py sdist
+        run: python -m build --sdist
       - name: Verify source distribution exists
         shell: bash
         run: test -s dist/fgn-*.tar.gz
