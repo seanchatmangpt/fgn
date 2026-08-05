@@ -42,6 +42,20 @@ jobs:
           cache: pip
       - name: Install verification dependencies
         run: python -m pip install --upgrade pip && python -m pip install -e '.[testing]'
+      - name: Admit installed package identity
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import fgn
+          import fgn.cli
+          import fgn.core.broker
+
+          expected = Path("src/fgn/__init__.py").resolve()
+          actual = Path(fgn.__file__).resolve()
+          print(f"fgn_package={actual}")
+          assert actual == expected, (actual, expected)
+          PY
       - name: Compile source and tests
         run: python -m compileall -q src tests
       - name: Execute FGN behavioral boundaries
@@ -74,6 +88,20 @@ jobs:
           cache: pip
       - name: Install complete test substrate
         run: python -m pip install --upgrade pip && python -m pip install -e '.[testing]'
+      - name: Admit installed package identity
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import fgn
+          import fgn.cli
+          import fgn.core.broker
+
+          expected = Path("src/fgn/__init__.py").resolve()
+          actual = Path(fgn.__file__).resolve()
+          print(f"fgn_package={actual}")
+          assert actual == expected, (actual, expected)
+          PY
       - name: Execute complete repository suite
         run: pytest -q
 
