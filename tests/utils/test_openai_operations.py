@@ -1,63 +1,73 @@
-import os
-import shutil
-import tempfile
+from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
 import pytest
 
-from fgn.utils.llm_operations import *
+from fgn.utils.llm_operations import (
+    LLMProviderError,
+    generate_filename,
+    generate_output_file,
+    gpt3_completion,
+    gpt4_completion,
+    gpt_chat_completion,
+)
+
+
+class FakeCompletions:
+    def __init__(self, *, content=None, error=None):
+        self.content = content
+        self.error = error
+        self.calls = []
+
+    def create(self, **kwargs):
+        self.calls.append(kwargs)
+        if self.error is not None:
+            raise self.error
+        return SimpleNamespace(
+            choices=[SimpleNamespace(message=SimpleNamespace(content=self.content))]
+        )
+
+
+class FakeClient:
+    def __init__(self, *, content=None, error=None):
+        self.completions = FakeCompletions(content=content, error=error)
+        self.chat = SimpleNamespace(completions=self.completions)
 
 
 @pytest.fixture(autouse=True)
 def mock_save_to_project_folder(monkeypatch):
-    # Mock save_to_project_folder
     mock_save = MagicMock()
     monkeypatch.setattr("fgn.utils.llm_operations.save_to_project_folder", mock_save)
     return mock_save
 
 
-# Use pytest fixtures for setup and teardown
-@pytest.fixture
-def llm_operations_fixture():
-    with patch("openai.Completion.create") as mock_openai_completion, patch(
-        "openai.ChatCompletion.create"
-    ) as mock_openai_chat_completion:
-        temp_dir = tempfile.mkdtemp()
-        yield mock_openai_completion, mock_openai_chat_completion, temp_dir
-        shutil.rmtree(temp_dir)
+def test_gpt3_completion_uses_modern_chat_client():
+    client = FakeClient(content="Test GPT-3 completion")
+    result = gpt3_completion("Test prompt", client=client)
+    assert result == "Test GPT-3 completion"
+    assert client.completions.calls[0]["messages"] == [
+        {"role": "user", "content": "Test prompt"}
+    ]
 
 
-def test_gpt3_completion(llm_operations_fixture):
-    mock_openai_completion, _, _ = llm_operations_fixture
-    completion_text = "Test GPT-3 completion"
-    mock_openai_completion.return_value = {"choices": [{"text": completion_text}]}
-    result = gpt3_completion("Test prompt")
-    assert result.strip() == completion_text.strip()
-
-
-def test_chat_completion(llm_operations_fixture):
-    _, mock_openai_chat_completion, _ = llm_operations_fixture
-    completion_text = "Test chat completion"
-    mock_openai_chat_completion.return_value = {
-        "choices": [{"message": {"content": completion_text}}]
-    }
+def test_chat_completion_uses_injected_client():
+    client = FakeClient(content="Test chat completion")
     result = gpt_chat_completion(
-        messages=[{"role": "user", "content": "Test prompt"}], model="gpt-4"
+        messages=[{"role": "user", "content": "Test prompt"}],
+        model="gpt-4o-mini",
+        client=client,
     )
-    assert result.strip() == completion_text.strip()
+    assert result == "Test chat completion"
 
 
 @patch("fgn.utils.llm_operations.gpt_chat_completion")
 def test_gpt4_completion(mock_chat_completion):
-    completion_text = "Test GPT-4 completion"
-    mock_chat_completion.return_value = completion_text
+    mock_chat_completion.return_value = "Test GPT-4 completion"
     result = gpt4_completion("Test prompt")
-    assert result.strip() == completion_text.strip()
+    assert result == "Test GPT-4 completion"
 
 
-@patch("fgn.utils.llm_operations.gpt3_completion")
-def test_generate_filename(mocked_gpt3_completion):
-    mocked_gpt3_completion.return_value = "test_filename"
+def test_generate_filename_is_deterministic():
     filename = generate_filename(
         prompt="Test prompt",
         prefix="prefix",
@@ -66,35 +76,36 @@ def test_generate_filename(mocked_gpt3_completion):
         max_chars=60,
         time=False,
     )
-    assert filename == "prefix_test_filename_suffix.py"
+    assert filename == "prefix_test_prompt_suffix.py"
 
 
-@patch("fgn.utils.llm_operations.gpt3_completion")
-def test_generate_output_file(mocked_gpt3_completion):
-    mocked_gpt3_completion.return_value = "test_output_file"
+def test_generate_output_file_is_deterministic():
     output_file = generate_output_file(
-        prompt="Test prompt", extension="py", max_chars=60, time=False
+        prompt="Test output file", extension="py", max_chars=60, time=False
     )
     assert output_file == "test_output_file.py"
 
 
-@patch("fgn.utils.llm_operations.openai.Completion.create")
-def test_gpt3_completion_with_different_stop_sequences(mock_openai_completion):
-    completion_text = "Test GPT-3 completion with stop sequence"
-    mock_openai_completion.return_value = {"choices": [{"text": completion_text}]}
-    result = gpt3_completion("Test prompt", stop=["<<STOP>>", "<<END>>"])
-    assert result.strip() == completion_text.strip()
-
-
-@patch("fgn.utils.llm_operations.openai.ChatCompletion.create")
-def test_gpt_chat_completion_max_context_length_error(mock_openai_chat_completion):
-    error_message = "Error: Maximum context length exceeded"
-    mock_openai_chat_completion.side_effect = Exception(error_message)
-    result = gpt_chat_completion(
-        messages=[{"role": "user", "content": "Test prompt"}],
-        model="gpt-4",
-        max_retry=3,
-        backoff_factor=0.0001,
-        initial_wait=0.0001,
+def test_gpt3_completion_accepts_legacy_stop_argument():
+    client = FakeClient(content="Stopped completion")
+    result = gpt3_completion(
+        "Test prompt",
+        stop=["<<STOP>>", "<<END>>"],
+        client=client,
     )
-    assert result == f"GPT error: {error_message}"
+    assert result == "Stopped completion"
+
+
+def test_context_length_error_is_typed():
+    client = FakeClient(error=RuntimeError("Maximum context length exceeded"))
+    with pytest.raises(LLMProviderError) as exc_info:
+        gpt_chat_completion(
+            messages=[{"role": "user", "content": "Test prompt"}],
+            model="gpt-4o-mini",
+            max_retry=3,
+            backoff_factor=0.0001,
+            initial_wait=0.0001,
+            client=client,
+            sleep_fn=lambda _: None,
+        )
+    assert exc_info.value.code == "CONTEXT_LENGTH_EXCEEDED"

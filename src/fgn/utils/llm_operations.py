@@ -130,6 +130,21 @@ def gpt3_completion(
     return gpt_chat_completion([{"role": "user", "content": prompt}], model=model, client=client)
 
 
+def gpt4_completion(
+    prompt: str,
+    *,
+    client: Any = None,
+    model: str | None = None,
+) -> str:
+    """Compatibility entrypoint backed by the admitted modern chat client."""
+    selected_model = model or os.getenv("FGN_MODEL", "gpt-4o-mini")
+    return gpt_chat_completion(
+        [{"role": "user", "content": prompt}],
+        model=selected_model,
+        client=client,
+    )
+
+
 def gpt_embedding(text: str, model: str = "text-embedding-3-small", *, client: Any = None):
     provider = _openai_client(client)
     response = provider.embeddings.create(input=[text.replace("\n", " ")], model=model)
