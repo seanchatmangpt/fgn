@@ -1,0 +1,60 @@
+name: Source Capsule
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  manufacture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Manufacture exact-head capsule and receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          capsule="fgn-source-${GITHUB_SHA}.tar.gz"
+          git archive --format=tar --prefix=fgn/ HEAD | gzip -n > "${capsule}"
+          sha256sum "${capsule}" > "${capsule}.sha256"
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+
+          sha = os.environ["GITHUB_SHA"]
+          capsule = Path(f"fgn-source-{sha}.tar.gz")
+          receipt = {
+              "schema": "https://chatman.ai/schemas/source-capsule-receipt/v1",
+              "repository": os.environ["GITHUB_REPOSITORY"],
+              "event": os.environ["GITHUB_EVENT_NAME"],
+              "ref": os.environ["GITHUB_REF"],
+              "commit": sha,
+              "tree": subprocess.check_output(
+                  ["git", "rev-parse", "HEAD^{tree}"], text=True
+              ).strip(),
+              "artifact": capsule.name,
+              "sha256": Path(f"{capsule}.sha256").read_text().split()[0],
+              "run_id": os.environ["GITHUB_RUN_ID"],
+              "run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
+          }
+          Path(f"fgn-source-{sha}.receipt.json").write_text(
+              json.dumps(receipt, indent=2, sort_keys=True) + "\n"
+          )
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: source-capsule-${{ github.sha }}
+          path: |
+            fgn-source-${{ github.sha }}.tar.gz
+            fgn-source-${{ github.sha }}.tar.gz.sha256
+            fgn-source-${{ github.sha }}.receipt.json
+          if-no-files-found: error
+          retention-days: 7
