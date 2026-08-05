@@ -1,22 +1,30 @@
 File Generator CLI (FGN)
-=========================
+========================
 
 FGN is an AI-assisted command-line file generator with receipt-bound actuation.
 
 Safety and standing
 -------------------
 
-FGN separates prompt construction from external consequences. File writes,
-clipboard writes, and DSL shell execution route through the broker in
-``fgn.core.broker``. The broker writes an admitted JSON receipt before an
-operation is attempted and enriches it after consequence observation.
-Receipts default to ``~/.fgn/receipts`` and may be relocated with
-``FGN_RECEIPT_DIR``.
+FGN separates parsing and construction from consequences. File writes,
+clipboard writes, local model execution, admitted generated-Python execution,
+and DSL shell execution route through ``fgn.core.broker``. The broker persists
+an admitted JSON receipt before an operation is attempted and enriches it after
+consequence observation. Receipts default to ``~/.fgn/receipts`` and may be
+relocated with ``FGN_RECEIPT_DIR``.
 
-OpenAI is an optional execution provider. Importing FGN, rendering help, and
-deterministic filename generation do not require an API key or the OpenAI SDK.
-OpenAI-backed generation requires ``OPENAI_API_KEY`` and emits typed provider
-errors when credentials or the SDK are absent.
+Generated Python has no ambient execution authority. APIs that compile rendered
+classes require ``admitted=True`` and otherwise emit
+``REFUSED:PYTHON_AUTHORITY_REQUIRED``. DSL shell execution follows the same law.
+
+Provider boundaries
+-------------------
+
+OpenAI and local Llama are optional execution providers. Importing FGN,
+rendering templates, generating deterministic filenames, and running ``--help``
+do not require either provider. OpenAI-backed generation requires the
+``openai`` extra plus ``OPENAI_API_KEY``. Local llama.cpp integration requires
+explicit invocation and executes through the broker.
 
 Installation
 ------------
@@ -26,10 +34,20 @@ Installation
    python -m pip install .
    fgn --help
 
+Optional providers and template enhancements:
+
+.. code-block:: bash
+
+   python -m pip install '.[openai]'
+   python -m pip install '.[local_llama]'
+   python -m pip install '.[template_enhancements]'
+
 Development verification
 ------------------------
 
 .. code-block:: bash
 
    python -m pip install -e '.[testing]'
-   pytest -q tests/test_cli.py tests/test_llm_operations.py
+   python -m compileall -q src tests
+   pytest -q
+   python -m build --sdist --wheel

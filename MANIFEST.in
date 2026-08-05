@@ -1,1 +1,3 @@
-recursive-include fgn/core/commands *
+graft src/fgn/core/commands
+prune tests
+global-exclude __pycache__ *.py[cod]

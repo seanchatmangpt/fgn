@@ -192,6 +192,44 @@ class Broker:
                 error=error,
             )
 
+    def execute_python(
+        self,
+        source: str,
+        *,
+        admitted: bool = False,
+        namespace: Mapping[str, Any] | None = None,
+        filename: str = "<fgn-generated>",
+    ) -> tuple[dict[str, Any], Receipt]:
+        """Compile and execute Python only after explicit authority admission."""
+        payload = source.encode("utf-8")
+        receipt = self._begin("python.exec", filename, payload)
+        if not admitted:
+            message = "generated Python execution requires explicit admission"
+            self._finish(
+                receipt,
+                status="REFUSED:PYTHON_AUTHORITY_REQUIRED",
+                error=PermissionError(message),
+            )
+            raise ActuationRefused(f"{message}; receipt={receipt.receipt_id}", receipt)
+        execution_namespace = dict(namespace or {})
+        try:
+            compiled = compile(source, filename=filename, mode="exec")
+            exec(compiled, execution_namespace)
+            public_names = sorted(
+                name for name in execution_namespace if not name.startswith("__")
+            )
+            observed = json.dumps(public_names, separators=(",", ":")).encode("utf-8")
+            self._finish(
+                receipt,
+                status="ALIVE",
+                output_bytes=observed,
+                consequence={"public_names": public_names},
+            )
+            return execution_namespace, receipt
+        except BaseException as error:
+            self._finish(receipt, status=self._failure_status(error), error=error)
+            raise
+
     def run_shell(
         self,
         command: str,
