@@ -16,8 +16,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  verify:
-    name: Python ${{ matrix.python }}
+  fgn-core:
+    name: FGN core / Python ${{ matrix.python }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -44,13 +44,38 @@ jobs:
         run: python -m pip install --upgrade pip && python -m pip install -e '.[testing]'
       - name: Compile source and tests
         run: python -m compileall -q src tests
-      - name: Execute receipt and provider boundaries
-        run: pytest -q tests/test_cli.py tests/test_llm_operations.py
+      - name: Execute FGN behavioral boundaries
+        run: >-
+          pytest -q
+          tests/test_cli.py
+          tests/test_llm_operations.py
+          tests/test_dsl_project.py
+          tests/test_jinja.py
       - name: Build source distribution
         run: python setup.py sdist
       - name: Verify source distribution exists
         shell: bash
         run: test -s dist/fgn-*.tar.gz
+
+  repository-suite:
+    name: Repository suite / Python 3.13
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SUBJECT_SHA }}
+          fetch-depth: 0
+      - name: Admit exact subject
+        shell: bash
+        run: test "$(git rev-parse HEAD)" = "${SUBJECT_SHA}"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+      - name: Install complete test substrate
+        run: python -m pip install --upgrade pip && python -m pip install -e '.[testing]'
+      - name: Execute complete repository suite
+        run: pytest -q
 
   source-capsule:
     name: Exact-head source capsule
