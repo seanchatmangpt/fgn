@@ -1,29 +1,51 @@
-import pytest
+import json
+
 from click.testing import CliRunner
 
 from fgn.cli import main
+from fgn.core.broker import ActuationRefused, Broker
 
 
-@pytest.fixture
-def runner(fs):
-    return CliRunner()
+def test_file_writer_emits_verified_receipt(tmp_path):
+    runner = CliRunner()
+    output = tmp_path / "message.txt"
+    receipts = tmp_path / "receipts"
+
+    result = runner.invoke(main, ["--receipt-dir", str(receipts), "-o", str(output), "Hello World!"])
+
+    assert result.exit_code == 0, result.output
+    assert result.output.strip() == "Hello World!"
+    assert output.read_text(encoding="utf-8") == "Hello World!"
+
+    receipt_files = list(receipts.glob("*.json"))
+    assert len(receipt_files) == 1
+    receipt = json.loads(receipt_files[0].read_text(encoding="utf-8"))
+    assert receipt["action"] == "file.write"
+    assert receipt["status"] == "ALIVE"
+    assert receipt["phase"] == "verified"
+    assert receipt["subject"] == str(output.absolute())
+    assert receipt["input_sha256"] == receipt["output_sha256"]
 
 
-def test_file_writer_with_output(runner, fs):
-    # Use the fs fixture provided by pytest-fs to create a fake file
-    fake_file_path = "/path/to/fake_file.txt"
-    fake_file_content = "Test Message"
-    message = "Hello World!"
-    fs.create_file(fake_file_path, contents=fake_file_content)
+def test_append_is_atomic_and_receipted(tmp_path):
+    receipts = tmp_path / "receipts"
+    output = tmp_path / "append.txt"
+    broker = Broker(receipts)
 
-    # Use the runner fixture to invoke the CLI command
-    result = runner.invoke(main, ["-o", fake_file_path, message])
+    first = broker.write_text(output, "one")
+    second = broker.write_text(output, "two", append=True)
 
-    # Print the output and contents of the fake file for debugging
-    print("result.output:", result.output)
-    with open(fake_file_path) as file:
-        print("fake_file_content:", file.read())
+    assert output.read_text(encoding="utf-8") == "onetwo"
+    assert first.status == "ALIVE"
+    assert second.status == "ALIVE"
+    assert len(list(receipts.glob("*.json"))) == 2
 
-    # Verify the result
-    assert result.exit_code == 0
-    assert result.output.strip() == message
+
+def test_shell_requires_explicit_admission(tmp_path):
+    broker = Broker(tmp_path / "receipts")
+    try:
+        broker.run_shell("echo refused")
+    except ActuationRefused as error:
+        assert error.receipt.status == "REFUSED:SHELL_AUTHORITY_REQUIRED"
+    else:
+        raise AssertionError("shell execution was not refused")

@@ -22,18 +22,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Manufacture deterministic source capsule
         shell: bash
         run: |
           set -euo pipefail
-          tree_sha="$(git rev-parse 'HEAD^{tree}')"
           capsule="fgn-source-${GITHUB_SHA}.tar.gz"
-          receipt="fgn-source-${GITHUB_SHA}.receipt.json"
-
           git archive --format=tar --prefix=fgn/ HEAD | gzip -n > "${capsule}"
           sha256sum "${capsule}" > "${capsule}.sha256"
-
           python - <<'PY'
           import json
           import os
@@ -42,7 +37,6 @@ jobs:
 
           sha = os.environ["GITHUB_SHA"]
           capsule = Path(f"fgn-source-{sha}.tar.gz")
-          digest = Path(f"{capsule}.sha256").read_text(encoding="utf-8").split()[0]
           receipt = {
               "schema": "https://chatman.ai/schemas/source-capsule-receipt/v1",
               "repository": os.environ["GITHUB_REPOSITORY"],
@@ -52,18 +46,15 @@ jobs:
                   ["git", "rev-parse", "HEAD^{tree}"], text=True
               ).strip(),
               "artifact": capsule.name,
-              "sha256": digest,
+              "sha256": Path(f"{capsule}.sha256").read_text().split()[0],
               "run_id": os.environ["GITHUB_RUN_ID"],
               "run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
           }
           Path(f"fgn-source-{sha}.receipt.json").write_text(
-              json.dumps(receipt, indent=2, sort_keys=True) + "\n",
-              encoding="utf-8",
+              json.dumps(receipt, indent=2, sort_keys=True) + "\n"
           )
           PY
-
-      - name: Upload source capsule and receipt
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: source-capsule-${{ github.sha }}
           path: |
@@ -73,17 +64,27 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-  syntax:
-    name: Python syntax (${{ matrix.python }})
+  verify:
+    name: Python ${{ matrix.python }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        python: ['3.11', '3.12', '3.13']
+        python: ['3.10', '3.11', '3.12', '3.13']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - name: Compile Python sources
+          cache: pip
+      - name: Install verification dependencies
+        run: python -m pip install --upgrade pip && python -m pip install -e '.[testing]'
+      - name: Compile source and tests
         run: python -m compileall -q src tests
+      - name: Execute receipt and provider boundaries
+        run: pytest -q tests/test_cli.py tests/test_llm_operations.py
+      - name: Build source distribution
+        run: python setup.py sdist
+      - name: Verify source distribution exists
+        shell: bash
+        run: test -s dist/fgn-*.tar.gz
