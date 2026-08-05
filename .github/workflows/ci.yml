@@ -1,125 +1,89 @@
-# GitHub Actions configuration **EXAMPLE**,
-# MODIFY IT ACCORDING TO YOUR NEEDS!
-# Reference: https://docs.github.com/en/actions
-
-name: tests
+name: CI
 
 on:
   push:
-    # Avoid using all the resources/limits available by checking only
-    # relevant branches and tags. Other branches can be checked via PRs.
     branches: [main]
-    tags: ['v[0-9]*', '[0-9]+.[0-9]+*']  # Match tags that resemble a version
-  pull_request:  # Run in every PR
-  workflow_dispatch:  # Allow manually triggering the workflow
-  schedule:
-    # Run roughly every 15 days at 00:00 UTC
-    # (useful to check if updates on dependencies break the package)
-    - cron: '0 0 1,16 * *'
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: >-
-    ${{ github.workflow }}-${{ github.ref_type }}-
-    ${{ github.event.pull_request.number || github.sha }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  prepare:
+  source-capsule:
+    name: Source capsule
     runs-on: ubuntu-latest
-    outputs:
-      wheel-distribution: ${{ steps.wheel-distribution.outputs.path }}
     steps:
-      - uses: actions/checkout@v3
-        with: {fetch-depth: 0}  # deep clone for setuptools-scm
-      - uses: actions/setup-python@v4
-        id: setup-python
-        with: {python-version: "3.11"}
-      - name: Run static analysis and format checkers
-        run: pipx run pre-commit run --all-files --show-diff-on-failure
-      - name: Build package distribution files
-        run: >-
-          pipx run --python '${{ steps.setup-python.outputs.python-path }}'
-          tox -e clean,build
-      - name: Record the path of wheel distribution
-        id: wheel-distribution
-        run: echo "path=$(ls dist/*.whl)" >> $GITHUB_OUTPUT
-      - name: Store the distribution files for use in other stages
-        # `tests` and `publish` will use the same pre-built distributions,
-        # so we make sure to release the exact same package that was tested
-        uses: actions/upload-artifact@v3
+      - uses: actions/checkout@v4
         with:
-          name: python-distribution-files
-          path: dist/
-          retention-days: 1
+          fetch-depth: 0
 
-  test:
-    needs: prepare
+      - name: Manufacture deterministic source capsule
+        shell: bash
+        run: |
+          set -euo pipefail
+          tree_sha="$(git rev-parse 'HEAD^{tree}')"
+          capsule="fgn-source-${GITHUB_SHA}.tar.gz"
+          receipt="fgn-source-${GITHUB_SHA}.receipt.json"
+
+          git archive --format=tar --prefix=fgn/ HEAD | gzip -n > "${capsule}"
+          sha256sum "${capsule}" > "${capsule}.sha256"
+
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+
+          sha = os.environ["GITHUB_SHA"]
+          capsule = Path(f"fgn-source-{sha}.tar.gz")
+          digest = Path(f"{capsule}.sha256").read_text(encoding="utf-8").split()[0]
+          receipt = {
+              "schema": "https://chatman.ai/schemas/source-capsule-receipt/v1",
+              "repository": os.environ["GITHUB_REPOSITORY"],
+              "ref": os.environ["GITHUB_REF"],
+              "commit": sha,
+              "tree": subprocess.check_output(
+                  ["git", "rev-parse", "HEAD^{tree}"], text=True
+              ).strip(),
+              "artifact": capsule.name,
+              "sha256": digest,
+              "run_id": os.environ["GITHUB_RUN_ID"],
+              "run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
+          }
+          Path(f"fgn-source-{sha}.receipt.json").write_text(
+              json.dumps(receipt, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Upload source capsule and receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-capsule-${{ github.sha }}
+          path: |
+            fgn-source-${{ github.sha }}.tar.gz
+            fgn-source-${{ github.sha }}.tar.gz.sha256
+            fgn-source-${{ github.sha }}.receipt.json
+          if-no-files-found: error
+          retention-days: 7
+
+  syntax:
+    name: Python syntax (${{ matrix.python }})
+    runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        python:
-        - "3.7"  # oldest Python supported by PSF
-        - "3.11"  # newest Python that is stable
-        platform:
-        - ubuntu-latest
-        - macos-latest
-        - windows-latest
-    runs-on: ${{ matrix.platform }}
+        python: ['3.11', '3.12', '3.13']
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        id: setup-python
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - name: Retrieve pre-built distribution files
-        uses: actions/download-artifact@v3
-        with: {name: python-distribution-files, path: dist/}
-      - name: Run tests
-        run: >-
-          pipx run --python '${{ steps.setup-python.outputs.python-path }}'
-          tox --installpkg '${{ needs.prepare.outputs.wheel-distribution }}'
-          -- -rFEx --durations 10 --color yes  # pytest args
-#      - name: Generate coverage report
-#        run: pipx run coverage lcov -o coverage.lcov
-#      - name: Upload partial coverage report
-#        uses: coverallsapp/github-action@master
-#        with:
-#          path-to-lcov: coverage.lcov
-#          github-token: ${{ secrets.GITHUB_TOKEN }}
-#          flag-name: ${{ matrix.platform }} - py${{ matrix.python }}
-#          parallel: true
-
-#  finalize:
-#    needs: test
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Finalize coverage report
-#        uses: coverallsapp/github-action@master
-#        with:
-#          github-token: ${{ secrets.GITHUB_TOKEN }}
-#          parallel-finished: true
-
-  publish:
-    needs: test
-    if: ${{ github.event_name == 'push' && contains(github.ref, 'refs/tags/') }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with: {python-version: "3.11"}
-      - name: Retrieve pre-built distribution files
-        uses: actions/download-artifact@v3
-        with: {name: python-distribution-files, path: dist/}
-      - name: Publish Package
-        env:
-          # TODO: Set your PYPI_TOKEN as a secret using GitHub UI
-          # - https://pypi.org/help/#apitoken
-          # - https://docs.github.com/en/actions/security-guides/encrypted-secrets
-          TWINE_REPOSITORY: pypi
-          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        run: pipx run tox -e publish
+      - name: Compile Python sources
+        run: python -m compileall -q src tests
