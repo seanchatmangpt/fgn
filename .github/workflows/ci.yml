@@ -10,41 +10,51 @@ on:
 permissions:
   contents: read
 
+env:
+  SUBJECT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+  EVENT_SHA: ${{ github.sha }}
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   source-capsule:
-    name: Source capsule
+    name: Exact-head source capsule
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ env.SUBJECT_SHA }}
           fetch-depth: 0
+      - name: Admit exact subject
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual_sha="$(git rev-parse HEAD)"
+          test "${actual_sha}" = "${SUBJECT_SHA}"
+          echo "SUBJECT_TREE=$(git rev-parse 'HEAD^{tree}')" >> "${GITHUB_ENV}"
       - name: Manufacture deterministic source capsule
         shell: bash
         run: |
           set -euo pipefail
-          capsule="fgn-source-${GITHUB_SHA}.tar.gz"
-          git archive --format=tar --prefix=fgn/ HEAD | gzip -n > "${capsule}"
+          capsule="fgn-source-${SUBJECT_SHA}.tar.gz"
+          git archive --format=tar --prefix=fgn/ "${SUBJECT_SHA}" | gzip -n > "${capsule}"
           sha256sum "${capsule}" > "${capsule}.sha256"
           python - <<'PY'
           import json
           import os
-          import subprocess
           from pathlib import Path
 
-          sha = os.environ["GITHUB_SHA"]
+          sha = os.environ["SUBJECT_SHA"]
           capsule = Path(f"fgn-source-{sha}.tar.gz")
           receipt = {
               "schema": "https://chatman.ai/schemas/source-capsule-receipt/v1",
               "repository": os.environ["GITHUB_REPOSITORY"],
               "ref": os.environ["GITHUB_REF"],
-              "commit": sha,
-              "tree": subprocess.check_output(
-                  ["git", "rev-parse", "HEAD^{tree}"], text=True
-              ).strip(),
+              "subject_commit": sha,
+              "subject_tree": os.environ["SUBJECT_TREE"],
+              "event_commit": os.environ["EVENT_SHA"],
               "artifact": capsule.name,
               "sha256": Path(f"{capsule}.sha256").read_text().split()[0],
               "run_id": os.environ["GITHUB_RUN_ID"],
@@ -56,11 +66,11 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: source-capsule-${{ github.sha }}
+          name: source-capsule-${{ env.SUBJECT_SHA }}
           path: |
-            fgn-source-${{ github.sha }}.tar.gz
-            fgn-source-${{ github.sha }}.tar.gz.sha256
-            fgn-source-${{ github.sha }}.receipt.json
+            fgn-source-${{ env.SUBJECT_SHA }}.tar.gz
+            fgn-source-${{ env.SUBJECT_SHA }}.tar.gz.sha256
+            fgn-source-${{ env.SUBJECT_SHA }}.receipt.json
           if-no-files-found: error
           retention-days: 7
 
@@ -73,6 +83,15 @@ jobs:
         python: ['3.10', '3.11', '3.12', '3.13']
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SUBJECT_SHA }}
+          fetch-depth: 0
+      - name: Admit exact subject
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual_sha="$(git rev-parse HEAD)"
+          test "${actual_sha}" = "${SUBJECT_SHA}"
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
