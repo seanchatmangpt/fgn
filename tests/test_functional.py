@@ -14,7 +14,6 @@ def test_hello_dict():
 
 
 def test_render_class():
-    # Example usage
     cls_tmpl = """
 from dataclasses import dataclass
 
@@ -22,23 +21,18 @@ from dataclasses import dataclass
 class {{ class_name }}:
     name: str = None
     """
-
     func_tmpl1 = """
 def {{ method_name }}1(self):
     return f"{{ new_message }} {self.name} #1"
     """
-
     func_tmpl2 = """
 def {{ method_name }}2(self):
     return f"{{ new_message }} {self.name} #2"
     """
-
     func_tmpl3 = """
 def {{ method_name }}3(self):
     return f"{{ new_message }} {self.name} #3"
     """
-
-    # Render and compile the class with a method, with dataclass enabled
     name_cls = render_class(
         cls_tmpl,
         func_tmpls=[func_tmpl1, func_tmpl2, func_tmpl3],
@@ -46,13 +40,12 @@ def {{ method_name }}3(self):
         class_name="MyClass",
         method_name="new_method",
         new_message="Hello",
+        admitted=True,
     )
-
-    # Create an instance and call the method
     obj = name_cls(name="Wesley Snipes")
     assert obj.new_method1() == "Hello Wesley Snipes #1"
-    assert obj.new_method2() == "Hello Wesley Snipes #2"  # Prints: New method
-    assert obj.new_method3() == "Hello Wesley Snipes #3"  # Prints: New method
+    assert obj.new_method2() == "Hello Wesley Snipes #2"
+    assert obj.new_method3() == "Hello Wesley Snipes #3"
 
 
 def test_render_class_with_range():
@@ -63,13 +56,9 @@ class {{ class_name }}:
         return "Method {{ i }}: " + value
     {% endfor %}
         """
-
-    num_methods = 3
-
     rendered_class = render_class(
-        cls_tmpl, class_name="MyClass", num_methods=num_methods
+        cls_tmpl, class_name="MyClass", num_methods=3, admitted=True
     )
-
     instance = rendered_class()
     assert instance.method_0("value") == "Method 0: value"
     assert instance.method_1("value") == "Method 1: value"
@@ -83,11 +72,10 @@ class {{ class_name }}:
     {{ attribute }} = "{{ value }}"
     {% endfor %}
     """
-
     attributes = {"attribute_one": "value_one", "attribute_two": "value_two"}
-
-    rendered_class = render_class(cls_tmpl, class_name="MyClass", attributes=attributes)
-
+    rendered_class = render_class(
+        cls_tmpl, class_name="MyClass", attributes=attributes, admitted=True
+    )
     instance = rendered_class()
     assert instance.attribute_one == "value_one"
     assert instance.attribute_two == "value_two"
@@ -104,14 +92,26 @@ class {{ class_name }}:
     }
     {% endfor %}
     """
-
     groups = {
         "group_one": ["one", "two", "three"],
         "group_two": ["alpha", "beta", "gamma"],
     }
-
-    rendered_class = render_class(cls_tmpl, class_name="MyClass", groups=groups)
-
+    rendered_class = render_class(
+        cls_tmpl, class_name="MyClass", groups=groups, admitted=True
+    )
     instance = rendered_class()
     assert instance.group_one == {"one": "ONE", "two": "TWO", "three": "THREE"}
     assert instance.group_two == {"alpha": "ALPHA", "beta": "BETA", "gamma": "GAMMA"}
+
+
+def test_render_class_refuses_ambient_execution(tmp_path):
+    from fgn.core.broker import ActuationRefused, Broker
+    import pytest
+
+    with pytest.raises(ActuationRefused) as exc_info:
+        render_class(
+            "class {{ class_name }}:\n    pass",
+            class_name="Denied",
+            broker=Broker(receipt_dir=tmp_path / "receipts"),
+        )
+    assert exc_info.value.receipt.status == "REFUSED:PYTHON_AUTHORITY_REQUIRED"

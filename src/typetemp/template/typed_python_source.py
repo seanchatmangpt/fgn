@@ -1,8 +1,9 @@
 from _ast import stmt
-from ast import parse
+from ast import parse, unparse
 from dataclasses import dataclass
 from typing import List
 
+from fgn.core.broker import Broker
 from typetemp.environment.typed_environment import TypedEnvironment
 from typetemp.environment.typed_native_environment import TypedNativeEnvironment
 from typetemp.functional import render_function as render_func
@@ -14,58 +15,43 @@ _native_env = TypedNativeEnvironment()
 
 @dataclass
 class TypedPythonSource(RenderMixin):
-    """
-    Base class for creating templated classes. Uses the jinja2 templating engine
-    to render templates. Allows for usage of macros and filters.
-    """
-
-    source: str = None  # The string template to be rendered
-    use_native: bool = False  # Whether to use NativeEnvironment for rendering
-    to: str = None  # The "to" property for rendering destination
-    output: str = None  # The rendered output
+    source: str | None = None
+    use_native: bool = False
+    to: str | None = None
+    output: str | None = None
 
     def __post_init__(self):
-        """
-        After the instance is initialized, set the environment
-        """
-        # Use NativeEnvironment when use_native is True, else use default Environment
+        declared_source = type(self).__dict__.get("source")
+        if self.source is None and isinstance(declared_source, str):
+            self.source = declared_source
+        if self.source is None:
+            raise ValueError(f"{type(self).__name__} requires a Python source template")
         self.env = _native_env if self.use_native else _env
 
     def __call__(self, **kwargs) -> str:
         return self._render(**kwargs)
 
     def render_function(self, **kwargs) -> stmt:
-        """
-        Renders the function template and returns its AST object.
+        return parse(self._render(**kwargs)).body[0]
 
-        :param kwargs: The keyword arguments to be used in rendering
-        :return: The AST object of the rendered function
-        """
-        rendered_func = self._render(**kwargs)
-        return parse(rendered_func).body[0]
-
-    def render_class(self, func_tmpls: List[str] = None, **kwargs):
-        """
-        Renders the class template and returns the compiled class, optionally including methods.
-
-        :param func_tmpls: A list of template strings for functions to be included in the class
-        :param kwargs: The keyword arguments to be used in rendering
-        :return: The compiled class
-        """
-        # Render the class
-        rendered_cls = self._render(**kwargs)
-        class_ast = parse(rendered_cls)
-
-        # If function templates are provided, render and add them to the class
+    def render_class(
+        self,
+        func_tmpls: List[str] | None = None,
+        *,
+        admitted: bool = False,
+        broker: Broker | None = None,
+        **kwargs,
+    ):
+        class_ast = parse(self._render(**kwargs))
         if func_tmpls:
             for func_tmpl in func_tmpls:
-                function_ast = render_func(func_tmpl, **kwargs)
-                class_ast.body[-1].body.append(function_ast)
-
-        # Compile the class AST
-        compiled_class_def = compile(class_ast, filename="<ast>", mode="exec")
-        class_dict = {}
-        exec(compiled_class_def, class_dict)
-
-        # Return the compiled class
-        return class_dict[kwargs["class_name"]]
+                class_ast.body[-1].body.append(render_func(func_tmpl, **kwargs))
+        source = unparse(class_ast) + "\n"
+        namespace, receipt = (broker or Broker()).execute_python(
+            source,
+            admitted=admitted,
+            filename=f"<{type(self).__name__}.render_class>",
+        )
+        rendered_class = namespace[kwargs["class_name"]]
+        setattr(rendered_class, "__fgn_receipt__", receipt)
+        return rendered_class
