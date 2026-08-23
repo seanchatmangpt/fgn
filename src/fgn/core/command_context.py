@@ -5,7 +5,7 @@ from typing import Any, Optional
 
 @dataclass
 class CommandContext:
-    model: str = "gpt-4-0613"
+    model: str = "gpt-4o-mini"
     input: Optional[str] = None
     output: Optional[str] = None
     in_n_out: Optional[str] = None
@@ -30,10 +30,10 @@ class CommandContext:
 
 def create_context(params: dict[str, Any]) -> CommandContext:
     if str(params.get("model")) == "3":
-        params["model"] = "gpt-3.5-turbo-0613"
+        params["model"] = "gpt-4o-mini"
 
     if str(params.get("model")) == "4":
-        params["model"] = "gpt-4-0613"
+        params["model"] = "gpt-4o"
 
     in_n_out = params.get("in_n_out")
     if in_n_out:

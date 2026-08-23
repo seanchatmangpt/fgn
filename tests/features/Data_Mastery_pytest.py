@@ -1,48 +1,18 @@
-from pytest_bdd import given, parsers, scenarios, then, when
-
-scenarios("Data Mastery.feature")
-
-
-@given("missing data")
-def given_function():
-    pass
+def impute(values, replacement=0):
+    return [replacement if value is None else value for value in values]
 
 
-@when("the imputation algorithm runs")
-def when_function():
-    pass
+def label(values):
+    return [(value, f"item-{index}") for index, value in enumerate(values)]
 
 
-@then("the dataset should be complete")
-def then_function():
-    pass
+def test_data_imputation():
+    assert impute([1, None, 3]) == [1, 0, 3]
 
 
-@given("unlabelled data")
-def given_function():
-    pass
+def test_data_labelling():
+    assert label(["a", "b"]) == [("a", "item-0"), ("b", "item-1")]
 
 
-@when("a labeling algorithm runs")
-def when_function():
-    pass
-
-
-@then("the dataset should be labelled")
-def then_function():
-    pass
-
-
-@given("unordered data")
-def given_function():
-    pass
-
-
-@when("the sorting algorithm runs")
-def when_function():
-    pass
-
-
-@then("the data should be sorted")
-def then_function():
-    pass
+def test_data_sorting():
+    assert sorted([3, 1, 2]) == [1, 2, 3]

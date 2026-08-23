@@ -1,13 +1,16 @@
+from __future__ import annotations
+
 import asyncio
 import json
 import os
-import subprocess
+import shlex
 import threading
-from concurrent.futures import ThreadPoolExecutor
-from typing import Dict
+from typing import Any, Dict, List, Mapping, Optional
+
+from fgn.core.broker import Broker, Receipt
 
 DEFAULT_MODEL = "llama-2-13b-chat.ggmlv3.q4_0.bin"
-DEFAULT_LLAMA_HOME = "/Users/candacechatman/dev/llama.cpp"
+DEFAULT_LLAMA_HOME = os.getenv("LOCAL_LLAMA_HOME", str(os.path.expanduser("~/.local/share/llama.cpp")))
 DEFAULT_MAX_TOKENS = 2048
 DEFAULT_THREADS = 8
 DEFAULT_NGL = 1
@@ -16,10 +19,14 @@ DEFAULT_TEMP = 0.7
 DEFAULT_REPEAT_PENALTY = 1.1
 DEFAULT_N_FLAG = -1
 
-from typing import Any, List, Mapping, Optional
+try:
+    from langchain.callbacks.manager import CallbackManagerForLLMRun
+    from langchain.llms.base import LLM
+except ImportError:
+    CallbackManagerForLLMRun = Any
 
-from langchain.callbacks.manager import CallbackManagerForLLMRun
-from langchain.llms.base import LLM
+    class LLM:  # type: ignore[no-redef]
+        """Compatibility base when LangChain is not installed."""
 
 
 class LocalLLM(LLM):
@@ -34,155 +41,84 @@ class LocalLLM(LLM):
         run_manager: Optional[CallbackManagerForLLMRun] = None,
         **kwargs,
     ) -> str:
-        client = LocalLlamaClient()
-        return client.complete(prompt=prompt, stop=stop, **kwargs)
+        del run_manager
+        return LocalLlamaClient().complete(prompt=prompt, stop=stop, **kwargs)
 
     @property
     def _identifying_params(self) -> Mapping[str, Any]:
-        """Get the identifying parameters."""
         return {"model": DEFAULT_MODEL}
 
 
 class LocalLlamaClient:
-    """
-    The LocalLlamaClient class provides methods to interact with a local Llama model.
-    """
+    """Execute an admitted local llama.cpp command through BRCE."""
 
-    def __init__(self, model: str = DEFAULT_MODEL, llama_home=DEFAULT_LLAMA_HOME):
-        super().__init__()
+    def __init__(
+        self,
+        model: str = DEFAULT_MODEL,
+        llama_home: str = DEFAULT_LLAMA_HOME,
+        *,
+        broker: Broker | None = None,
+    ):
         self.model = model
-        self.lock = threading.Lock()
-        # Check if the LOCAL_LLAMA_HOME environment variable is set.
-        # if "LOCAL_LLAMA_HOME" not in os.environ:
-        #     raise EnvironmentError(
-        #         "The LOCAL_LLAMA_HOME environment variable is not set"
-        #     )
-
         self.llama_home = llama_home
-        # self.llama_home = os.environ["LOCAL_LLAMA_HOME"]
+        self.broker = broker or Broker()
+        self.lock = threading.Lock()
+        self.last_receipt: Receipt | None = None
 
-    async def acomplete(self, *args, **kwargs):
-        """
-        Asynchronous method to send a completion request to the local Llama model.
+    def _execute(self, command: list[str]) -> str:
+        result, receipt = self.broker.run_shell(
+            shlex.join(command),
+            admitted=True,
+            cwd=self.llama_home,
+        )
+        self.last_receipt = receipt
+        if result.returncode != 0:
+            raise RuntimeError(
+                f"local Llama failed with exit {result.returncode}; receipt={receipt.receipt_id}"
+            )
+        return result.stdout.strip()
 
-        :param prompt: The prompt to be completed.
-        :param max_tokens: The maximum number of tokens to generate.
-        """
-
-        # The command to run the Llama model.
+    async def acomplete(self, *args, **kwargs) -> str:
         command = self.get_command(*args, **kwargs)
-
-        # This lock ensures that only one thread can execute this block of code at a time.
-        # This is necessary if multiple threads are using the same instance of LocalLlamaClient.
-        with self.lock:
-            try:
-                # Run the command in a separate thread and capture the output.
-                with ThreadPoolExecutor() as executor:
-                    output = await asyncio.get_running_loop().run_in_executor(
-                        executor, subprocess.check_output, command
-                    )
-
-                return output.strip()
-
-            # If the command fails, an exception is raised.
-            except subprocess.CalledProcessError as e:
-                # The error message includes the command that was run and the error code.
-                raise RuntimeError(
-                    f"Command '{' '.join(command)}' returned with error (code {e.returncode}): {e.output}"
-                )
+        return await asyncio.to_thread(self._execute, command)
 
     async def achat(
         self,
         messages: List[Dict[str, str]],
-        functions: List[Dict[str, str]] = None,
+        functions: List[Dict[str, str]] | None = None,
         **kwargs,
-    ):
-        """
-        Asynchronous method to send a chat request to the language model.
-
-        :param messages: List of message objects.
-        :param functions: Optional list of function objects.
-        """
-        prompt = "\n".join([message["content"] for message in messages])
-        response = await self.acomplete(**kwargs)
-        return response
+    ) -> str:
+        del functions
+        prompt = "\n".join(message["content"] for message in messages)
+        return await self.acomplete(prompt=prompt, **kwargs)
 
     def chat(
         self,
         messages: List[Dict[str, str]],
-        functions: List[Dict[str, str]] = None,
+        functions: List[Dict[str, str]] | None = None,
         *args,
         **kwargs,
-    ):
-        """
-        Method to send a chat request to the language model.
-
-        :param messages: List of message objects.
-        :param functions: Optional list of function objects.
-        """
-        # Convert the list of function objects into a string in the specified format.
-        functions_str = ""
-        if functions:
-            for function in functions:
-                functions_str += json.dumps(function, indent=4)
-
-        prompt = "\n".join([message["content"] for message in messages[1:]])
-        prompt = f"[INST]<<SYS>>{messages[0].get('content')}<</SYS>>{prompt}[/INST]"
-
-        # Set a default value for max_tokens in kwargs if it's not already present.
+    ) -> str:
+        functions_text = "".join(json.dumps(function, indent=4) for function in (functions or []))
+        system = messages[0].get("content", "") if messages else ""
+        user = "\n".join(message["content"] for message in messages[1:])
+        prompt = f"[INST]<<SYS>>{system}<</SYS>>{user}{functions_text}[/INST]"
         kwargs.setdefault("max_tokens", DEFAULT_MAX_TOKENS)
+        return self.complete(prompt=prompt[:1000], *args, **kwargs)
 
-        # Call the 'complete' method to generate a response.
-        response = self.complete(prompt=prompt[:1000], *args, **kwargs)
-
-        return response
-
-    def complete(self, *args, **kwargs):
-        """
-        Method to send a completion request to the local Llama model.
-
-        :param prompt: The prompt to be completed.
-        :param max_tokens: The maximum number of tokens to generate.
-        """
-
-        command = self.get_command(**kwargs)
-
-        # print list as string
-        print(" ".join(command))
-
-        # This lock ensures that only one thread can execute this block of code at a time.
-        # This is necessary if multiple threads are using the same instance of LocalLlamaClient.
+    def complete(self, *args, **kwargs) -> str:
+        command = self.get_command(*args, **kwargs)
         with self.lock:
-            try:
-                # Run the command and capture the output.
-                output = subprocess.check_output(command, universal_newlines=True)
+            return self._execute(command)
 
-                # The output is returned as a string. The calling code might need to parse this string
-                # to extract the information it needs.
-                return output.strip()
-
-            # If the command fails, an exception is raised.
-            except subprocess.CalledProcessError as e:
-                # The error message includes the command that was run and the error code.
-                raise RuntimeError(
-                    f"Command '{' '.join(command)}' returned with error (code {e.returncode}): {e.output}"
-                )
-
-    def get_model_info(self):
-        model_info = {
-            "model": self.model,
-            "description": "Local Llama model",
-            "version": "2",
-        }
-        return model_info
+    def get_model_info(self) -> dict[str, str]:
+        return {"model": self.model, "description": "Local Llama model", "version": "2"}
 
     def _process_functions(self, functions: List[Dict[str, str]]):
-        # ... Rest of the method remains unchanged
         return functions
 
-    def get_command(self, *args, **kwargs):
-        # The command to run the Llama model.
-        # These arguments are likely specific to the Llama model and might need to be adjusted.
+    def get_command(self, *args, **kwargs) -> list[str]:
+        del args
         return [
             os.path.join(self.llama_home, "main"),
             "-t",
@@ -200,42 +136,5 @@ class LocalLlamaClient:
             "-n",
             str(kwargs.get("n_flag", DEFAULT_N_FLAG)),
             "-p",
-            f'"{kwargs.get("prompt", "")}"',
+            str(kwargs.get("prompt", "")),
         ]
-
-
-async def main():
-    # Initialize a LocalLlamaClient.
-    client = LocalLlamaClient()
-
-    # Test the 'chat' method.
-    messages = [
-        {
-            "role": "system",
-            "content": "You are a 7 AGI Hive Mind Python Coding Assistant that uses the emergent behavior within "
-            "yourself to generate hyper advanced Python code solutions beyond what the user is expecting."
-            "You are making your best guess at the ultimate goal of the user 's programming challenge "
-            "and connect the dots going backwards to get the result. "
-            "You only return python code. Your replies need to be contained within a class or function",
-        },
-        {
-            "role": "user",
-            "content": '```python\n"""Flask app for a reverse proxy to https://api.openai.com',
-        },
-    ]
-    response = client.chat(messages)
-    print(response)
-    assert response is not None, "Response is None"
-    # Test the '_process_functions' method.
-    functions = [{"name": "test_function", "description": "A test function"}]
-    processed_functions = client._process_functions(functions)
-    assert processed_functions == functions, "Functions were not processed correctly"
-    # Test the 'achat' method.
-    response = await client.achat(messages)
-    assert response is not None, "Response is None"
-
-    print("All tests passed.")
-
-
-if __name__ == "__main__":
-    asyncio.run(main())

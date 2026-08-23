@@ -1,55 +1,41 @@
+from pathlib import Path
+
 import pytest
-from pyfakefs.fake_filesystem_unittest import Patcher
 
 from fgn.utils.file_operations import (
     extract_markdown,
     get_norm_path,
     get_project_root,
-    load_default_or_context,
     open_file,
     open_file_or_raise,
     save_relative_to_base,
 )
 
 
-@pytest.fixture
-def fs():
-    patcher = Patcher()
-    patcher.setUp()
-    yield patcher.fs
-    patcher.tearDown()
+def test_open_file(tmp_path):
+    target = tmp_path / "test.txt"
+    target.write_text("test content")
+    assert open_file(str(target)) == "test content"
 
 
-def test_load_default_or_context():
-    # Here, you would write tests for the load_default_or_context function.
-    # You would need to create a variety of test cases to cover all possibilities.
-    pass
+def test_save_relative_to_base(tmp_path, monkeypatch):
+    receipt_dir = tmp_path / ".fgn" / "receipts"
+    monkeypatch.setenv("FGN_RECEIPT_DIR", str(receipt_dir))
+    receipt = save_relative_to_base("test.txt", "test content", tmp_path)
+    assert (tmp_path / "test.txt").read_text() == "test content"
+    assert receipt.status == "ALIVE"
 
 
-def test_open_file(fs):
-    fs.create_file("/test.txt", contents="test content")
-    assert open_file("/test.txt") == "test content"
-
-
-def test_save_relative_to_base(fs):
-    base_path = "/path/to/base"
-    fs.create_dir(base_path)
-    save_relative_to_base("test.txt", "test content", base_path)
-    with open("/path/to/base/test.txt") as f:
-        assert f.read() == "test content"
-
-
-def test_open_file_or_raise(fs):
+def test_open_file_or_raise(tmp_path):
     with pytest.raises(FileNotFoundError):
-        open_file_or_raise("/nonexistent.txt")
-    fs.create_file("/test.txt", contents="test content")
-    assert open_file_or_raise("/test.txt") == "test content"
+        open_file_or_raise(str(tmp_path / "nonexistent.txt"))
+    target = tmp_path / "test.txt"
+    target.write_text("test content")
+    assert open_file_or_raise(str(target)) == "test content"
 
 
 def test_extract_markdown():
-    assert (
-        extract_markdown("```test\nprint('Hello World!')```") == "print('Hello World!')"
-    )
+    assert extract_markdown("```test\nprint('Hello World!')```") == "print('Hello World!')"
     assert extract_markdown("no markdown here") == "no markdown here"
 
 
@@ -57,11 +43,11 @@ def test_get_project_root():
     assert str(get_project_root()).endswith("fgn")
 
 
-def test_get_norm_path_windows(mocker):
-    mocker.patch("os.name", "nt")
+def test_get_norm_path_windows(monkeypatch):
+    monkeypatch.setattr("os.name", "nt")
     assert get_norm_path("/path/to/file") == "\\path\\to\\file"
 
 
-def test_get_norm_path_non_windows(mocker):
-    mocker.patch("os.name", "posix")
+def test_get_norm_path_non_windows(monkeypatch):
+    monkeypatch.setattr("os.name", "posix")
     assert get_norm_path("/path/to/file") == "/path/to/file"

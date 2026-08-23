@@ -2,21 +2,17 @@ from pathlib import Path
 
 import click
 
-from fgn.utils.file_operations import create_project_dir
+from fgn.core.broker import Broker
 
 
 @click.command()
 @click.argument("message", default="Hello, World", required=False)
-@click.option("-o", "--output", help="Output file to write the message.")
-def main(message, output):
-    create_project_dir()
-
+@click.option("-o", "--output", type=click.Path(path_type=Path), help="Output file to write the message.")
+@click.option("--receipt-dir", type=click.Path(path_type=Path), help="Directory for BRCE receipts.")
+def main(message: str, output: Path | None, receipt_dir: Path | None):
     click.echo(message)
-
-    # If the output option is provided, write the message to the file
     if output:
-        with open(output, "w") as file:
-            file.write(message)
+        Broker(receipt_dir=receipt_dir).write_text(output, message)
 
 
 if __name__ == "__main__":

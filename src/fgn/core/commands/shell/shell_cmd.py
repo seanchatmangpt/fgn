@@ -38,5 +38,5 @@ Prompt: {text}
 ###
 Command:\n$"""
 
-    ctx.obj.model = "gpt-3.5-turbo"
+    ctx.obj.model = "gpt-4o-mini"
     default_sub_cmd(ctx, cmd_name, extract_md=True, prompt_suffix=prompt_suffix)

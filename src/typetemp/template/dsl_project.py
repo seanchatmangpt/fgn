@@ -1,11 +1,9 @@
 # Here is your PerfectPythonProductionPEP8® AGI code you requested:
-import os
-from dataclasses import asdict, dataclass, field
+from dataclasses import dataclass, field
 from typing import List, Optional
 
 import yaml
 
-from fgn.completion.chat import Chat
 from typetemp.template.typed_prompt import TypedPrompt
 
 
@@ -131,9 +129,6 @@ class TypedMaintenancePrompt(TypedTitleDescriptionPrompt):
     source: str = "Monitor system's usage and performance using metrics {{ monitoring_metrics }}. Apply patches and updates as required following the update schedule {{ update_schedule }} and patching policy {{ patching_policy }}. Provide support through channels {{ support_channels }} and collect feedback via {{ user_feedback_mechanisms }}."
 
 
-# Here is your PerfectPythonProductionPEP8® AGI code you requested:
-
-# Use the classes defined in the previous code snippet
 typed_requirement_analysis_prompt = TypedRequirementAnalysisPrompt(
     title="Requirement Analysis",
     description="Gather detailed requirements for the DSL.",
@@ -214,102 +209,73 @@ typed_maintenance_prompt = TypedMaintenancePrompt(
     user_feedback_mechanisms=["Survey", "Reviews"],
 )
 
-# Convert dataclasses to dictionaries
-data = {
-    "TypedRequirementAnalysisPrompt": asdict(typed_requirement_analysis_prompt),
-    "TypedDesignArchitecturePrompt": asdict(typed_design_architecture_prompt),
-    "TypedBuildCoreComponentsPrompt": asdict(typed_build_core_components_prompt),
-    "TypedImplementBusinessLogicPrompt": asdict(typed_implement_business_logic_prompt),
-    "TypedTestingPrompt": asdict(typed_testing_prompt),
-    "TypedDeploymentPrompt": asdict(typed_deployment_prompt),
-    "TypedDocumentationPrompt": asdict(typed_documentation_prompt),
-    "TypedMaintenancePrompt": asdict(typed_maintenance_prompt),
-}
-
-# Dump to YAML
-yaml_data = yaml.dump(data, default_flow_style=False)
-
-with open("chain.yaml", "w") as f:
-    f.write(yaml_data)
-
-print(yaml_data)
-
-# Here is your PerfectPythonProductionPEP8® AGI code you requested:
-
+from dataclasses import fields
+from pathlib import Path
 from typing import Any, Dict, Union
 
-import yaml
+from fgn.core.broker import Broker, Receipt
 
-from typetemp.template.typed_prompt import (  # Import TypedPrompt for extending functionality
-    TypedPrompt,
+
+_DEFAULT_PROMPTS = (
+    typed_requirement_analysis_prompt,
+    typed_design_architecture_prompt,
+    typed_build_core_components_prompt,
+    typed_implement_business_logic_prompt,
+    typed_testing_prompt,
+    typed_deployment_prompt,
+    typed_documentation_prompt,
+    typed_maintenance_prompt,
 )
+_ALLOWED_PROMPT_CLASSES = {type(prompt).__name__: type(prompt) for prompt in _DEFAULT_PROMPTS}
 
 
-def load_yaml_dsl(file_path: str) -> Dict[str, Any]:
-    """
-    Load a YAML DSL (Domain Specific Language) file.
-
-    Parameters:
-    ----------------------------------------------------------
-    file_path : str
-        The path to the YAML file.
-
-    Returns:
-    ----------------------------------------------------------
-    Dict[str, Any]
-        A dictionary representation of the YAML DSL.
-    """
-    with open(file_path, "r") as f:
-        return yaml.safe_load(f)
+def _prompt_params(prompt: TypedPrompt) -> dict[str, Any]:
+    excluded = {"output", "env", "chat_inst", "source"}
+    return {
+        item.name: getattr(prompt, item.name)
+        for item in fields(prompt)
+        if item.init and item.name not in excluded
+    }
 
 
-def execute_chain(chain: Dict[str, Any]) -> Dict[str, Union[str, Optional[str]]]:
-    """
-    Execute a chain of TypedPrompt-derived classes based on the YAML DSL.
+def build_default_chain_data() -> dict[str, dict[str, Any]]:
+    """Return the serializable, admitted default prompt chain."""
+    return {
+        type(prompt).__name__: {"params": _prompt_params(prompt)}
+        for prompt in _DEFAULT_PROMPTS
+    }
 
-    Parameters:
-    -----------------------------------------------------------
-    chain : Dict[str, Any]
-        A dictionary representing the YAML DSL.
 
-    Returns:
-    -----------------------------------------------------------
-    Dict[str, Union[str, Optional[str]]]
-        A dictionary of results where each key is the class name and each value is the result of the class.
-    """
-    results = {}
-    for cls_name, config in chain.items():
-        # Dynamically import and instantiate the TypedPrompt-derived class
-        exec(f"from {config['module']} import {cls_name}")
-        cls = eval(f"{cls_name}(**config['params'])")
+def write_default_chain(
+    file_path: str | Path = "chain.yaml", *, broker: Broker | None = None
+) -> Receipt:
+    payload = yaml.safe_dump(build_default_chain_data(), sort_keys=True)
+    return (broker or Broker()).write_text(file_path, payload)
 
-        # Call the class and store the result
-        results[cls_name] = cls()
 
+def load_yaml_dsl(file_path: str | Path) -> Dict[str, Any]:
+    return yaml.safe_load(Path(file_path).read_text(encoding="utf-8")) or {}
+
+
+def execute_chain(chain: Dict[str, Any]) -> Dict[str, Union[str, dict, Optional[str]]]:
+    """Execute only admitted TypedPrompt classes from a parsed YAML chain."""
+    results: dict[str, Union[str, dict, Optional[str]]] = {}
+    for class_name, config in chain.items():
+        prompt_class = _ALLOWED_PROMPT_CLASSES.get(class_name)
+        if prompt_class is None:
+            raise ValueError(f"REFUSED:UNADMITTED_PROMPT_CLASS:{class_name}")
+        params = config.get("params", {})
+        if not isinstance(params, dict):
+            raise TypeError(f"params for {class_name} must be a mapping")
+        prompt = prompt_class(**params)
+        results[class_name] = prompt()
     return results
 
 
-def get_module_path():
-    """
-    Get the path of the current module.
-    """
-    return os.path.dirname(os.path.abspath(__file__))
+def get_module_path() -> str:
+    return str(Path(__file__).resolve().parent)
 
 
-# Example usage
 if __name__ == "__main__":
-    # Assume we have a YAML DSL file named 'chain.yaml'
-
-    # Print module
-    print(f"Module: {__name__}")
-    # Print module path
-    print(f"Module path: {__file__}")
-
-    print(get_module_path())
-
-    chain = load_yaml_dsl("chain.yaml")
-    results = execute_chain(chain)
-
-    # Output the results
-    for cls_name, result in results.items():
-        print(f"Result for {cls_name}: {result}")
+    receipt = write_default_chain()
+    print(f"chain receipt={receipt.receipt_id} status={receipt.status}")
