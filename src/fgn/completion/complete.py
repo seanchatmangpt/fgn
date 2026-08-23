@@ -1,4 +1,14 @@
-import openai
+from __future__ import annotations
+
+from typing import Any
+
+from fgn.utils.llm_operations import achat, gpt_chat_completion
+
+
+def get_model_str(model):
+    if model == "3i":
+        return "gpt-4o-mini"
+    return model
 
 
 def create(
@@ -10,19 +20,15 @@ def create(
     frequency_penalty=0,
     presence_penalty=0,
     stop=None,
+    *,
+    client: Any = None,
 ):
-    response = openai.Completion.create(
+    del temperature, max_tokens, top_p, frequency_penalty, presence_penalty, stop
+    return gpt_chat_completion(
+        [{"role": "user", "content": prompt}],
         model=get_model_str(model),
-        prompt=prompt,
-        temperature=temperature,
-        max_tokens=max_tokens,
-        top_p=top_p,
-        frequency_penalty=frequency_penalty,
-        presence_penalty=presence_penalty,
-        stop=stop,
+        client=client,
     )
-
-    return response.choices[0].text.strip()
 
 
 async def acreate(
@@ -34,22 +40,12 @@ async def acreate(
     frequency_penalty=0,
     presence_penalty=0,
     stop=None,
+    *,
+    client: Any = None,
 ):
-    response = await openai.Completion.acreate(
-        model=get_model_str(model),
+    del temperature, max_tokens, top_p, frequency_penalty, presence_penalty, stop
+    return await achat(
         prompt=prompt,
-        temperature=temperature,
-        max_tokens=max_tokens,
-        top_p=top_p,
-        frequency_penalty=frequency_penalty,
-        presence_penalty=presence_penalty,
-        stop=stop,
+        model=get_model_str(model),
+        client=client,
     )
-
-    return response.choices[0].text.strip()
-
-
-def get_model_str(model):
-    if model == "3i":
-        return "gpt-3.5-turbo-instruct-0914"
-    return model

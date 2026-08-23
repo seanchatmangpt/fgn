@@ -2,86 +2,88 @@ from unittest.mock import MagicMock
 
 import pytest
 
+from fgn.core.broker import Broker, Receipt
 from fgn.utils.output_manager import OutputManager
 
 
-# Set up your mocks at the top of the file
-@pytest.fixture(autouse=True)
-def mock_open(mocker):
-    mocker.patch("builtins.open", mocker.mock_open())
-    return open
-
-
-@pytest.fixture(autouse=True)
-def mock_pyperclip_copy(mocker):
-    mock_copy = mocker.patch("pyperclip.copy")
-    return mock_copy
+def receipt(action: str) -> Receipt:
+    return Receipt(
+        receipt_id=f"receipt-{action}",
+        intent_id=f"intent-{action}",
+        action=action,
+        subject="test",
+        status="ALIVE",
+        phase="verified",
+        started_at="2026-08-05T00:00:00Z",
+        completed_at="2026-08-05T00:00:01Z",
+    )
 
 
 @pytest.fixture
-def output_manager():
-    return OutputManager()
+def broker():
+    value = MagicMock(spec=Broker)
+    value.copy_text.return_value = receipt("clipboard.copy")
+    value.write_text.return_value = receipt("file.write")
+    return value
 
 
-def test_handle_output_no_flags(mock_open, mock_pyperclip_copy, output_manager):
-    response = "Test response"
-    output_manager.handle_output(response)
-
-    mock_pyperclip_copy.assert_called_once_with(response)
-    mock_open.assert_not_called()  # since neither 'output' nor 'auto_output' flags are set
+@pytest.fixture
+def output_manager(broker):
+    return OutputManager(broker=broker)
 
 
-def test_handle_output_output_flag(mock_open, mock_pyperclip_copy, output_manager):
-    response = "Test response"
+def test_handle_output_no_flags_copies_only(broker, output_manager):
+    result = output_manager.handle_output("Test response")
+    broker.copy_text.assert_called_once_with("Test response")
+    broker.write_text.assert_not_called()
+    assert [item.action for item in result] == ["clipboard.copy"]
+
+
+def test_handle_output_output_flag_writes_and_copies(broker, output_manager):
     output_manager.output = "test_output.md"
-    output_manager.handle_output(response)
+    result = output_manager.handle_output("Test response")
+    broker.write_text.assert_called_once_with(
+        "test_output.md", "Test response", append=False
+    )
+    broker.copy_text.assert_called_once_with("Test response")
+    assert [item.action for item in result] == ["file.write", "clipboard.copy"]
 
-    mock_pyperclip_copy.assert_called_once_with(response)
-    mock_open.assert_called_once()  # since 'output' flag is set
 
-
-def test_handle_output_auto_output_flag(mock_open, mock_pyperclip_copy, output_manager):
-    response = "Test response"
+def test_handle_output_auto_output_flag_writes_generated_target(broker, output_manager):
     output_manager.auto_output = True
-    output_manager.handle_output(response)
+    result = output_manager.handle_output("Test response")
+    target, content = broker.write_text.call_args.args
+    assert target.endswith(".md")
+    assert content == "Test response"
+    assert broker.write_text.call_args.kwargs == {"append": False}
+    assert [item.action for item in result] == ["file.write", "clipboard.copy"]
 
-    mock_pyperclip_copy.assert_called_once_with(response)
-    mock_open.assert_called()  # since 'auto_output' flag is set
 
-
-def test_handle_output_no_copy_flag(mock_open, mock_pyperclip_copy, output_manager):
-    response = "Test response"
+def test_handle_output_no_copy_flag_has_no_actuation(broker, output_manager):
     output_manager.no_copy = True
-    output_manager.handle_output(response)
-
-    mock_pyperclip_copy.assert_not_called()  # since 'no_copy' flag is set
-    mock_open.assert_not_called()  # since neither 'output' nor 'auto_output' flags are set
-
-
-def test_save_to_file_no_filename(mock_open, output_manager):
-    response = "Test response"
-    output_manager.save_to_file(response)
-
-    mock_open.assert_called()
-    handle = mock_open()
-    handle.write.assert_called_with(response)
+    assert output_manager.handle_output("Test response") == []
+    broker.copy_text.assert_not_called()
+    broker.write_text.assert_not_called()
 
 
-def test_save_to_file_with_filename(mock_open, output_manager):
-    response = "Test response"
-    filename = "test_output.md"
-    output_manager.save_to_file(response, filename)
-
-    mock_open.assert_called_once_with(filename, "w")
-    file_handle = mock_open.return_value.__enter__.return_value
-    file_handle.write.assert_called_with(response)
+def test_save_to_file_generated_filename_is_receipted(broker, output_manager):
+    result = output_manager.save_to_file("Test response")
+    target, content = broker.write_text.call_args.args
+    assert target.endswith(".md")
+    assert content == "Test response"
+    assert result.action == "file.write"
 
 
-def test_save_to_file_append(mock_open, output_manager):
-    response = "Test response"
-    filename = "test_output.md"
-    output_manager.save_to_file(response, filename, append=True)
+def test_save_to_file_with_filename_is_receipted(broker, output_manager):
+    result = output_manager.save_to_file("Test response", "test_output.md")
+    broker.write_text.assert_called_once_with(
+        "test_output.md", "Test response", append=False
+    )
+    assert result.action == "file.write"
 
-    mock_open.assert_called_once_with(filename, "a")
-    file_handle = mock_open.return_value.__enter__.return_value
-    file_handle.write.assert_called_with("\n\n" + response)
+
+def test_save_to_file_append_preserves_separator(broker, output_manager):
+    output_manager.save_to_file("Test response", "test_output.md", append=True)
+    broker.write_text.assert_called_once_with(
+        "test_output.md", "\n\nTest response", append=True
+    )
