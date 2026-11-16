@@ -1,7 +1,7 @@
 # Here is your PerfectPythonProductionPEP8® AGI code you requested:
 
-from dataclasses import field
-from typing import Union
+from dataclasses import dataclass, field
+from typing import ClassVar, Union
 
 from fgn.completion.chat import chat
 from typetemp.environment.typed_environment import (  # Typed environment class
@@ -17,7 +17,10 @@ _env = TypedEnvironment()
 _native_env = TypedNativeEnvironment()
 
 
+@dataclass(init=False)
 class TypedPrompt(RenderMixin):
+
+
     """
     This class extends TypedTemplate to incorporate a TypedPrompt functionality
     along with the Chat class for conversational capabilities.
@@ -29,7 +32,7 @@ class TypedPrompt(RenderMixin):
     - model: The model version to be used in the Chat class. Default is "3".
     """
 
-    source: str = None  # The string template to be rendered
+    source: ClassVar[str] = None  # The string template to be rendered
     user_input: str = None  # Input from the user
     output: Union[str, dict] = None  # To hold the output from the chat
     sys_msg: str = "You are a prompt AI assistant."  # System message to define the role

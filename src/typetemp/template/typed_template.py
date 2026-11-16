@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import ClassVar
 
 from typetemp.environment.typed_environment import TypedEnvironment
 from typetemp.environment.typed_native_environment import TypedNativeEnvironment
@@ -8,18 +9,21 @@ _env = TypedEnvironment()
 _native_env = TypedNativeEnvironment()
 
 
+@dataclass(init=False)
 class TypedTemplate(RenderMixin):
+
     """
     Base class for creating templated classes. Uses the jinja2 templating engine
     to render templates. Allows for usage of macros and filters.
     """
 
-    source: str = None  # The string template to be rendered
+    source: ClassVar[str] = None  # The string template to be rendered
     use_native: bool = False  # Whether to use NativeEnvironment for rendering
     to: str = None  # The "to" property for rendering destination
     output: str = None  # The rendered output
 
     def __init__(self, **kwargs):
+
         self.__post_init__()
         self.__dict__.update(kwargs)
 

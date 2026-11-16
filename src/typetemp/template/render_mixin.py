@@ -11,7 +11,14 @@ class RenderMixin:
     This class checks for the required properties 'source', 'env', 'to', and 'output'.
     """
 
+    def render(self, **kwargs) -> Any:
+        """
+        Render the template (alias for _render).
+        """
+        return self._render(**kwargs)
+
     def _render(self, **kwargs) -> Any:
+
         """
         Render the template. Excludes instance variables that
         are not callable (i.e., methods) and don't start with "__".
